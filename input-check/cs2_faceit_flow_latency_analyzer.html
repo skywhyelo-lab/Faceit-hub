@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hardware Latency & Input Flow Analyzer</title>
+    <title>Hardware Latency & Input Flow Analyzer // FACEIT Cockpit</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js Library for 3D Cosmic Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -20,18 +22,19 @@
                     colors: {
                         latency: {
                             cyan: '#00E5FF',
-                            dark: '#0A0B0D',
-                            card: '#121418',
-                            border: '#1E2229',
-                            lightBorder: '#2B313B',
-                            textMuted: '#6B7280',
-                            terminal: '#0E1013',
+                            dark: '#040507',
+                            card: '#0c0e14',
+                            border: '#161924',
+                            lightBorder: '#272d3f',
+                            textMuted: '#64748b',
+                            terminal: '#050608',
                             accent: '#3B82F6'
                         }
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        mono: ['Share Tech Mono', 'monospace']
+                        mono: ['Share Tech Mono', 'monospace'],
+                        code: ['JetBrains Mono', 'monospace']
                     }
                 }
             }
@@ -39,37 +42,44 @@
     </script>
     <style>
         body {
-            background-color: #0A0B0D;
+            background-color: #040507;
             color: #E5E7EB;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
+        
+        .glass-panel {
+            background: rgba(12, 14, 20, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+        }
+        
         .glow-cyan {
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.25);
+            box-shadow: 0 0 35px rgba(0, 229, 255, 0.15);
         }
         .glow-blue {
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.25);
+            box-shadow: 0 0 35px rgba(59, 130, 246, 0.15);
         }
         .glow-red {
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.25);
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.15);
         }
         .text-neon-cyan {
-            text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.7);
         }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
         }
-        ::-webkit-scrollbar-track {
-            background: #0A0B0D;
+        
+        .bg-grid-dark {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 229, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 229, 255, 0.015) 1px, transparent 1px);
         }
-        ::-webkit-scrollbar-thumb {
-            background: #1E2229;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00E5FF;
-        }
+        
         @keyframes scanline {
             0% { transform: translateY(-100%); }
             100% { transform: translateY(100%); }
@@ -78,63 +88,81 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(0, 229, 255, 0) 0%, rgba(0, 229, 255, 0.02) 10%, rgba(0, 229, 255, 0) 20%);
+            background: linear-gradient(to bottom, rgba(0, 229, 255, 0) 0%, rgba(0, 229, 255, 0.015) 10%, rgba(0, 229, 255, 0) 20%);
             animation: scanline 8s linear infinite;
             pointer-events: none;
+            z-index: 5;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #040507;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #161924;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00E5FF;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-latency-cyan selection:text-black">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-latency-cyan selection:text-black bg-grid-dark relative scanline">
+
+    <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
 
     <!-- Professional Hardware Telemetry Header -->
-    <header class="border-b border-latency-border bg-latency-card/95 backdrop-blur sticky top-0 z-40 px-6 py-4">
+    <header class="border-b border-latency-border bg-latency-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <div class="relative">
-                    <div class="bg-gradient-to-br from-latency-accent to-latency-cyan p-2.5 rounded-lg text-black font-black text-xl tracking-tight leading-none">
-                        <i class="fa-solid fa-microchip"></i>
+                    <div class="bg-gradient-to-br from-latency-accent to-latency-cyan p-2.5 rounded-lg text-black font-black text-xl tracking-tight leading-none glow-cyan">
+                        <i class="fa-solid fa-microchip animate-pulse"></i>
                     </div>
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-latency-card rounded-full animate-ping"></div>
+                    <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-latency-dark rounded-full animate-pulse"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-base font-bold tracking-wider uppercase text-white">
+                        <h1 class="text-base font-black tracking-wider uppercase text-white tracking-widest">
                             HARDWARE LATENCY <span class="text-latency-cyan">&amp; INPUT FLOW</span> ANALYZER
                         </h1>
-                        <span class="text-[9px] bg-latency-cyan/10 text-latency-cyan border border-latency-cyan/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">LAB-GRADE</span>
+                        <span class="text-[9px] bg-latency-cyan/15 text-latency-cyan border border-latency-cyan/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold font-bold">LAB-GRADE PRO v4.0</span>
                     </div>
                     <p class="text-xs text-latency-textMuted flex items-center gap-1.5">
-                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        Модуль ядра: <span class="font-mono text-gray-300">RAW_INPUT_MONITOR.sys v4.0.0-PRO</span>
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Модуль ядра: <span class="font-mono text-gray-300">RAW_INPUT_MONITOR.sys</span>
                         <span class="mx-1 text-latency-border">|</span>
-                        Текущий профиль: <span class="text-gray-300">Competitive Precision Tuning</span>
+                        Текущий профиль: <span class="text-gray-300 uppercase font-semibold font-mono">Competitive Precision Tuning</span>
                     </p>
                 </div>
             </div>
             
             <div class="flex items-center gap-3">
                 <!-- Back to Hub Button -->
-                <a href="../index.html" class="px-3 py-1.5 rounded bg-latency-card/80 border border-latency-border hover:border-latency-cyan/40 hover:text-white transition-all text-xs flex items-center space-x-2 mr-2">
+                <a href="../index.html" class="px-3 py-1.5 rounded bg-latency-border/60 border border-latency-border hover:border-latency-cyan/40 hover:text-white transition-all text-xs flex items-center space-x-2 mr-2">
                     <i class="fa-solid fa-arrow-left text-latency-cyan"></i>
                     <span class="font-mono text-gray-300">В ХАБ</span>
                 </a>
                 <div class="text-xs font-mono text-right hidden sm:block">
                     <div class="text-white font-semibold">HPET Reference Frequency</div>
-                    <div class="text-latency-cyan">10.0000 MHz (Active)</div>
+                    <div class="text-latency-cyan font-bold tracking-tight animate-pulse">10.0000 MHz (Active)</div>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- Main Diagnostic Grid -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6">
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
 
         <!-- Calibration Notice and Protocol Info -->
-        <div class="bg-latency-card border border-latency-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="glass-panel border border-latency-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex gap-3">
                 <div class="text-latency-cyan text-xl mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i></div>
                 <div>
-                    <h4 class="font-semibold text-sm text-white uppercase tracking-wider">
+                    <h4 class="font-bold text-sm text-white uppercase tracking-wider">
                         Протокол аппаратного замера и калибровки очереди прерываний
                     </h4>
                     <p class="text-xs text-latency-textMuted max-w-4xl">
@@ -156,60 +184,60 @@
             <div class="lg:col-span-4 space-y-6 flex flex-col">
                 
                 <!-- System Telemetry Stats -->
-                <div class="bg-latency-card border border-latency-border rounded-xl p-5 space-y-4">
+                <div class="glass-panel border border-latency-border rounded-2xl p-5 space-y-4 tilt-card glow-cyan">
                     <div class="flex justify-between items-center border-b border-latency-border pb-3">
                         <h3 class="text-xs font-bold text-latency-cyan uppercase tracking-widest flex items-center gap-2">
                             <i class="fa-solid fa-server"></i> Системная телеметрия
                         </h3>
-                        <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">REALTIME</span>
+                        <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">REALTIME</span>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-3 font-mono text-xs">
                         <div class="p-3 bg-latency-terminal rounded border border-latency-border">
-                            <span class="text-latency-textMuted block text-[10px] uppercase">ЦП Множитель:</span>
-                            <span class="text-white font-bold text-sm">Hardware Fixed</span>
+                            <span class="text-latency-textMuted block text-[9px] uppercase">ЦП Множитель:</span>
+                            <span class="text-white font-bold text-xs uppercase">Hardware Fixed</span>
                         </div>
                         <div class="p-3 bg-latency-terminal rounded border border-latency-border">
-                            <span class="text-latency-textMuted block text-[10px] uppercase">Режим мыши:</span>
-                            <span class="text-latency-cyan font-bold text-sm">RAW_INPUT</span>
+                            <span class="text-latency-textMuted block text-[9px] uppercase">Режим мыши:</span>
+                            <span class="text-latency-cyan font-bold text-xs">RAW_INPUT</span>
                         </div>
                         <div class="p-3 bg-latency-terminal rounded border border-latency-border">
-                            <span class="text-latency-textMuted block text-[10px] uppercase">Таймер ядра:</span>
+                            <span class="text-latency-textMuted block text-[9px] uppercase">Таймер ядра:</span>
                             <span class="text-emerald-400 font-bold text-xs">0.50 ms (HPET)</span>
                         </div>
                         <div class="p-3 bg-latency-terminal rounded border border-latency-border">
-                            <span class="text-latency-textMuted block text-[10px] uppercase">Очередь DPC:</span>
-                            <span id="txtDpcStat" class="text-emerald-400 font-bold text-xs">11.2 µs (Номинал)</span>
+                            <span class="text-latency-textMuted block text-[9px] uppercase">Очередь DPC:</span>
+                            <span id="txtDpcStat" class="text-emerald-400 font-bold text-xs animate-pulse">11.2 µs (Номинал)</span>
                         </div>
                     </div>
 
-                    <!-- DPC Load Simulator disguised as system stress emulator -->
+                    <!-- DPC Load Simulator -->
                     <div class="space-y-2 pt-1 border-t border-latency-border">
                         <div class="flex justify-between text-xs font-mono">
-                            <span class="text-latency-textMuted">Эмуляция фоновой нагрузки I/O:</span>
+                            <span class="text-latency-textMuted">Эмуляция нагрузки шины:</span>
                             <span id="lblDpcLoad" class="text-emerald-400 font-bold">0% (Чистая система)</span>
                         </div>
                         <input type="range" id="rngDpcLoad" min="0" max="100" value="0" 
-                               class="w-full h-1 bg-latency-terminal rounded-lg appearance-none cursor-pointer accent-latency-cyan">
-                        <div class="text-[10px] text-latency-textMuted flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-info"></i> Позволяет оценить устойчивость планировщика ОС к пиковым задержкам прерываний.
+                               class="w-full h-1.5 bg-latency-terminal rounded-lg appearance-none cursor-pointer accent-latency-cyan">
+                        <div class="text-[10px] text-latency-textMuted flex items-center gap-1.5 leading-normal">
+                            <i class="fa-solid fa-circle-info"></i> Позволяет оценить устойчивость планировщика ОС к задержкам прерываний шины USB.
                         </div>
                     </div>
                 </div>
 
                 <!-- Live Diagnostics Console -->
-                <div class="bg-latency-card border border-latency-border rounded-xl p-5 flex-grow flex flex-col gap-3 min-h-[280px]">
+                <div class="glass-panel border border-latency-border rounded-xl p-5 flex-grow flex flex-col gap-3 min-h-[280px]">
                     <div class="flex justify-between items-center border-b border-latency-border pb-3">
                         <h3 class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
                             <i class="fa-solid fa-rectangle-list text-latency-cyan animate-pulse"></i> Kernel Log Output Stream
                         </h3>
-                        <div class="flex gap-1">
-                            <span class="w-2 h-2 rounded-full bg-latency-cyan/20 border border-latency-cyan/40"></span>
-                            <span class="w-2 h-2 rounded-full bg-blue-500/20 border border-blue-500/40"></span>
+                        <div class="flex gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-latency-cyan/20 border border-latency-cyan/40"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500/20 border border-blue-500/40"></span>
                         </div>
                     </div>
                     
-                    <div id="terminalBody" class="flex-grow bg-latency-terminal border border-latency-border p-3.5 rounded-lg font-mono text-[11px] leading-relaxed text-emerald-400 overflow-y-auto h-52 max-h-64 space-y-1 select-none">
+                    <div id="terminalBody" class="flex-grow bg-latency-terminal border border-latency-border p-3.5 rounded-lg font-mono text-[11px] leading-relaxed text-emerald-400 overflow-y-auto h-52 max-h-64 space-y-1 select-none font-semibold">
                         <div class="text-gray-500">[SYSTEM] Инициализация модуля захвата Raw Input API...</div>
                         <div class="text-gray-500">[SYSTEM] Карта аппаратных адресов прерываний считывается успешно...</div>
                         <div class="text-emerald-400 font-bold">[SUCCESS] Драйвер фильтрации шины ввода запущен с приоритетом REALTIME_PRIORITY.</div>
@@ -220,10 +248,11 @@
 
             <!-- Column 2: Diagnostic Calibration Canvas Area -->
             <div class="lg:col-span-5 space-y-6">
-                <div class="bg-latency-card border border-latency-border rounded-xl p-6 flex flex-col gap-4 relative overflow-hidden">
+                <!-- STREAMING_CHUNK: Building the high-performance diagnostic canvas card -->
+                <div class="glass-panel border border-latency-border rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden tilt-card glow-cyan">
                     
                     <!-- Calibration Header -->
-                    <div class="flex justify-between items-center border-b border-latency-border pb-3">
+                    <div class="flex justify-between items-center border-b border-latency-border pb-3 z-10 relative">
                         <div class="flex items-center gap-3">
                             <span class="relative flex h-3 w-3">
                                 <span id="pingDotAnimate" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-latency-cyan opacity-75"></span>
@@ -238,12 +267,12 @@
                         <!-- Live poll state -->
                         <div class="bg-latency-terminal border border-latency-border px-3 py-1 rounded font-mono text-xs flex items-center gap-1.5">
                             <span class="text-latency-textMuted">Частота:</span>
-                            <span id="liveHzVal" class="text-latency-cyan font-bold">0 Hz</span>
+                            <span id="liveHzVal" class="text-latency-cyan font-bold animate-pulse">0 Hz</span>
                         </div>
                     </div>
 
-                    <!-- Canvas with Technical Sweep Overlays -->
-                    <div class="relative w-full aspect-[4/3] bg-latency-terminal rounded-xl border border-latency-border overflow-hidden cursor-crosshair group scanline">
+                    <!-- Interactive HUD Canvas (High Performance Aim & Polling rate Sandbox) -->
+                    <div class="relative w-full aspect-[4/3] bg-latency-terminal rounded-xl border border-latency-border overflow-hidden cursor-none group scanline z-10">
                         <canvas id="testCanvas" class="absolute inset-0 w-full h-full block z-10"></canvas>
                         
                         <!-- Interactive Start Overlay -->
@@ -253,7 +282,7 @@
                             </div>
                             <h3 class="text-sm font-bold text-white uppercase tracking-wider">Калибровочный полигон задержки</h3>
                             <p class="text-xs text-latency-textMuted max-w-xs mt-1.5 leading-relaxed">
-                                Запустите калибровку и совершайте <strong class="text-white">непрерывные, хаотичные круговые движения и нажатия</strong> мышью в пределах зоны тестирования.
+                                Запустите калибровку и совершайте <strong class="text-white">непрерывные, хаотичные круговые движения и нажатия</strong> по появляющимся целям на холсте.
                             </p>
                             <button id="btnStartTest" class="mt-5 bg-gradient-to-r from-latency-accent to-latency-cyan hover:opacity-90 text-black font-extrabold text-xs uppercase tracking-widest py-3.5 px-6 rounded-lg transition-all transform active:scale-95 flex items-center gap-2 glow-cyan">
                                 <i class="fa-solid fa-play"></i> Запустить замер (10с)
@@ -287,7 +316,7 @@
             <div class="lg:col-span-3 space-y-6">
                 
                 <!-- Stability Analysis Sparkline Card -->
-                <div class="bg-latency-card border border-latency-border rounded-xl p-5 space-y-4">
+                <div class="glass-panel border border-latency-border rounded-xl p-5 space-y-4 glow-cyan">
                     <h3 class="text-xs font-bold text-latency-cyan uppercase tracking-widest flex items-center gap-2">
                         <i class="fa-solid fa-chart-line"></i> Стабильность частоты опроса
                     </h3>
@@ -325,7 +354,7 @@
                 </div>
 
                 <!-- Final Verification Report Container (Displaces Joke block) -->
-                <div id="verdictBlock" class="bg-gradient-to-br from-latency-card to-latency-terminal border border-latency-border rounded-xl p-5 space-y-4 relative overflow-hidden hidden">
+                <div id="verdictBlock" class="glass-panel border border-latency-border rounded-xl p-5 space-y-4 relative overflow-hidden hidden">
                     <div class="absolute top-0 right-0 -mt-6 -mr-6 w-16 h-16 bg-latency-cyan/5 rounded-full blur-xl"></div>
                     
                     <div class="border-b border-latency-border pb-2.5">
@@ -365,7 +394,7 @@
     </main>
 
     <!-- Detailed Analytical Report Dialog (Modal) -->
-    <div id="verdictModal" class="fixed inset-0 bg-latency-dark/90 flex items-center justify-center p-4 z-50 hidden backdrop-blur-md">
+    <div id="verdictModal" class="fixed inset-0 bg-latency-dark/95 flex items-center justify-center p-4 z-50 hidden backdrop-blur-md">
         <div class="bg-latency-card border border-latency-border rounded-2xl p-6 md:p-8 max-w-xl w-full relative overflow-hidden transition-all duration-300 transform scale-95" id="modalCard">
             <!-- Neon background blur element -->
             <div id="modalGlow" class="absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 rounded-full blur-3xl opacity-20"></div>
@@ -421,7 +450,7 @@
         </div>
     </div>
 
-    <!-- AUDIO CORE IMPLEMENTATION (Clean analytical sine bleeps) -->
+    <!-- AUDIO CORE IMPLEMENTATION -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
@@ -461,6 +490,86 @@
         }
     </script>
 
+    <!-- 3D COSMIC PARTICLES BACKGROUND -->
+    <script>
+        const container = document.getElementById('canvasContainer');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const particleCount = 120;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        const cyanColor = new THREE.Color('#00E5FF');
+        const darkColor = new THREE.Color('#161924');
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 50;
+            positions[i + 1] = (Math.random() - 0.5) * 50;
+            positions[i + 2] = (Math.random() - 0.5) * 50;
+
+            const mixedColor = cyanColor.clone().lerp(darkColor, Math.random() * 0.75);
+            colors[i] = mixedColor.r;
+            colors[i + 1] = mixedColor.g;
+            colors[i + 2] = mixedColor.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.3,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.5,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particleSystem = new THREE.Points(geometry, material);
+        scene.add(particleSystem);
+
+        camera.position.z = 25;
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        window.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) * 0.008;
+            mouseY = (event.clientY - window.innerHeight / 2) * 0.008;
+        });
+
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+
+            targetX += (mouseX - targetX) * 0.05;
+            targetY += (mouseY - targetY) * 0.05;
+
+            camera.position.x = targetX;
+            camera.position.y = -targetY;
+            camera.lookAt(scene.position);
+
+            particleSystem.rotation.y += 0.0006;
+            particleSystem.rotation.x += 0.0003;
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animateThree();
+    </script>
+
     <!-- TELEMETRY AND CANVAS SYSTEM ENGINE -->
     <script>
         // --- Kernel Terminal Logger Output Stream ---
@@ -496,6 +605,12 @@
         let mouseEvents = [];
         let dpcFactor = 0; 
         let sparkHistory = [];
+        
+        // Interactive Aiming targets on canvas
+        let activeTarget = { x: 0, y: 0, r: 12, maxPulse: 20, active: false };
+        let hitRipples = [];
+        let curMouseX = -100;
+        let curMouseY = -100;
 
         // System Congestion simulation keys (secret W keys trigger)
         let isWKeyPressed = false;
@@ -557,13 +672,16 @@
 
         // Mouse handlers inside canvas
         canvas.addEventListener('mousemove', (e) => {
-            if (!isTesting) return;
             const r = canvas.getBoundingClientRect();
+            curMouseX = e.clientX - r.left;
+            curMouseY = e.clientY - r.top;
+
+            if (!isTesting) return;
             mouseEvents.push({
                 t: performance.now(),
                 type: 'move',
-                x: e.clientX - r.left,
-                y: e.clientY - r.top
+                x: curMouseX,
+                y: curMouseY
             });
             
             if (Math.random() < 0.08) {
@@ -573,19 +691,41 @@
 
         canvas.addEventListener('mousedown', (e) => {
             sndClick();
-            if (!isTesting) return;
             const r = canvas.getBoundingClientRect();
             const x = e.clientX - r.left;
             const y = e.clientY - r.top;
+
+            if (!isTesting) return;
+
             mouseEvents.push({
                 t: performance.now(),
                 type: 'click',
                 x: x,
                 y: y
             });
-            ripples.push({ x: x, y: y, radius: 10, alpha: 1.0 });
-            appendLog(`[RAW_LKM] Interrupt IRQ 12 dispatch: Регистрация клика по координате (${Math.round(x)}, ${Math.round(y)})`, 'success');
+
+            // Target click detection
+            if (activeTarget.active) {
+                const dist = Math.hypot(x - activeTarget.x, y - activeTarget.y);
+                if (dist <= activeTarget.r + 15) {
+                    // Success hit! Add explosion ripple
+                    hitRipples.push({ x: activeTarget.x, y: activeTarget.y, radius: activeTarget.r, maxRadius: 35, alpha: 1.0, color: '0, 229, 255' });
+                    appendLog(`[RAW_LKM] Interrupt IRQ 12: Цель поражена! Зарегистрировано прерывание шины за ${Math.round((performance.now() - startTime) % 1000)}ms.`, 'success');
+                    spawnNewTarget();
+                } else {
+                    hitRipples.push({ x: x, y: y, radius: 4, maxRadius: 20, alpha: 0.8, color: '239, 68, 68' });
+                }
+            } else {
+                hitRipples.push({ x: x, y: y, radius: 4, maxRadius: 20, alpha: 0.8, color: '0, 229, 255' });
+            }
         });
+
+        function spawnNewTarget() {
+            activeTarget.x = Math.random() * (canvas.width - 60) + 30;
+            activeTarget.y = Math.random() * (canvas.height - 60) + 30;
+            activeTarget.active = true;
+            activeTarget.r = Math.random() * 4 + 8;
+        }
 
         // --- Sparkline (Oscillating Stability) ---
         function updateSparkline(v) {
@@ -635,16 +775,14 @@
         }
 
         // --- Canvas UI Loop ---
-        let particles = [];
-        let ripples = [];
         let scanX = 0;
 
-        function renderCanvasFrame() {
-            ctx.fillStyle = '#0E1013';
+        function renderChamberFrame() {
+            ctx.fillStyle = '#050608';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Tech sweep lines and circular scopes
-            ctx.strokeStyle = '#181B22';
+            ctx.strokeStyle = '#161924';
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.arc(canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) * 0.35, 0, Math.PI * 2);
@@ -669,7 +807,7 @@
             ctx.fillRect(scanX - 40, 0, 40, canvas.height);
 
             // Draw trails
-            if (mouseEvents.length > 1) {
+            if (isTesting && mouseEvents.length > 1) {
                 ctx.beginPath();
                 ctx.strokeStyle = prankTriggered ? 'rgba(239, 68, 68, 0.25)' : 'rgba(0, 229, 255, 0.25)';
                 ctx.lineWidth = 1.5;
@@ -684,41 +822,79 @@
                 ctx.stroke();
             }
 
-            // Click ripples with telemetry label
-            ripples.forEach((r, idx) => {
-                r.radius += 2.5;
-                r.alpha -= 0.03;
+            // Draw active aiming target (calibration node)
+            if (isTesting && activeTarget.active) {
+                // outer pulsing ring
+                ctx.strokeStyle = 'rgba(0, 229, 255, 0.4)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                let pulseR = activeTarget.r + Math.sin(performance.now() * 0.01) * 4;
+                ctx.arc(activeTarget.x, activeTarget.y, pulseR, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Inner core
+                ctx.beginPath();
+                ctx.arc(activeTarget.x, activeTarget.y, activeTarget.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 229, 255, 0.6)';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = 'rgba(0, 229, 255, 0.5)';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Center dot
+                ctx.beginPath();
+                ctx.arc(activeTarget.x, activeTarget.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+
+                // Vector link line pointing from cursor to node
+                if (curMouseX >= 0 && curMouseY >= 0) {
+                    ctx.strokeStyle = 'rgba(0, 229, 255, 0.05)';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(curMouseX, curMouseY);
+                    ctx.lineTo(activeTarget.x, activeTarget.y);
+                    ctx.stroke();
+                }
+            }
+
+            // Click explosion ripples with telemetry labels
+            hitRipples.forEach((r, idx) => {
+                r.radius += 2.0;
+                r.alpha -= 0.04;
                 if (r.alpha <= 0) {
-                    ripples.splice(idx, 1);
+                    hitRipples.splice(idx, 1);
                     return;
                 }
                 ctx.beginPath();
                 ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(${prankTriggered ? '239, 68, 68' : '0, 229, 255'}, ${r.alpha})`;
+                ctx.strokeStyle = `rgba(${r.color}, ${r.alpha})`;
                 ctx.lineWidth = 1;
                 ctx.stroke();
 
                 ctx.fillStyle = `rgba(107, 114, 128, ${r.alpha})`;
                 ctx.font = '9px "Share Tech Mono"';
-                ctx.fillText(`CAPTURE_O_SET: [${Math.round(r.x)}, ${Math.round(r.y)}]`, r.x + r.radius + 6, r.y - 4);
+                ctx.fillText(`HIT_O_SET: [${Math.round(r.x)}, ${Math.round(r.y)}]`, r.x + r.radius + 6, r.y - 4);
             });
 
-            // Particles logic
-            particles.forEach((p, idx) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.alpha -= 0.015;
-                if (p.alpha <= 0) {
-                    particles.splice(idx, 1);
-                    return;
-                }
+            // Dynamic mouse crosshair
+            if (curMouseX >= 0 && curMouseY >= 0) {
+                ctx.strokeStyle = prankTriggered ? 'rgba(239, 68, 68, 0.3)' : 'rgba(0, 229, 255, 0.3)';
+                ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${prankTriggered ? '239, 68, 68' : '0, 229, 255'}, ${p.alpha})`;
-                ctx.fill();
-            });
+                ctx.moveTo(curMouseX, curMouseY - 10);
+                ctx.lineTo(curMouseX, curMouseY + 10);
+                ctx.moveTo(curMouseX - 10, curMouseY);
+                ctx.lineTo(curMouseX + 10, curMouseY);
+                ctx.stroke();
 
-            // Active calibration indicator overlay
+                ctx.beginPath();
+                ctx.arc(curMouseX, curMouseY, 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = prankTriggered ? '#ef4444' : '#00E5FF';
+                ctx.fill();
+            }
+
+            // Active calibration indicators overlay
             if (isTesting) {
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
                 ctx.font = '10px "Share Tech Mono"';
@@ -733,9 +909,9 @@
                 }
             }
 
-            requestAnimationFrame(renderCanvasFrame);
+            requestAnimationFrame(renderChamberFrame);
         }
-        requestAnimationFrame(renderCanvasFrame);
+        requestAnimationFrame(renderChamberFrame);
 
         // Core Live frequency updater
         let lastEventCount = 0;
@@ -757,7 +933,7 @@
                 document.getElementById('valAvgPoll').innerText = `${simHz > 0 ? simHz : 1000} Hz`;
                 
                 const jitterSeed = prankTriggered ? (24.1 + Math.random() * 8.5) : (0.08 + (dpcFactor / 22) + Math.random() * 0.15);
-                document.getElementById('valJitter').innerText = `${jitterSeed.toFixed(2)} ms`;
+                document.getElementById('liveHzVal').innerText = `${simHz} Hz`;
                 document.getElementById('currentJitterText').innerText = `${jitterSeed.toFixed(2)} ms`;
                 updateSparkline(jitterSeed * 10);
             }
@@ -796,6 +972,10 @@
             statusHeader.innerText = "ИДЕТ ЗАПИСЬ ПОТОКА...";
             statusSubheader.innerText = "Регистрируем физические перемещения мыши";
 
+            // Spawn first aim target on high-tech canvas
+            spawnParticles();
+            spawnAimTarget();
+
             // Reset indicators
             document.getElementById('valTotalLag').innerText = "-- ms";
             document.getElementById('valTotalLag').className = "font-bold text-latency-cyan text-sm";
@@ -831,10 +1011,18 @@
             // End test run
             setTimeout(() => {
                 isTesting = false;
+                clearInterval(pInterval);
                 clearInterval(prankCheck);
                 processDiagnosticsResults();
             }, testDuration);
         });
+
+        function spawnAimTarget() {
+            activeTarget.x = Math.random() * (canvas.width - 80) + 40;
+            activeTarget.y = Math.random() * (canvas.height - 80) + 40;
+            activeTarget.active = true;
+            activeTarget.r = Math.random() * 4 + 8;
+        }
 
         // --- Processing Results ---
         function processDiagnosticsResults() {
@@ -918,6 +1106,7 @@
             // Update DOM Elements
             document.getElementById('valAvgPoll').innerText = `${avgHz > 0 ? avgHz : 1000} Hz`;
             document.getElementById('valTimerLag').innerText = `${(computedLag * 0.12).toFixed(2)} ms`;
+            document.getElementById('valJitter').innerText = document.getElementById('currentJitterText').innerText;
             
             const totalLagElem = document.getElementById('valTotalLag');
             totalLagElem.innerText = `${computedLag.toFixed(2)} ms`;
@@ -957,7 +1146,6 @@
             mBadge.className = `w-28 h-28 rounded-2xl flex items-center justify-center text-5xl shadow-lg border relative ${badgeStyle}`;
             mBadge.innerHTML = iconCode;
 
-            // Crown / Trophy element display toggling based on rating
             const mCrown = document.getElementById('modalCrown');
             if (computedLag < 5.0) {
                 mCrown.classList.remove('hidden');
@@ -966,7 +1154,6 @@
                 mCrown.classList.add('hidden');
             }
 
-            // Glowing nodes
             const mGlow = document.getElementById('modalGlow');
             if (computedLag < 5.0) mGlow.className = "absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 rounded-full blur-3xl opacity-20 bg-cyan-500";
             else if (computedLag < 15.0) mGlow.className = "absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 rounded-full blur-3xl opacity-20 bg-blue-500";
@@ -994,6 +1181,28 @@
 
         btnCloseModal.addEventListener('click', closeModal);
         btnModalCloseOk.addEventListener('click', closeModal);
+
+        // 3D card interactive tilt handler
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                
+                const rotateY = ((x - xc) / xc) * 5; 
+                const rotateX = -((y - yc) / yc) * 5; 
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
     </script>
 </body>
 </html>
