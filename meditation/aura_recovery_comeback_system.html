@@ -121,7 +121,12 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
+                <!-- Back to Hub Button -->
+                <a href="../index.html" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-purple/40 hover:text-white transition-all text-xs flex items-center space-x-2">
+                    <i class="fa-solid fa-arrow-left text-brand-purple"></i>
+                    <span class="font-mono text-gray-300">В ХАБ</span>
+                </a>
                 <button id="toggleAudioBtn" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-purple/40 transition-all text-xs flex items-center space-x-2">
                     <i id="audioIcon" class="fas fa-volume-high text-brand-purple"></i>
                     <span class="font-mono text-gray-300">БИНАУРАЛЬНЫЕ ВОЛНЫ: ВКЛ</span>
@@ -907,7 +912,13 @@
         }
 
         btnCloseModal.addEventListener('click', closeModal);
-        btnModalCloseOk.addEventListener('click', closeModal);
+        btnModalCloseOk.addEventListener('click', () => {
+            closeModal();
+            // Redirect straight to main hub on success comeback ok trigger
+            setTimeout(() => {
+                window.location.href = "../index.html";
+            }, 150);
+        });
     </script>
 </body>
 </html>
