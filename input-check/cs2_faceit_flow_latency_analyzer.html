@@ -113,6 +113,11 @@
             </div>
             
             <div class="flex items-center gap-3">
+                <!-- Back to Hub Button -->
+                <a href="../index.html" class="px-3 py-1.5 rounded bg-latency-card/80 border border-latency-border hover:border-latency-cyan/40 hover:text-white transition-all text-xs flex items-center space-x-2 mr-2">
+                    <i class="fa-solid fa-arrow-left text-latency-cyan"></i>
+                    <span class="font-mono text-gray-300">В ХАБ</span>
+                </a>
                 <div class="text-xs font-mono text-right hidden sm:block">
                     <div class="text-white font-semibold">HPET Reference Frequency</div>
                     <div class="text-latency-cyan">10.0000 MHz (Active)</div>
@@ -458,25 +463,6 @@
 
     <!-- TELEMETRY AND CANVAS SYSTEM ENGINE -->
     <script>
-        // Copy Mechanism
-        function copyCode() {
-            const codeText = document.getElementById('codeArea').innerText;
-            const textarea = document.createElement('textarea');
-            textarea.value = codeText;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            
-            const btn = document.querySelector('[onclick="copyCode()"]');
-            btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Скопировано!';
-            btn.classList.add('bg-green-600');
-            setTimeout(() => {
-                btn.innerHTML = '<i class="fa-solid fa-copy"></i> Копировать код драйвера';
-                btn.classList.remove('bg-green-600');
-            }, 2000);
-        }
-
         // --- Kernel Terminal Logger Output Stream ---
         const terminalBody = document.getElementById('terminalBody');
         const dpcSlider = document.getElementById('rngDpcLoad');
