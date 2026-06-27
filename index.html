@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FACEIT HUB </title>
+    <title>FACEIT HUB</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -15,7 +15,7 @@
     <!-- Three.js Library for 3D Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- STREAMING_CHUNK: Setting up Tailwind configuration and custom colors -->
+    <!-- STREAMING_CHUNK: Configuring Tailwind theme variables and luxury colors -->
     <script>
         tailwind.config = {
             theme: {
@@ -44,7 +44,7 @@
         }
     </script>
     
-    <!-- STREAMING_CHUNK: Designing hardware-accelerated CSS animations and styles -->
+    <!-- STREAMING_CHUNK: Designing hardware-accelerated CSS animations, glow states, and transitions -->
     <style>
         body {
             background-color: #040507;
@@ -109,7 +109,7 @@
     </div>
 
     <!-- MAIN COCKPIT HEADER -->
-    <!-- STREAMING_CHUNK: Rendering high-end cockpit header layout with minimal components -->
+    <!-- STREAMING_CHUNK: Rendering minimal header without vague descriptions -->
     <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             
@@ -124,12 +124,11 @@
                         <h1 class="text-xl font-extrabold tracking-tighter text-white uppercase">
                             FACEIT <span class="text-brand-purple">HUB</span>
                         </h1>
-                        
                     </div>
                 </div>
             </div>
             
-            <!-- Right Header: Just audio modulator pop -->
+            <!-- Right Header: Audio modulator switch -->
             <div class="flex items-center gap-4">
                 <button id="toggleAudioBtn" class="px-3.5 py-2.5 rounded-xl bg-brand-border/60 border border-brand-border hover:border-brand-purple/40 transition-all text-xs flex items-center space-x-2">
                     <i id="audioIcon" class="fas fa-volume-high text-brand-purple"></i>
@@ -139,7 +138,7 @@
         </div>
     </header>
 
-    <!-- STREAMING_CHUNK: Building core grid dashboard viewport using safe CSS animation -->
+    <!-- STREAMING_CHUNK: Designing main dashboard layout structure and precise metrics grids -->
     <!-- MAIN CENTRAL VIEWPORT CONTAINER (PURE CSS TRANSITION TO AVOID LOCKS) -->
     <main id="mainViewport" class="animate-viewport flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
         
@@ -167,7 +166,7 @@
                     </div>
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col justify-between">
                         <span class="text-[9px] uppercase text-brand-textMuted font-bold tracking-wider">Кадры Рендера</span>
-                        <span class="text-xs sm:text-sm font-bold text-brand-purple mt-1 font-mono">~67 FPS (Stable)</span>
+                        <span class="text-xs sm:text-sm font-bold text-brand-purple mt-1 font-mono">~360 FPS (Stable)</span>
                     </div>
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col justify-between">
                         <span class="text-[9px] uppercase text-brand-textMuted font-bold tracking-wider">Шина ввода USB</span>
@@ -207,7 +206,7 @@
             </div>
         </div>
 
-        <!-- STREAMING_CHUNK: Integrating tool anchors with responsive hover effects -->
+        <!-- STREAMING_CHUNK: Generating individual subproject access card links with tight premium fonts -->
         <!-- SUBPROJECTS CARDS GRID -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
@@ -217,10 +216,10 @@
                 
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
-                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl transition-all duration-500 cubic-bezier(0.25, 1, 0.5, 1) group-hover:scale-110 group-hover:rotate-6">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                         </div>
-                        <span class="text-[9px] font-mono text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20 font-bold tracking-widest uppercase">AURA HUD</span>
+                        <span class="text-[9px] font-mono text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20 font-bold tracking-widest uppercase font-mono">AURA HUD</span>
                     </div>
 
                     <div>
@@ -243,14 +242,14 @@
                 
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
-                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-brand-cyan text-xl group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-brand-cyan text-xl transition-all duration-500 cubic-bezier(0.25, 1, 0.5, 1) group-hover:scale-110 group-hover:rotate-6">
                             <i class="fa-solid fa-microchip"></i>
                         </div>
-                        <span class="text-[9px] font-mono text-brand-cyan bg-brand-cyan/10 px-2.5 py-1 rounded-full border border-brand-cyan/20 font-bold tracking-widest uppercase">FLOW REGISTRY</span>
+                        <span class="text-[9px] font-mono text-brand-cyan bg-brand-cyan/10 px-2.5 py-1 rounded-full border border-brand-cyan/20 font-bold tracking-widest uppercase font-mono">FLOW REGISTRY</span>
                     </div>
 
                     <div>
-                        <h3 class="text-base font-bold text-white uppercase tracking-tight group-hover:text-brand-cyan transition-colors">Проверка Инпута</h3>
+                        <h3 class="text-base font-extrabold text-white uppercase tracking-tight group-hover:text-brand-cyan transition-colors">Проверка Инпута</h3>
                         <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed font-medium">
                             Аппаратный замер задержки и анализ стабильности опроса USB на уровне ядра ОС. Проверка джиттера по таймеру HPET.
                         </p>
@@ -259,7 +258,7 @@
 
                 <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
                     <span class="group-hover:text-brand-cyan transition-colors"><i class="fa-solid fa-wave-sine mr-1.5 text-[8px]"></i> Realtime QPC замеры</span>
-                    <span class="text-brand-cyan group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                    <span class="text-brand-cyan group-hover:translate-x-1 transition-transform font-bold">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
                 </div>
             </a>
 
@@ -269,14 +268,14 @@
                 
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
-                        <div class="w-12 h-12 rounded-xl bg-brand-orange/10 border border-brand-orange/30 flex items-center justify-center text-brand-orange text-xl group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-xl bg-brand-orange/10 border border-brand-orange/30 flex items-center justify-center text-brand-orange text-xl transition-all duration-500 cubic-bezier(0.25, 1, 0.5, 1) group-hover:scale-110 group-hover:rotate-6">
                             <i class="fa-solid fa-bolt-lightning"></i>
                         </div>
-                        <span class="text-[9px] font-mono text-brand-orange bg-brand-orange/10 px-2.5 py-1 rounded-full border border-brand-orange/20 font-bold tracking-widest uppercase">T.A.D.S</span>
+                        <span class="text-[9px] font-mono text-brand-orange bg-brand-orange/10 px-2.5 py-1 rounded-full border border-brand-orange/20 font-bold tracking-widest uppercase font-mono">T.A.D.S</span>
                     </div>
 
                     <div>
-                        <h3 class="text-base font-bold text-white uppercase tracking-wider group-hover:text-brand-orange transition-colors">Генератор Отмазок</h3>
+                        <h3 class="text-base font-extrabold text-white uppercase tracking-tight group-hover:text-brand-orange transition-colors">Генератор Отмазок</h3>
                         <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed font-medium">
                             Тактическая дешифрация железобетонных оправданий для FACEIT-чата. Встроенные авто-бинды для игровой консоли CS2.
                         </p>
@@ -285,7 +284,7 @@
 
                 <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
                     <span class="group-hover:text-brand-orange transition-colors"><i class="fa-solid fa-shield-halved mr-1.5 text-[8px]"></i> 5 уровней усложнения</span>
-                    <span class="text-brand-orange group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                    <span class="text-brand-orange group-hover:translate-x-1 transition-transform font-bold">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
                 </div>
             </a>
 
@@ -295,14 +294,14 @@
                 
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
-                        <div class="w-12 h-12 rounded-xl bg-brand-red/10 border border-brand-red/30 flex items-center justify-center text-brand-red text-xl group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-xl bg-brand-red/10 border border-brand-red/30 flex items-center justify-center text-brand-red text-xl transition-all duration-500 cubic-bezier(0.25, 1, 0.5, 1) group-hover:scale-110 group-hover:rotate-6">
                             <i class="fa-solid fa-brain"></i>
                         </div>
-                        <span class="text-[9px] font-mono text-brand-red bg-brand-red/10 px-2.5 py-1 rounded-full border border-brand-red/20 font-bold tracking-widest uppercase">N.R.S LABS</span>
+                        <span class="text-[9px] font-mono text-brand-red bg-brand-red/10 px-2.5 py-1 rounded-full border border-brand-red/20 font-bold tracking-widest uppercase font-mono">N.R.S LABS</span>
                     </div>
 
                     <div>
-                        <h3 class="text-base font-bold text-white uppercase tracking-wider group-hover:text-brand-red transition-colors">Нейро-Медитация</h3>
+                        <h3 class="text-base font-extrabold text-white uppercase tracking-tight group-hover:text-brand-red transition-colors">Нейро-Медитация</h3>
                         <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed font-medium">
                             Аппаратное снятие мышечной зажатости кистей и пальцев, калибровка внимания под аккомпанемент бинауральных волн.
                         </p>
@@ -311,13 +310,13 @@
 
                 <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
                     <span class="group-hover:text-brand-red transition-colors"><i class="fa-solid fa-headset mr-1.5 text-[8px]"></i> Delta/Theta модуляция</span>
-                    <span class="text-brand-red group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                    <span class="text-brand-red group-hover:translate-x-1 transition-transform font-bold">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
                 </div>
             </a>
 
         </div>
 
-        <!-- STREAMING_CHUNK: Integrating Jitter and Reflex reaction modules into grid columns -->
+        <!-- STREAMING_CHUNK: Instantiating real-time charts and reaction game blocks in dashboard layout -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             <!-- Real-time Network Jitter Oscilloscope -->
@@ -348,7 +347,7 @@
                     
                     <!-- Real-Time High-score display -->
                     <div class="flex items-center gap-2 font-mono text-[9px] text-yellow-400 bg-yellow-400/10 px-2.5 py-0.5 rounded-full border border-yellow-400/20 uppercase font-semibold">
-                        <i class="fa-solid fa-crown animate-pulse"></i> Рекорд: <span id="reactionPbText" class="font-bold text-white">--- ms</span>
+                        <i class="fa-solid fa-crown animate-pulse"></i> Рекорд: <span id="reactionPbText" class="font-bold text-white font-mono">--- ms</span>
                     </div>
                 </div>
                 
@@ -368,7 +367,7 @@
 
     <!-- FOOTER WITH LAB STATUS -->
     <footer class="w-full max-w-7xl mx-auto px-6 py-4 border-t border-brand-border/40 bg-brand-dark/80 backdrop-blur flex flex-col md:flex-row justify-between items-center gap-4 text-center z-10">
-        <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider">
+        <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider font-semibold">
             © 2026 FACEIT HUB
         </span>
         <div class="flex space-x-6 text-[10px] font-mono tracking-widest text-brand-textMuted">
@@ -518,7 +517,7 @@
         });
     </script>
 
-    <!-- STREAMING_CHUNK: Instantiating Three.js 3D starry constellations scene back -->
+    <!-- STREAMING_CHUNK: Instantiating Three.js 3D starry constellations scene background -->
     <script>
         let starSystem, lines;
         try {
@@ -644,7 +643,7 @@
         }
     </script>
 
-    <!-- STREAMING_CHUNK: Coding card 3D tilt behaviors and smooth loading transitions -->
+    <!-- STREAMING_CHUNK: Coding card 3D tilt behaviors and smooth loading transitions with responsive interpolation -->
     <!-- INTERACTIVE 3D TILT CARDS & SMOOTH PAGE TRANSITIONS -->
     <script>
         const cards = document.querySelectorAll('.tilt-card');
@@ -666,9 +665,12 @@
                 const xc = rect.width / 2;
                 const yc = rect.height / 2;
                 
+                // Buttery-smooth, low-latency tracking angles
                 const rotateY = ((x - xc) / xc) * 8; 
                 const rotateX = -((y - yc) / yc) * 8; 
                 
+                // Damping micro-jitter on mouse movement with a tight transition
+                card.style.transition = 'transform 0.08s ease-out, box-shadow 0.2s ease, border-color 0.2s ease';
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             });
 
@@ -681,6 +683,8 @@
             });
 
             card.addEventListener('mouseleave', () => {
+                // Spring smoothly back to rest state on mouse leave
+                card.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, border-color 0.3s ease';
                 card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
             });
 
@@ -814,7 +818,7 @@
         window.addEventListener('resize', resizeRxCanvas);
         resizeRxCanvas();
 
-        // Safe high-score loading using storage protection
+        // Local high-score loading
         let personalBest = safeStorage.getItem('hub_reaction_pb');
         if (personalBest) {
             document.getElementById('reactionPbText').textContent = `${personalBest} ms`;
@@ -1026,6 +1030,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             startAmbientDrone();
             animateQuantumLogo(); // Run quantum core canvas loop
+            
+            // --- GENTLE PAGE FADE-IN TRANSITION ---
+            const viewport = document.getElementById('mainViewport');
+            if (viewport) {
+                viewport.classList.remove('scale-95', 'opacity-0');
+                viewport.classList.add('scale-100', 'opacity-100');
+            }
             
             // Initialization entry audio chime
             setTimeout(() => {
