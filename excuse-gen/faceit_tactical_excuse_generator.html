@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tactical Alibi Deployment System (T.A.D.S)</title>
+    <title>FACEIT Tactical Excuse Generator // T.A.D.S</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js Library for 3D Cosmic Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -19,16 +21,17 @@
                 extend: {
                     colors: {
                         brand: {
-                            orange: '#FF5500',
-                            orangeHover: '#E04B00',
-                            dark: '#08090C',
-                            card: '#11131A',
+                            dark: '#040507',
+                            card: '#0c0e14',
                             border: '#1E212B',
                             lightBorder: '#2E3342',
-                            textMuted: '#8A92A6',
-                            terminal: '#050608',
+                            textMuted: '#64748b',
+                            purple: '#8B5CF6',
+                            orange: '#FF5500',
+                            orangeHover: '#E04B00',
                             cyan: '#00E5FF',
-                            accentRed: '#EF4444'
+                            accentRed: '#EF4444',
+                            emerald: '#10B981'
                         }
                     },
                     fontFamily: {
@@ -42,38 +45,60 @@
     </script>
     <style>
         body {
-            background-color: #08090C;
+            background-color: #040507;
             color: #E2E8F0;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
+        
+        /* Premium tactical glowing effects */
+        .glass-panel {
+            background: rgba(12, 14, 20, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 85, 0, 0.25);
+        }
+        
         .glow-orange {
-            box-shadow: 0 0 25px rgba(255, 85, 0, 0.15);
-        }
-        .glow-orange-bright {
-            box-shadow: 0 0 35px rgba(255, 85, 0, 0.35);
-        }
-        .glow-cyan {
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.15);
-        }
-        .glow-red {
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 35px rgba(255, 85, 0, 0.15);
         }
         .text-neon-orange {
-            text-shadow: 0 0 8px rgba(255, 85, 0, 0.6);
+            text-shadow: 0 0 10px rgba(255, 85, 0, 0.7);
         }
+        
+        /* 3D card tilt effect transition */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        
         .bg-grid-dark {
             background-size: 50px 50px;
             background-image: 
-                linear-gradient(to right, rgba(255, 85, 0, 0.01) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 85, 0, 0.01) 1px, transparent 1px);
+                linear-gradient(to right, rgba(255, 85, 0, 0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 85, 0, 0.015) 1px, transparent 1px);
         }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(255, 85, 0, 0) 0%, rgba(255, 85, 0, 0.015) 10%, rgba(255, 85, 0, 0) 20%);
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #08090C;
+            background: #040507;
         }
         ::-webkit-scrollbar-thumb {
             background: #1E212B;
@@ -82,44 +107,34 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #FF5500;
         }
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-        /* Scanline container is now static and ultra-subtle only for background */
-        .noise-overlay {
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.012;
-        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-brand-orange selection:text-black bg-grid-dark relative">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-orange selection:text-black bg-grid-dark relative scanline">
 
-    <!-- Subtle military noise pattern -->
-    <div class="absolute inset-0 noise-overlay pointer-events-none z-0"></div>
+    <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
 
     <!-- Main Header -->
-    <header class="border-b border-brand-border bg-brand-card/95 backdrop-blur sticky top-0 z-40 px-6 py-4">
+    <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <div class="relative">
                     <div class="bg-gradient-to-br from-neutral-800 to-brand-orange p-2.5 rounded-lg text-white font-black text-xl tracking-tight leading-none glow-orange">
                         <i class="fa-solid fa-bolt-lightning"></i>
                     </div>
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-orange border-2 border-brand-card rounded-full animate-ping"></div>
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-orange border-2 border-brand-dark rounded-full animate-ping"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-base font-black tracking-wider uppercase text-white">
                             TACTICAL ALIBI DEPLOYMENT <span class="text-brand-orange">SYSTEM (T.A.D.S)</span>
                         </h1>
-                        <span class="text-[9px] bg-brand-orange/10 text-brand-orange border border-brand-orange/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">SECURE PRO v5.0</span>
+                        <span class="text-[9px] bg-brand-orange/15 text-brand-orange border border-brand-orange/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">SECURE PRO v5.1</span>
                     </div>
                     <p class="text-xs text-brand-textMuted flex items-center gap-1.5">
-                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-orange"></span>
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse"></span>
                         Модуль маскировки тильта: <span class="font-mono text-gray-300">ANTI_TILT_CORE.dll</span>
                         <span class="mx-1 text-brand-border">|</span>
-                        Канал связи: <span class="text-gray-300">Clean Professional Spectrum</span>
+                        Канал связи: <span class="text-emerald-400 font-bold uppercase font-mono tracking-tight animate-pulse">CLEAN SPECTRUM</span>
                     </p>
                 </div>
             </div>
@@ -132,7 +147,7 @@
                 </a>
                 <button id="toggleAudioBtn" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-orange/40 transition-all text-xs flex items-center space-x-2">
                     <i id="audioIcon" class="fas fa-volume-high text-brand-orange"></i>
-                    <span class="font-mono text-gray-300">ЗВУКОВЫЕ ЭФФЕКТЫ: ВКЛ</span>
+                    <span class="font-mono text-gray-300 hidden md:inline">ЗВУК СИСТЕМЫ: ВКЛ</span>
                 </button>
             </div>
         </div>
@@ -142,7 +157,7 @@
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
 
         <!-- Calibration Notice and Protocol Info -->
-        <div class="bg-brand-card border border-brand-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="glass-panel border border-brand-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex gap-3">
                 <div class="text-brand-orange text-xl mt-0.5"><i class="fa-solid fa-shield-halved"></i></div>
                 <div>
@@ -150,7 +165,7 @@
                         Протокол генерации алиби для подавления критики в чате FACEIT
                     </h4>
                     <p class="text-xs text-brand-textMuted max-w-4xl">
-                        Инструмент генерирует верифицированные и термостойкие оправдания для покрытия любых технических, физиологических, ментальных или квантовых провалов в катке. Выберите целевую категорию и уровень деградации геймплея.
+                        Инструмент генерирует верифицированные и термостойкие оправдания для покрытия любых технических, физиологических или квантовых провалов в катке. Выберите целевую категорию и уровень деградации геймплея. Каждое нажатие кнопки генерирует уникальный случайный ответ из расширенной базы данных!
                     </p>
                 </div>
             </div>
@@ -165,12 +180,12 @@
             
             <!-- Left Panel: Parameter tuning -->
             <div class="lg:col-span-5 space-y-6">
-                <div class="bg-brand-card border border-brand-border rounded-xl p-5 space-y-6">
+                <div class="glass-panel border border-brand-border rounded-2xl p-5 space-y-6 tilt-card glow-orange" id="panelSettings">
                     <div class="flex justify-between items-center border-b border-brand-border pb-3">
                         <h3 class="text-xs font-bold text-brand-orange uppercase tracking-widest flex items-center gap-2">
                             <i class="fa-solid fa-sliders"></i> Параметры Алиби
                         </h3>
-                        <span class="text-[10px] font-mono text-brand-orange bg-brand-orange/10 px-2 py-0.5 rounded border border-brand-orange/20">CONFIGURATOR</span>
+                        <span class="text-[9px] font-mono text-brand-orange bg-brand-orange/10 px-2 py-0.5 rounded border border-brand-orange/20">CONFIGURATOR</span>
                     </div>
 
                     <!-- Alibi Categories -->
@@ -178,7 +193,7 @@
                         <h4 class="text-xs font-bold text-white uppercase tracking-wider">Тип Маскировки (Категория):</h4>
                         <div class="grid grid-cols-2 gap-2">
                             <button onclick="selectCategory('realistic')" id="cat_realistic" class="cat-btn active py-2.5 px-3 rounded-lg border text-xs font-semibold flex items-center justify-between transition-all bg-brand-orange/5 border-brand-orange text-white">
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-shield-halved"></i> Реалистичная</span>
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-brand-orange"></i> Реалистичная</span>
                                 <i class="fa-solid fa-circle-check text-[10px] text-brand-orange"></i>
                             </button>
                             <button onclick="selectCategory('toxic')" id="cat_toxic" class="cat-btn py-2.5 px-3 rounded-lg border border-brand-border hover:border-brand-lightBorder text-brand-textMuted hover:text-white text-xs font-semibold flex items-center justify-between transition-all bg-transparent">
@@ -200,10 +215,10 @@
                     <div class="space-y-3 pt-2">
                         <div class="flex justify-between text-xs font-mono">
                             <span class="text-brand-textMuted uppercase tracking-wider">Градус безумия / Уровень отмазки:</span>
-                            <span id="severityLabel" class="text-brand-orange font-black uppercase">Уровень 1</span>
+                            <span id="severityLabel" class="text-brand-orange font-black uppercase">Уровень 1 (Простая отмазка)</span>
                         </div>
                         <input type="range" id="rngSeverity" min="1" max="5" value="1" 
-                               class="w-full h-1.5 bg-brand-terminal rounded-lg appearance-none cursor-pointer accent-brand-orange">
+                               class="w-full h-1.5 bg-brand-dark rounded-lg appearance-none cursor-pointer accent-brand-orange">
                         <div class="text-[10px] text-brand-textMuted flex items-center gap-1.5 font-mono leading-relaxed">
                             <i class="fa-solid fa-circle-info"></i> Повышение уровня усложняет структуру оправдания, добавляя больше деталей и жесткости.
                         </div>
@@ -216,10 +231,10 @@
                 </div>
 
                 <!-- Panic Dodge Assistant Widget -->
-                <div class="bg-brand-card border border-brand-border rounded-xl p-5 space-y-4">
+                <div class="glass-panel border border-brand-border rounded-xl p-5 space-y-4 tilt-card">
                     <div class="flex justify-between items-center border-b border-brand-border pb-3">
                         <h3 class="text-xs font-bold text-brand-accentRed uppercase tracking-widest flex items-center gap-2">
-                            <i class="fa-solid fa-triangle-exclamation text-brand-accentRed animate-pulse"></i> Срочный Додж-Помощник
+                            <i class="fa-solid fa-triangle-exclamation"></i> Срочный Додж-Помощник
                         </h3>
                         <span class="text-[10px] font-mono text-brand-accentRed bg-brand-accentRed/10 px-2 py-0.5 rounded border border-brand-accentRed/20">EMERGENCY</span>
                     </div>
@@ -228,7 +243,7 @@
                         Нужно срочно отменить матч на стадии вето или пика карт, не получив репорты за трусость? Сгенерируйте паническую причину мгновенного выхода из игры.
                     </p>
 
-                    <button id="btnPanicDodge" class="w-full py-2.5 bg-brand-accentRed/10 hover:bg-brand-accentRed/20 border border-brand-accentRed/50 hover:border-brand-accentRed text-brand-accentRed font-extrabold text-xs uppercase tracking-widest rounded-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2">
+                    <button id="btnPanicDodge" class="w-full py-2.5 bg-brand-accentRed/10 hover:bg-brand-accentRed/20 border border-brand-accentRed/50 text-brand-accentRed font-extrabold rounded-lg text-xs uppercase tracking-widest transition-all transform active:scale-[0.98] flex items-center justify-center gap-2">
                         <i class="fa-solid fa-door-open"></i> СГЕНЕРИРОВАТЬ ПРИЧИНУ ДЛЯ ДОДЖА
                     </button>
                 </div>
@@ -237,7 +252,7 @@
             <!-- Right Panel: High-tech decryption output terminal -->
             <div class="lg:col-span-7 flex flex-col gap-6">
                 
-                <div class="bg-brand-card border border-brand-border rounded-xl p-6 flex-grow flex flex-col gap-4 relative overflow-hidden">
+                <div class="glass-panel border border-brand-border rounded-xl p-6 flex-grow flex flex-col gap-4 relative overflow-hidden tilt-card glow-orange" id="panelOutput">
                     
                     <!-- Decryption Header -->
                     <div class="flex justify-between items-center border-b border-brand-border pb-3 z-10 relative">
@@ -253,14 +268,14 @@
                         </div>
                         
                         <!-- Dynamic bind key configurator -->
-                        <div class="bg-brand-terminal border border-brand-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-2">
+                        <div class="bg-brand-dark/80 border border-brand-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-2">
                             <span class="text-brand-textMuted uppercase">Клавиша:</span>
                             <input type="text" id="bindKeyInput" value="F" maxlength="8" class="w-12 bg-transparent border-b border-brand-lightBorder hover:border-brand-orange focus:border-brand-orange text-center font-bold text-brand-orange focus:outline-none uppercase transition-all">
                         </div>
                     </div>
 
                     <!-- Live terminal screen for typewriter decrypt outputs -->
-                    <div class="flex-grow bg-brand-terminal border border-brand-border p-5 rounded-xl relative overflow-hidden flex flex-col justify-between min-h-[320px]">
+                    <div class="flex-grow bg-brand-dark/95 border border-brand-border p-5 rounded-xl relative overflow-hidden flex flex-col justify-between min-h-[320px]">
                         
                         <div class="space-y-4 font-mono text-xs text-brand-orange z-10 relative select-text">
                             <!-- Status bar -->
@@ -272,7 +287,7 @@
                             <!-- Generated excuse block -->
                             <div class="space-y-3">
                                 <div class="text-[11px] text-brand-orange/90 tracking-wider uppercase font-extrabold">&gt;&gt; РАСШИФРОВАННЫЙ ТЕКСТ ОТМАЗКИ:</div>
-                                <p id="excuseOutputText" class="text-base sm:text-lg font-bold text-white leading-relaxed border-l-3 border-brand-orange pl-4">
+                                <p id="excuseOutputText" class="text-base sm:text-lg font-bold text-white leading-relaxed border-l-3 border-brand-orange pl-4 text-neon-orange">
                                     "Инициируйте процедуру генерации, выбрав нужный класс и градус безумия. Тактическое оправдание будет скомпилировано в реальном времени."
                                 </p>
                             </div>
@@ -281,7 +296,7 @@
                             <div class="space-y-2.5 pt-4 border-t border-brand-border/40">
                                 <div class="flex justify-between items-center">
                                     <span class="text-[11px] text-brand-orange/90 tracking-wider uppercase font-extrabold">&gt;&gt; ГОТОВАЯ КОМАНДА ДЛЯ КОНСОЛИ CS2:</span>
-                                    <span class="text-[9px] bg-brand-orange/10 text-brand-orange px-1.5 py-0.5 rounded border border-brand-orange/20 font-bold uppercase">AUTO-BIND</span>
+                                    <span class="text-[9px] bg-brand-orange/15 text-brand-orange px-1.5 py-0.5 rounded border border-brand-orange/30 font-bold uppercase">AUTO-BIND</span>
                                 </div>
                                 <div class="p-4 bg-black/90 border border-brand-lightBorder rounded-lg font-code text-xs text-neutral-200 leading-normal flex justify-between items-center gap-3 overflow-x-auto select-all">
                                     <span id="consoleBindOutput" class="text-neutral-200 font-mono tracking-wide">bind "F" "say_team Да блин у меня..."</span>
@@ -300,7 +315,7 @@
 
                     <!-- Fast copy / share hub -->
                     <div class="grid grid-cols-2 gap-3 z-10 relative">
-                        <button onclick="copyToClipboard('excuseOutputText', 'Отмазка скопирована!'))" class="py-2.5 bg-brand-orange/5 hover:bg-brand-orange/10 border border-brand-border hover:border-brand-orange/40 text-white font-bold rounded-lg text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                        <button onclick="copyToClipboard('excuseOutputText', 'Отмазка скопирована!')" class="py-2.5 bg-brand-orange/5 hover:bg-brand-orange/10 border border-brand-border hover:border-brand-orange/40 text-white font-bold rounded-lg text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2">
                             <i class="fa-regular fa-clipboard"></i> Копировать отмазку
                         </button>
                         <button id="btnSpamChat" onclick="shareExcuse()" class="py-2.5 bg-gradient-to-r from-brand-orange to-red-600 text-white font-extrabold rounded-lg text-xs uppercase tracking-wider transition-all hover:opacity-90 flex items-center justify-center gap-2 shadow-lg shadow-brand-orange/10">
@@ -333,6 +348,17 @@
         </div>
 
     </main>
+
+    <!-- FOOTER WITH LAB STATUS -->
+    <footer class="w-full max-w-7xl mx-auto px-6 py-4 border-t border-brand-border/40 bg-brand-dark/80 backdrop-blur flex flex-col md:flex-row justify-between items-center gap-4 text-center z-10">
+        <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider">
+            © 2026 FACEIT TACTICAL COCKPIT // T.A.D.S. Разработано для маскировки тильта и защиты ELO.
+        </span>
+        <div class="flex space-x-6 text-[10px] font-mono tracking-widest text-brand-textMuted">
+            <span class="text-brand-orange"><i class="fa-solid fa-shield-halved mr-1.5"></i> MASKING PROTOCOL ACTIVE</span>
+            <span class="text-brand-cyan"><i class="fa-solid fa-bolt mr-1.5"></i> NO CHAT DELAY</span>
+        </div>
+    </footer>
 
     <!-- Custom Toaster (Fallback for alerts) -->
     <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-brand-card/90 text-white border border-brand-orange px-5 py-3 rounded-xl shadow-lg shadow-black/80 flex items-center space-x-3 max-w-sm">
@@ -428,11 +454,11 @@
             const btnText = document.querySelector('#toggleAudioBtn span');
             const btnIcon = document.getElementById('audioIcon');
             if (audioEnabled) {
-                btnText.textContent = "ЗВУКОВЫЕ ЭФФЕКТЫ: ВКЛ";
+                btnText.textContent = "ЗВУК СИСТЕМЫ: ВКЛ";
                 btnIcon.className = "fas fa-volume-high text-brand-orange";
                 playRadioClickOn();
             } else {
-                btnText.textContent = "ЗВУКОВЫЕ ЭФФЕКТЫ: ВЫКЛ";
+                btnText.textContent = "ЗВУК СИСТЕМЫ: ВЫКЛ";
                 btnIcon.className = "fas fa-volume-mute text-brand-textMuted";
             }
         });
@@ -445,40 +471,202 @@
         }, 1000);
     </script>
 
+    <!-- 3D BACKGROUND ANIMATION ENGINE -->
+    <script>
+        const container = document.getElementById('canvasContainer');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Generate glowing orange starry backdrop
+        const particleCount = 120;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        const orangeColor = new THREE.Color('#FF5500');
+        const darkColor = new THREE.Color('#1E212B');
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 50;
+            positions[i + 1] = (Math.random() - 0.5) * 50;
+            positions[i + 2] = (Math.random() - 0.5) * 50;
+
+            const mixedColor = orangeColor.clone().lerp(darkColor, Math.random() * 0.7);
+            colors[i] = mixedColor.r;
+            colors[i + 1] = mixedColor.g;
+            colors[i + 2] = mixedColor.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.35,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particleSystem = new THREE.Points(geometry, material);
+        scene.add(particleSystem);
+
+        camera.position.z = 25;
+
+        // Interaction coordinates
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        window.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) * 0.01;
+            mouseY = (event.clientY - window.innerHeight / 2) * 0.01;
+        });
+
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+
+            targetX += (mouseX - targetX) * 0.05;
+            targetY += (mouseY - targetY) * 0.05;
+
+            camera.position.x = targetX;
+            camera.position.y = -targetY;
+            camera.lookAt(scene.position);
+
+            particleSystem.rotation.y += 0.0008;
+            particleSystem.rotation.x += 0.0004;
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animateThree();
+    </script>
+
     <!-- DATABASE & GENERATION ENGINES -->
     <script>
         // State management
         let activeCategory = 'realistic';
 
-        // Precise level-based database (Work perfectly without custom variable inputs)
+        // Rich level-based database featuring multiple randomized entries per level
         const excusesDatabase = {
             realistic: {
-                1: "Да блин, у меня просто мышка за ковер зацепилась, сенсор дернуло вверх.",
-                2: "У меня пинг резко до 120 подскочил прямо во время пика, хитбоксы пустые.",
-                3: "Дикий просад фпс пошел из-за смоков, CS2 просто зависла на полсекунды.",
-                4: "Провод от наушников натянулся и заблокировал мышку, я не смог развернуться.",
-                5: "Античит FACEIT вызвал конфликт с драйвером ввода Windows, устройство позиционирования отключилось на зажиме."
+                1: [
+                    "Да блин, у меня просто мышка за ковер зацепилась, сенсор дернуло вверх.",
+                    "Пальцы соскользнули с мышки, влажность в комнате высокая.",
+                    "Провод мыши застрял под клавиатурой, не хватило амплитуды на доводку в голову."
+                ],
+                2: [
+                    "У меня пинг резко до 120 подскочил прямо во время пика, хитбоксы пустые.",
+                    "Потеря пакетов (Loss) скакнула до 15% прямо на выходе из-за угла.",
+                    "Локальный сервак телепортировал меня назад на шаг, спрей улетел в молоко."
+                ],
+                3: [
+                    "Дикий просад фпс пошел из-за смоков, CS2 просто зависла на полсекунды.",
+                    "DWM перерисовал окно дискорда на фоне, из-за этого проскочил жесткий статтер.",
+                    "Шина опроса мыши сбросила частоту до 125 Гц прямо в микро-дуэли."
+                ],
+                4: [
+                    "Провод от наушников натянулся и заблокировал мышку, я не смог развернуться.",
+                    "Задел локтем чашку с чаем, пришлось ловить её на лету вместо контроля спрея.",
+                    "Коврик съехал на 2 сантиметра влево, сенсор потерял калибровку высоты на спрее."
+                ],
+                5: [
+                    "Античит FACEIT вызвал конфликт с драйвером ввода Windows, устройство позиционирования отключилось на зажиме.",
+                    "Произошел сброс приоритета процесса CS2 в реальном времени из-за фонового обновления лаунчера.",
+                    "Контроллер USB ушел в спящий энергосберегающий режим прямо посреди клатча."
+                ]
             },
             toxic: {
-                1: "Да как играть с вами вообще, вы карту хоть иногда контролируете?",
-                2: "Я дал вам идеальную инфу, а вы сливаетесь без фрагов в первые секунды раунда.",
-                3: "У нас на четверых одна извилина на радаре, вы бегаете кругами без разменов.",
-                4: "Я играю с людьми, которые впервые запустили шутеры. Сдайте уже эту игру, не позорьтесь.",
-                5: "Уровень вашей командной координации официально отрицательный. Мой тильт полностью оправдан."
+                1: [
+                    "Да как играть с вами вообще, вы карту хоть иногда контролируете?",
+                    "Почему я должен заходить на точку первым, играя на люрке?",
+                    "Кто-нибудь, закройте мид, у меня нет бесконечных флешек для вас!"
+                ],
+                2: [
+                    "Я дал вам идеальную инфу, а вы сливаетесь без фрагов в первые секунды раунда.",
+                    "Вы закупаетесь на эко раундах, а на оружейных бегаете с пистолетами. Гении тактики.",
+                    "Смотрите на радар хоть иногда, там буквально нарисованы все наши проблемы!"
+                ],
+                3: [
+                    "У нас на четверых одна извилина на радаре, вы бегаете кругами без разменов.",
+                    "Я разменял двоих на точке, а вы умудрились слить ситуацию 3 в 2 без плента. Браво.",
+                    "Вы зажали закупку дымов на дефьюз, а теперь удивляетесь, почему нас шьют из коннектора."
+                ],
+                4: [
+                    "Я играю с людьми, которые впервые запустили шутеры. Сдайте уже эту игру, не позорьтесь.",
+                    "Зачем вы покупаете AWP, если не можете попасть по стоячей цели с пяти метров?",
+                    "Ваш микрофон звучит так, будто вы сидите внутри пылесоса в эпицентре торнадо."
+                ],
+                5: [
+                    "Уровень вашей командной координации официально отрицательный. Мой тильт полностью оправдан.",
+                    "Вы заслуживаете сидеть в скрытом пуле до конца года с такой игрой. Я ливаю на сейв девайса.",
+                    "Саппорты фармят мои спавны, а фрагов ноль. С этого момента я играю чисто соло на себя."
+                ]
             },
             absurd: {
-                1: "Кот прыгнул на клавиатуру и нажал пробел ровно в момент моего спрея.",
-                2: "Сосед снизу так громко чихнул, что сейсмическая волна сдвинула мой стол.",
-                3: "Люстра сорвалась с потолка и упала на стол, заблокировав мне обзор и клавишу W.",
-                4: "У меня чайник на кухне засвистел точь-в-точь как шаги врага, я побежал плиту спасать.",
-                5: "В окно влетел майский жук размером с кулак и атаковал мой лоб, я защищался клавиатурой."
+                1: [
+                    "Кот прыгнул на клавиатуру и нажал пробел ровно в момент моего спрея.",
+                    "Собака начала грызть мой тапок прямо во время дуэли, пришлось экстренно отбиваться.",
+                    "Случайно задел кнопку сна на клавиатуре мизинцем во время приседа."
+                ],
+                2: [
+                    "Сосед снизу так громко чихнул, что сейсмическая волна сдвинула мой стол на миллиметр.",
+                    "У меня батарейка в беспроводной мышке взорвалась прямо на ладонь, горячо!",
+                    "Опрокинул чипсы в клавиатуру, пробел залип в нажатом положении на три раунда."
+                ],
+                3: [
+                    "Люстра сорвалась с потолка и упала на стол, заблокировав мне обзор и клавишу W.",
+                    "Монитор решил уйти в режим автокалибровки цветов прямо посреди перестрелки на лонге.",
+                    "Стул резко опустился вниз по газлифту на 15 сантиметров во время флика."
+                ],
+                4: [
+                    "У меня чайник на кухне засвистел точь-в-точь как шаги врага, я побежал плиту спасать.",
+                    "В комнату ворвалась бабушка с криком 'Иди кушать оладушки!' и закрыла мне экран полотенцем.",
+                    "Печенька застряла в горле, я начал кашлять так сильно, что сдвинул стол плечом."
+                ],
+                5: [
+                    "В окно влетел майский жук размером с кулак и атаковал мой лоб, я защищался клавиатурой.",
+                    "На меня напал агрессивный домашний попугай, пытаясь вырвать клавиши Esc и Enter из гнезда.",
+                    "Мой робот-пылесос зажевал провод от наушников и начал медленно утаскивать мою голову под кровать."
+                ]
             },
             quantum: {
-                1: "Произошла кратковременная рассинхронизация синаптических нейропередатчиков правого запястья.",
-                2: "Локальный коллапс волновой функции вызвал слепоту фоторецепторов сетчатки на частоте 360 Гц.",
-                3: "Интерференция терагерцовых волн роутера с тепловым излучением батареи спровоцировала джиттер UDP-пакетов.",
-                4: "Анизотропная фильтрация трехмерного пространства вошла в конфликт с буфером глубины шейдерного конвейера.",
-                5: "Гравитационный потенциал ретроградного Меркурия сместил фазовый вектор скольжения мыши на атомарном уровне."
+                1: [
+                    "Произошла кратковременная рассинхронизация синаптических нейропередатчиков правого запястья.",
+                    "Локальное гравитационное возмущение изменило коэффициент трения тефлоновых ножек мыши.",
+                    "Температурный дрейф сенсора PixArt вызвал микро-сдвиг оптической оси позиционирования."
+                ],
+                2: [
+                    "Локальный коллапс волновой функции вызвал слепоту фоторецепторов сетчатки на частоте 360 Гц.",
+                    "Голографический интерфейс DWM вошел в квантовую суперпозицию с буфером кадра видеокарты.",
+                    "Произошла деструктивная интерференция светового потока от светодиода сенсора мыши."
+                ],
+                3: [
+                    "Интерференция терагерцовых волн роутера с тепловым излучением батареи спровоцировала джиттер UDP-пакетов.",
+                    "Электромагнитный импульс от проезжающего мимо трамвая временно размагнитил катушку динамика левого уха.",
+                    "Квантовое туннелирование электронов в контактах переключателя Omron вызвало ложный дабл-клик."
+                ],
+                4: [
+                    "Анизотропная фильтрация трехмерного пространства вошла в конфликт с буфером глубины шейдерного конвейера.",
+                    "Резонансная частота колебаний вентилятора кулера совпала с частотой альфа-ритмов коры головного мозга.",
+                    "Внезапная флуктуация плотности воздуха между мышкой и ковриком создала эффект микро-аквапланирования."
+                ],
+                5: [
+                    "Гравитационный потенциал ретроградного Меркурия сместил фазовый вектор скольжения мыши на атомарном уровне.",
+                    "Локальное искривление континуума в районе коврика увеличило время отклика левой кнопки мыши на Planck-секунду.",
+                    "Квантовая запутанность сетевых пакетов на узле провайдера привела к отправке моих хитбоксов в параллельное измерение."
+                ]
             }
         };
 
@@ -549,7 +737,6 @@
         });
 
         function generateStrategicExcuse() {
-            // Start progress animation simulation
             decryptionProgressContainer.classList.remove('hidden');
             decryptionProgressBar.style.width = '0%';
             terminalStatusHeader.textContent = "ДЕШИФРАЦИЯ...";
@@ -557,7 +744,7 @@
 
             let progress = 0;
             const progressInterval = setInterval(() => {
-                progress += 20;
+                progress += 25;
                 decryptionProgressBar.style.width = `${progress}%`;
                 playDecryptionProgress();
                 if (progress >= 100) {
@@ -567,17 +754,20 @@
                         renderDecryptedExcuse();
                     }, 150);
                 }
-            }, 60);
+            }, 50);
         }
 
         function renderDecryptedExcuse() {
             const severityVal = parseInt(severitySlider.value);
-            const finalExcuse = excusesDatabase[activeCategory][severityVal];
+            const pool = excusesDatabase[activeCategory][severityVal];
+            
+            // Randomly select one from multiple funny excuses
+            const finalExcuse = pool[Math.floor(Math.random() * pool.length)];
 
             // Typewriter effect on screen
             excuseOutputText.textContent = "";
             let charIndex = 0;
-            const typeSpeed = 12; // ms
+            const typeSpeed = 10;
             
             function typeChar() {
                 if (charIndex < finalExcuse.length) {
@@ -676,6 +866,28 @@
                 copyToClipboard('excuseOutputText', 'Отмазка скопирована для отправки!');
             }
         }
+
+        // 3D card interactive tilt handler
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                
+                const rotateY = ((x - xc) / xc) * 5; 
+                const rotateX = -((y - yc) / yc) * 5; 
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
 
         // Initial launch
         window.onload = function() {
