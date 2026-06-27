@@ -15,7 +15,7 @@
     <!-- Three.js Library for 3D Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- STREAMING_CHUNK: Defining Tailwind theme colors and visual utility tokens -->
+    <!-- STREAMING_CHUNK: Setting up custom Tailwind theme configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -44,7 +44,7 @@
         }
     </script>
     
-    <!-- STREAMING_CHUNK: Writing custom styles for advanced glow shaders, tilt card support and scrollbars -->
+    <!-- STREAMING_CHUNK: Crafting custom animation stylesheets and scrollbar layouts -->
     <style>
         body {
             background-color: #040507;
@@ -118,12 +118,18 @@
         }
     </style>
 </head>
-<!-- STREAMING_CHUNK: Initializing body wrapper and background elements -->
 <body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-purple selection:text-black relative scanline">
 
     <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
 
+    <!-- CINEMATIC TRANSITION OVERLAY LAYER -->
+    <div id="pageTransitionOverlay" class="fixed inset-0 bg-brand-dark opacity-0 pointer-events-none transition-all duration-500 z-50 flex flex-col items-center justify-center">
+        <div class="w-12 h-12 rounded-full border-2 border-dashed border-brand-purple animate-spin mb-4" style="animation-duration: 3s"></div>
+        <div class="font-mono text-[10px] text-brand-purple tracking-widest uppercase animate-pulse">Синхронизация буфера...</div>
+    </div>
+
     <!-- MAIN COCKPIT HEADER -->
+    <!-- STREAMING_CHUNK: Coding main navigation header bar with profile and sound mixers -->
     <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             
@@ -175,8 +181,9 @@
         </div>
     </header>
 
-    <!-- STREAMING_CHUNK: Laying out central HUD panel system elements -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
+    <!-- STREAMING_CHUNK: Creating tactical workspace overlay containing realistic telemetry items -->
+    <!-- MAIN CENTRAL VIEWPORT CONTAINER (HAVE TRANSITION SUPPORT) -->
+    <main id="mainViewport" class="transition-all duration-700 ease-out transform scale-95 opacity-0 flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
         
         <!-- Welcome Banner + Dynamic ELO Predictor Configurator -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -194,22 +201,24 @@
                     </p>
                 </div>
 
+                <!-- DYNAMIC TELEMETRY BADGES CONTAINING CLEAN COMP-PRECISE METRICS (REPLACING VAGUE JARGONS) -->
+                <!-- STREAMING_CHUNK: Replacing made-up parameters with realistic competitive gaming metrics -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 font-semibold">
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
-                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Связанные модули</span>
-                        <span class="text-sm font-black text-white">4 Активно</span>
+                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">FACEIT Anti-Cheat</span>
+                        <span class="text-xs sm:text-sm font-black text-brand-emerald uppercase tracking-tight animate-pulse"><i class="fa-solid fa-shield-halved mr-1 text-[10px]"></i> Active (Secure)</span>
                     </div>
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
-                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Ядро Симуляции</span>
-                        <span class="text-sm font-black text-brand-purple">Three.js active</span>
+                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Кадры Рендера</span>
+                        <span class="text-xs sm:text-sm font-black text-brand-purple uppercase tracking-tight">~360 FPS (Stable)</span>
                     </div>
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
-                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Рефлекс-тестер</span>
-                        <span class="text-sm font-black text-brand-cyan">Canvas Active</span>
+                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Шина ввода USB</span>
+                        <span class="text-xs sm:text-sm font-black text-brand-cyan uppercase tracking-tight">1000 Hz (Raw)</span>
                     </div>
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
-                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Акустика</span>
-                        <span class="text-sm font-black text-brand-orange">Binaural enabled</span>
+                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Задержка ввода</span>
+                        <span class="text-xs sm:text-sm font-black text-brand-orange uppercase tracking-tight">~1.12 ms (QPC)</span>
                     </div>
                 </div>
             </div>
@@ -224,7 +233,7 @@
                 <!-- Interactive Slider -->
                 <div class="space-y-3 my-4">
                     <div class="flex justify-between text-xs font-mono">
-                        <span class="text-brand-textMuted">Уровень боевой готовности:</span>
+                        <span class="text-brand-textMuted font-semibold">Уровень готовности:</span>
                         <span id="txtConfidencePercent" class="text-brand-purple font-black">75%</span>
                     </div>
                     <input type="range" id="confidenceSlider" min="10" max="100" value="75" 
@@ -235,13 +244,13 @@
                 </div>
 
                 <div class="bg-brand-dark/80 border border-brand-border p-3.5 rounded-xl flex items-center justify-between text-xs font-mono">
-                    <span class="text-brand-textMuted">ФОКУС-МАТРИЦА ELO:</span>
+                    <span class="text-brand-textMuted font-bold">ФОКУС-МАТРИЦА ELO:</span>
                     <span id="forecastEloValue" class="font-extrabold text-brand-purple animate-pulse">+25 ELO</span>
                 </div>
             </div>
         </div>
 
-        <!-- STREAMING_CHUNK: Generating individual subproject access card links with dynamic glows -->
+        <!-- STREAMING_CHUNK: Integrating clickable card anchors displaying individual tools -->
         <!-- SUBPROJECTS CARDS GRID -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
@@ -351,7 +360,7 @@
 
         </div>
 
-        <!-- STREAMING_CHUNK: Constructing Jitter and Reaction canvas metrics modules -->
+        <!-- STREAMING_CHUNK: Instantiating real-time charts and reaction game blocks in dashboard layout -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             <!-- Real-time Network Jitter Oscilloscope -->
@@ -400,18 +409,7 @@
 
     </main>
 
-    <!-- FOOTER WITH LAB STATUS -->
-    <footer class="w-full max-w-7xl mx-auto px-6 py-4 border-t border-brand-border/40 bg-brand-dark/80 backdrop-blur flex flex-col md:flex-row justify-between items-center gap-4 text-center z-10">
-        <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider">
-            © 2026 FACEIT TACTICAL COCKPIT. Разработано для оптимизации киберспортивных кондиций и ELO.
-        </span>
-        <div class="flex space-x-6 text-[10px] font-mono tracking-widest text-brand-textMuted">
-            <span class="text-brand-purple"><i class="fa-solid fa-shield-halved mr-1.5"></i> COGNITIVE PRESET READY</span>
-            <span class="text-brand-cyan"><i class="fa-solid fa-bolt mr-1.5"></i> NO INPUT THROTTLING</span>
-        </div>
-    </footer>
-
-    <!-- STREAMING_CHUNK: Coding professional resonant lowpass filter synthesizer in Web Audio API -->
+    <!-- STREAMING_CHUNK: Building Audio Context synthesizers and managing custom audio events -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let audioEnabled = true;
@@ -538,7 +536,8 @@
         });
     </script>
 
-    <!-- STREAMING_CHUNK: Loading and initializing Three.js starry constellations scene back -->
+    <!-- STREAMING_CHUNK: Initializing 3D interactive star systems using Three.js buffer geometry -->
+    <!-- THREE.JS 3D CONSTELLATIONS SCENE SETUP -->
     <script>
         const threeContainer = document.getElementById('canvasContainer');
         const scene = new THREE.Scene();
@@ -652,7 +651,8 @@
         animateThree();
     </script>
 
-    <!-- STREAMING_CHUNK: Setting up interactive hover event triggers for card modules -->
+    <!-- STREAMING_CHUNK: Coding card 3D tilt behaviors and smooth loading transitions -->
+    <!-- INTERACTIVE 3D TILT CARDS & SMOOTH PAGE TRANSITIONS -->
     <script>
         const cards = document.querySelectorAll('.tilt-card');
 
@@ -691,13 +691,32 @@
                 card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
             });
 
-            card.addEventListener('click', () => {
-                playSynthSound(900, 0.35, 0.05, 'sawtooth');
+            // --- CINEMATIC SMOOTH NAVIGATION TRANSITION ON CLICK ---
+            card.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent instant browser jump
+                const targetUrl = card.getAttribute('href');
+
+                // Play special deep resonant transition synth sound
+                playSynthSound(130, 0.6, 0.15, 'sawtooth');
+
+                // Scale down and fade out main viewport content
+                const viewport = document.getElementById('mainViewport');
+                viewport.classList.remove('scale-100', 'opacity-100');
+                viewport.classList.add('scale-95', 'opacity-0');
+
+                // Smoothly fade in transition overlay screen
+                const overlay = document.getElementById('pageTransitionOverlay');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                overlay.classList.add('opacity-100');
+
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 550); // Redirect right after animation finishes (550ms)
             });
         });
     </script>
 
-    <!-- STREAMING_CHUNK: Modeling sliders metrics and building network jitter oscilloscope canvas -->
+    <!-- STREAMING_CHUNK: Coding ELO prediction mathematics and rendering Jitter oscilloscope lines -->
     <script>
         const confidenceSlider = document.getElementById('confidenceSlider');
         const txtConfidencePercent = document.getElementById('txtConfidencePercent');
@@ -779,7 +798,7 @@
         drawJitterGraph();
     </script>
 
-    <!-- STREAMING_CHUNK: Coding HTML5 Canvas game loops for the reaction test module -->
+    <!-- STREAMING_CHUNK: Processing reaction reflex mini game canvases -->
     <!-- INTERACTIVE HUB REACTION CANVAS MODULE -->
     <script>
         const rxCanvas = document.getElementById('hubReactionCanvas');
@@ -948,7 +967,7 @@
         requestAnimationFrame(drawReactionCanvas);
     </script>
 
-    <!-- STREAMING_CHUNK: Checking gamer profile name and initializing ambient loops on loading -->
+    <!-- STREAMING_CHUNK: Triggering gentle page fade-ins and setting up localStorage inputs on loading -->
     <script>
         const gamerInput = document.getElementById('gamerTagInput');
         
@@ -966,6 +985,11 @@
 
         window.onload = function() {
             startAmbientDrone();
+            
+            // --- GENTLE PAGE FADE-IN TRANSITION ---
+            const viewport = document.getElementById('mainViewport');
+            viewport.classList.remove('scale-95', 'opacity-0');
+            viewport.classList.add('scale-100', 'opacity-100');
             
             // Initialization entry audio chime
             setTimeout(() => {
