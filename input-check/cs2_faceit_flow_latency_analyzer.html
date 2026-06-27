@@ -40,6 +40,7 @@
             }
         }
     </script>
+    <!-- STREAMING_CHUNK: Setting up luxury dark theme aesthetics and grid overlays -->
     <style>
         body {
             background-color: #040507;
@@ -145,6 +146,7 @@
     </header>
 
     <!-- Main Diagnostic Grid -->
+    <!-- STREAMING_CHUNK: Laying out system telemetry sliders and active logger blocks -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
 
         <!-- Calibration Notice and Protocol Info -->
@@ -225,6 +227,7 @@
             </div>
 
             <!-- Column 2: Diagnostic Calibration Canvas Area (STABLE - NO TILT CARD FOR PRECISION) -->
+            <!-- STREAMING_CHUNK: Coding static canvas calibration polygon containing telemetry badges -->
             <div class="lg:col-span-5 space-y-6">
                 <div class="glass-panel border border-latency-border rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden glow-cyan">
                     
@@ -288,6 +291,7 @@
             </div>
 
             <!-- Column 3: Advanced Jitter Distribution & Diagnostics Report -->
+            <!-- STREAMING_CHUNK: Coding sparklines and processed system data tables -->
             <div class="lg:col-span-3 space-y-6">
                 
                 <!-- Stability Analysis Sparkline Card -->
@@ -546,6 +550,7 @@
     </script>
 
     <!-- TELEMETRY AND CANVAS SYSTEM ENGINE -->
+    <!-- STREAMING_CHUNK: Setting up logging system, variables, and arrays for the main physics engine -->
     <script>
         // --- Kernel Terminal Logger Output Stream ---
         const terminalBody = document.getElementById('terminalBody');
@@ -587,6 +592,10 @@
         let ripples = []; 
         let curMouseX = -100;
         let curMouseY = -100;
+
+        // PHYSICAL HARDWARE INTERRUPT CAPTURING VARIABLES
+        let lastEventTime = null;
+        let hardwareIntervals = [];
 
         // System Congestion simulation keys (secret W keys trigger)
         let isWKeyPressed = false;
@@ -646,22 +655,43 @@
             }
         });
 
-        // Mouse handlers inside canvas - High speed, low memory footprints
-        canvas.addEventListener('mousemove', (e) => {
+        // STREAMING_CHUNK: Coding coalesced raw input pointer capturing loops
+        // --- REAL-TIME HARDWARE POLLING RATE MEASUREMENT VIA COALESCED EVENTS ---
+        canvas.addEventListener('pointermove', (e) => {
             const r = canvas.getBoundingClientRect();
             curMouseX = e.clientX - r.left;
             curMouseY = e.clientY - r.top;
 
             if (!isTesting) return;
+
+            // Extract coalesced sub-frame physical updates from browser events pool
+            const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
             
-            totalInputPackets++;
-            
-            // Add to visual trail with strict length capping to prevent curMouse lagging! (HARD MEMORY CAPPING AT 25)
-            mouseTrail.push({ x: curMouseX, y: curMouseY });
-            if (mouseTrail.length > 25) {
-                mouseTrail.shift();
-            }
-            
+            coalesced.forEach(ev => {
+                totalInputPackets++;
+                
+                // Add to visual trail with strict length capping to prevent memory leaks and lags! (HARD CAPPING AT 25)
+                mouseTrail.push({ x: ev.clientX - r.left, y: ev.clientY - r.top });
+                if (mouseTrail.length > 25) {
+                    mouseTrail.shift();
+                }
+
+                // Precision micro-interval замер
+                const currentTime = ev.timeStamp || performance.now();
+                if (lastEventTime !== null) {
+                    const dt = currentTime - lastEventTime;
+                    
+                    // Filter out large outliers (movement stops or pauses longer than 25ms)
+                    if (dt > 0 && dt < 25) {
+                        hardwareIntervals.push(dt);
+                        if (hardwareIntervals.length > 250) {
+                            hardwareIntervals.shift();
+                        }
+                    }
+                }
+                lastEventTime = currentTime;
+            });
+
             if (Math.random() < 0.05) {
                 appendLog(`[INPUT] USB Packet: dX=${Math.floor((Math.random() - 0.5) * 30)}, dY=${Math.floor((Math.random() - 0.5) * 30)} | QPC: ${Math.round(performance.now() * 1000)}`);
             }
@@ -882,31 +912,45 @@
         }
         requestAnimationFrame(renderCanvasFrame);
 
-        // Core Live frequency updater
-        let lastEventCount = 0;
+        // STREAMING_CHUNK: Coding math filters for actual hardware frequency estimation
+        // Core Live frequency updater with mathematically sound USB polling rate calculations
         setInterval(() => {
             if (isTesting) {
-                const count = totalInputPackets;
-                const diff = (count - lastEventCount) * 2;
-                lastEventCount = count;
-
-                let simHz = diff;
-                if (simHz > 0) {
-                    // Scaled up mathematical calculation to easily reach up to 8000 Hz
-                    simHz = Math.min(8000, Math.round(simHz * 36.5 + (Math.random() * 150 - 75)));
-                    if (simHz < 125) simHz = 125;
+                let physicalHz = 0;
+                
+                if (hardwareIntervals.length > 5) {
+                    // Sort intervals to filter out random spikes
+                    const sorted = [...hardwareIntervals].sort((a, b) => a - b);
+                    const trimCount = Math.floor(sorted.length * 0.15); // Trim top and bottom 15%
+                    const trimmed = sorted.slice(trimCount, sorted.length - trimCount);
+                    
+                    if (trimmed.length > 0) {
+                        const avgDt = trimmed.reduce((sum, val) => sum + val, 0) / trimmed.length;
+                        if (avgDt > 0) {
+                            physicalHz = Math.round(1000 / avgDt);
+                            
+                            // Snapping to common gaming polling rates (125, 250, 500, 1000, 2000, 4000, 8000)
+                            const targets = [125, 250, 500, 1000, 2000, 4000, 8000];
+                            for (let target of targets) {
+                                if (Math.abs(physicalHz - target) < target * 0.13) {
+                                    // Inject a realistic fluctuation of +/- 1% to match raw hardware trackers
+                                    physicalHz = target + Math.round((Math.random() - 0.5) * (target * 0.015));
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
 
-                document.getElementById('liveHzVal').innerText = `${simHz} Hz`;
-                document.getElementById('countEvents').innerText = count;
-
-                document.getElementById('valAvgPoll').innerText = `${simHz > 0 ? simHz : 8000} Hz`;
+                document.getElementById('liveHzVal').innerText = `${physicalHz > 0 ? physicalHz : 0} Hz`;
+                document.getElementById('countEvents').innerText = totalInputPackets;
+                document.getElementById('valAvgPoll').innerText = `${physicalHz > 0 ? physicalHz : 0} Hz`;
                 
                 const jitterSeed = prankTriggered ? (24.1 + Math.random() * 8.5) : (0.08 + (dpcFactor / 22) + Math.random() * 0.15);
                 document.getElementById('currentJitterText').innerText = `${jitterSeed.toFixed(2)} ms`;
                 updateSparkline(jitterSeed * 10);
             }
-        }, 500);
+        }, 300);
 
 
         // --- Trigger diagnostics run ---
@@ -936,6 +980,8 @@
             totalInputPackets = 0;
             mouseTrail = [];
             ripples = [];
+            hardwareIntervals = [];
+            lastEventTime = null;
             lastEventCount = 0;
             startTime = performance.now();
 
@@ -947,7 +993,7 @@
             appendLog("[START] Начат сбор данных калибровки шины позиционирования ввода...", 'warn');
             appendLog("[KERNEL] Выделен выделенный поток ядра Windows ID: " + Math.floor(Math.random() * 9000 + 1000), 'success');
 
-            canvasOverlay.classList.add('opacity-0', 'pointer-events-none');
+            canvasOverlay.className = "absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-latency-terminal/95 backdrop-blur-xs transition-opacity duration-300 z-20 opacity-0 pointer-events-none";
             testProgressContainer.classList.remove('hidden');
             document.getElementById('packetsCounterBadge').classList.remove('hidden'); // Show packets badge in header
 
@@ -1000,8 +1046,9 @@
         });
 
         // --- Processing Results ---
+        // STREAMING_CHUNK: Processing raw logs, compiling final score reports
         function processDiagnosticsResults() {
-            canvasOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            canvasOverlay.className = "absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-latency-terminal/95 backdrop-blur-xs transition-opacity duration-300 z-20";
             testProgressContainer.classList.add('hidden');
             testProgressBar.style.width = '0%';
             document.getElementById('packetsCounterBadge').classList.add('hidden'); // Hide packets badge
@@ -1010,9 +1057,18 @@
             statusSubheader.innerText = "Анализ данных буферизации завершен";
 
             const count = totalInputPackets;
-            // High frequency scaling for final diagnostic summary up to 8000 Hz
-            let avgHz = Math.min(8000, Math.round((count / 10) * 36.6 + (Math.random() * 100 - 50)));
-            if (avgHz < 125) avgHz = 125;
+            
+            // Calculate real average Hz from trimmed physical intervals
+            let avgHz = 0;
+            if (hardwareIntervals.length > 5) {
+                const sorted = [...hardwareIntervals].sort((a, b) => a - b);
+                const trimCount = Math.floor(sorted.length * 0.15);
+                const trimmed = sorted.slice(trimCount, sorted.length - trimCount);
+                if (trimmed.length > 0) {
+                    const avgDt = trimmed.reduce((sum, val) => sum + val, 0) / trimmed.length;
+                    if (avgDt > 0) avgHz = Math.round(1000 / avgDt);
+                }
+            }
             if (count === 0) avgHz = 0;
 
             // Compute actual total lag with DPC load factors
@@ -1080,7 +1136,7 @@
             }
 
             // Update DOM Elements
-            document.getElementById('valAvgPoll').innerText = `${avgHz > 0 ? avgHz : 8000} Hz`;
+            document.getElementById('valAvgPoll').innerText = `${avgHz > 0 ? avgHz : 0} Hz`;
             document.getElementById('valTimerLag').innerText = `${(computedLag * 0.12).toFixed(2)} ms`;
             document.getElementById('valJitter').innerText = document.getElementById('currentJitterText').innerText;
             
@@ -1104,7 +1160,7 @@
             document.getElementById('roastMeterBar').style.width = `${fv1stRoastScore}%`;
 
             // Modal setup
-            document.getElementById('modalAvgHz').innerText = avgHz > 0 ? avgHz : 8000;
+            document.getElementById('modalAvgHz').innerText = avgHz > 0 ? avgHz : 0;
             document.getElementById('modalJitterVal').innerText = document.getElementById('valJitter').innerText;
             document.getElementById('modalTotalLagVal').innerText = `${computedLag.toFixed(2)}ms`;
             
@@ -1182,5 +1238,3 @@
     </script>
 </body>
 </html>
-```
-eof
