@@ -15,7 +15,7 @@
     <!-- Three.js Library for 3D Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- STREAMING_CHUNK: Configuring Tailwind variables and visual tokens -->
+    <!-- STREAMING_CHUNK: Configuring Tailwind visual theme tokens -->
     <script>
         tailwind.config = {
             theme: {
@@ -44,7 +44,7 @@
         }
     </script>
     
-    <!-- STREAMING_CHUNK: Adding layout CSS styles, glitch animations, and custom scrollbars -->
+    <!-- STREAMING_CHUNK: Writing custom styles for glowing, 3D Tilt support and scrolling grids -->
     <style>
         body {
             background-color: #040507;
@@ -55,10 +55,10 @@
         
         /* Premium sci-fi shadows and backdrops */
         .glass-panel {
-            background: rgba(12, 14, 20, 0.7);
+            background: rgba(12, 14, 20, 0.75);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(38, 45, 63, 0.5);
+            border: 1px solid rgba(38, 45, 63, 0.45);
         }
         
         .glow-purple { box-shadow: 0 0 30px rgba(139, 92, 246, 0.15); }
@@ -118,12 +118,12 @@
         }
     </style>
 </head>
+<!-- STREAMING_CHUNK: Setting up background animations and high tech container -->
 <body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-purple selection:text-black relative scanline">
 
     <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
 
     <!-- MAIN COCKPIT HEADER -->
-    <!-- STREAMING_CHUNK: Rendering main header navigation bar with profile and sound controllers -->
     <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             
@@ -175,7 +175,7 @@
         </div>
     </header>
 
-    <!-- STREAMING_CHUNK: Laying out central HUD system info and interactive ELO forecast widgets -->
+    <!-- STREAMING_CHUNK: Coding main workspace grid and welcome overlay interface -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
         
         <!-- Welcome Banner + Dynamic ELO Predictor Configurator -->
@@ -214,34 +214,113 @@
                 </div>
             </div>
 
-            <!-- ELO Interactive Calibrator Widgets -->
-            <div class="lg:col-span-4 glass-panel border border-brand-border rounded-2xl p-6 flex flex-col justify-between glow-purple">
+            <!-- ELO Interactive Calibrator Widgets + Premium dynamic FACEIT Rank badges -->
+            <!-- STREAMING_CHUNK: Creating reactive ELO slider and SVG Rank Level badges -->
+            <div class="lg:col-span-4 glass-panel border border-brand-border rounded-2xl p-6 flex flex-col justify-between glow-purple relative overflow-hidden">
                 <div class="flex justify-between items-center border-b border-brand-border pb-3">
                     <span class="text-xs font-bold uppercase tracking-widest text-brand-purple">Калибратор Настроя ELO</span>
-                    <span class="text-[9px] font-mono text-brand-purple bg-brand-purple/15 px-2.5 py-0.5 rounded-full border border-brand-purple/20">LIVE COMPUTE</span>
+                    <span class="text-[9px] font-mono text-brand-purple bg-brand-purple/15 px-2.5 py-0.5 rounded-full border border-brand-purple/20 animate-pulse">LIVE CALIBRATE</span>
+                </div>
+
+                <!-- Central Dynamic Level Badge Area -->
+                <div class="flex items-center justify-center my-3 relative h-16">
+                    <div id="eloLevelBadge" class="w-14 h-14 rounded-lg bg-orange-600 border border-white/20 flex flex-col items-center justify-center text-white font-extrabold text-2xl tracking-tighter shadow-lg shadow-orange-600/30 transition-all duration-300 transform scale-110">
+                        10
+                        <span class="text-[8px] uppercase tracking-widest text-orange-200 mt-0.5 font-bold leading-none">Level</span>
+                    </div>
                 </div>
 
                 <!-- Interactive Slider -->
-                <div class="space-y-3 my-4">
+                <div class="space-y-3">
                     <div class="flex justify-between text-xs font-mono">
-                        <span class="text-brand-textMuted">Уровень боевой готовности:</span>
-                        <span id="txtConfidencePercent" class="text-brand-purple font-black">75%</span>
+                        <span class="text-brand-textMuted font-medium">Твоя готовность к победе:</span>
+                        <span id="txtConfidencePercent" class="text-brand-purple font-black">100%</span>
                     </div>
-                    <input type="range" id="confidenceSlider" min="10" max="100" value="75" 
-                           class="w-full h-1 bg-brand-border rounded-lg appearance-none cursor-pointer accent-brand-purple">
-                    <p class="text-[10px] text-brand-textMuted leading-snug">
-                        Регулируй уровень уверенности, чтобы калибровать математическую проекцию ELO.
-                    </p>
+                    <input type="range" id="confidenceSlider" min="10" max="100" value="100" 
+                           class="w-full h-1.5 bg-brand-border rounded-lg appearance-none cursor-pointer accent-brand-purple">
                 </div>
 
-                <div class="bg-brand-dark/80 border border-brand-border p-3.5 rounded-xl flex items-center justify-between text-xs font-mono">
-                    <span class="text-brand-textMuted">ФОКУС-МАТРИЦА ELO:</span>
-                    <span id="forecastEloValue" class="font-extrabold text-brand-purple animate-pulse">+25 ELO</span>
+                <div class="bg-brand-dark/80 border border-brand-border p-3 rounded-xl flex items-center justify-between text-xs font-mono mt-3">
+                    <span class="text-brand-textMuted font-semibold">ФОКУС-МАТРИЦА ELO:</span>
+                    <span id="forecastEloValue" class="font-extrabold text-brand-purple animate-pulse">+40 ELO</span>
                 </div>
             </div>
         </div>
 
-        <!-- STREAMING_CHUNK: Generating individual subproject access card links -->
+        <!-- STREAMING_CHUNK: Integrating the CS2 competitive Map Veto interactive module -->
+        <!-- INTERACTIVE MAP VETO COMPILER SECTION -->
+        <div class="glass-panel border border-brand-border rounded-2xl p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                <h3 class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                    <i class="fa-solid fa-map text-brand-orange animate-pulse"></i> Интерактивный тактический черновик банов // Map Veto Engine
+                </h3>
+                <div class="flex items-center gap-2 font-mono text-[10px] text-brand-orange bg-brand-orange/10 px-3 py-1 rounded-lg border border-brand-orange/20 uppercase font-semibold">
+                    Рекомендованный десайдер: <span id="deciderMapText" class="text-white font-black pl-1">De_Mirage</span>
+                </div>
+            </div>
+
+            <!-- Veto Map Container -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+                <!-- Map: Mirage -->
+                <button onclick="toggleMapVeto('Mirage', this)" class="map-veto-card bg-brand-dark/90 border border-brand-border rounded-xl p-3 flex flex-col items-center text-center justify-between relative overflow-hidden transition-all duration-300 hover:border-brand-orange/50 hover:scale-[1.03] h-28 group">
+                    <div class="text-[9px] font-mono text-brand-textMuted uppercase tracking-wider font-bold">Mirage</div>
+                    <div class="w-10 h-10 rounded-full bg-brand-orange/5 border border-brand-orange/10 flex items-center justify-center text-brand-orange text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-mosque"></i>
+                    </div>
+                    <div class="text-[8px] font-mono font-black uppercase text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 px-2 py-0.5 rounded veto-status-badge">Active</div>
+                </button>
+                <!-- Map: Inferno -->
+                <button onclick="toggleMapVeto('Inferno', this)" class="map-veto-card bg-brand-dark/90 border border-brand-border rounded-xl p-3 flex flex-col items-center text-center justify-between relative overflow-hidden transition-all duration-300 hover:border-brand-orange/50 hover:scale-[1.03] h-28 group">
+                    <div class="text-[9px] font-mono text-brand-textMuted uppercase tracking-wider font-bold">Inferno</div>
+                    <div class="w-10 h-10 rounded-full bg-brand-orange/5 border border-brand-orange/10 flex items-center justify-center text-brand-orange text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-church"></i>
+                    </div>
+                    <div class="text-[8px] font-mono font-black uppercase text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 px-2 py-0.5 rounded veto-status-badge">Active</div>
+                </button>
+                <!-- Map: Nuke -->
+                <button onclick="toggleMapVeto('Nuke', this)" class="map-veto-card bg-brand-dark/90 border border-brand-border rounded-xl p-3 flex flex-col items-center text-center justify-between relative overflow-hidden transition-all duration-300 hover:border-brand-orange/50 hover:scale-[1.03] h-28 group">
+                    <div class="text-[9px] font-mono text-brand-textMuted uppercase tracking-wider font-bold">Nuke</div>
+                    <div class="w-10 h-10 rounded-full bg-brand-orange/5 border border-brand-orange/10 flex items-center justify-center text-brand-orange text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-radiation"></i>
+                    </div>
+                    <div class="text-[8px] font-mono font-black uppercase text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 px-2 py-0.5 rounded veto-status-badge">Active</div>
+                </button>
+                <!-- Map: Anubis -->
+                <button onclick="toggleMapVeto('Anubis', this)" class="map-veto-card bg-brand-dark/90 border border-brand-border rounded-xl p-3 flex flex-col items-center text-center justify-between relative overflow-hidden transition-all duration-300 hover:border-brand-orange/50 hover:scale-[1.03] h-28 group">
+                    <div class="text-[9px] font-mono text-brand-textMuted uppercase tracking-wider font-bold">Anubis</div>
+                    <div class="w-10 h-10 rounded-full bg-brand-orange/5 border border-brand-orange/10 flex items-center justify-center text-brand-orange text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-ankh"></i>
+                    </div>
+                    <div class="text-[8px] font-mono font-black uppercase text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 px-2 py-0.5 rounded veto-status-badge">Active</div>
+                </button>
+                <!-- Map: Ancient -->
+                <button onclick="toggleMapVeto('Ancient', this)" class="map-veto-card bg-brand-dark/90 border border-brand-border rounded-xl p-3 flex flex-col items-center text-center justify-between relative overflow-hidden transition-all duration-300 hover:border-brand-orange/50 hover:scale-[1.03] h-28 group">
+                    <div class="text-[9px] font-mono text-brand-textMuted uppercase tracking-wider font-bold">Ancient</div>
+                    <div class="w-10 h-10 rounded-full bg-brand-orange/5 border border-brand-orange/10 flex items-center justify-center text-brand-orange text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-gopuram"></i>
+                    </div>
+                    <div class="text-[8px] font-mono font-black uppercase text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 px-2 py-0.5 rounded veto-status-badge">Active</div>
+                </button>
+                <!-- Map: Vertigo -->
+                <button onclick="toggleMapVeto('Vertigo', this)" class="map-veto-card bg-brand-dark/90 border border-brand-border rounded-xl p-3 flex flex-col items-center text-center justify-between relative overflow-hidden transition-all duration-300 hover:border-brand-orange/50 hover:scale-[1.03] h-28 group">
+                    <div class="text-[9px] font-mono text-brand-textMuted uppercase tracking-wider font-bold">Vertigo</div>
+                    <div class="w-10 h-10 rounded-full bg-brand-orange/5 border border-brand-orange/10 flex items-center justify-center text-brand-orange text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div class="text-[8px] font-mono font-black uppercase text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 px-2 py-0.5 rounded veto-status-badge">Active</div>
+                </button>
+                <!-- Map: Dust2 -->
+                <button onclick="toggleMapVeto('Dust 2', this)" class="map-veto-card bg-brand-dark/90 border border-brand-border rounded-xl p-3 flex flex-col items-center text-center justify-between relative overflow-hidden transition-all duration-300 hover:border-brand-orange/50 hover:scale-[1.03] h-28 group">
+                    <div class="text-[9px] font-mono text-brand-textMuted uppercase tracking-wider font-bold">Dust 2</div>
+                    <div class="w-10 h-10 rounded-full bg-brand-orange/5 border border-brand-orange/10 flex items-center justify-center text-brand-orange text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-tree"></i>
+                    </div>
+                    <div class="text-[8px] font-mono font-black uppercase text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 px-2 py-0.5 rounded veto-status-badge">Active</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- STREAMING_CHUNK: Rendering grid blocks representing 4 interactive card panels -->
         <!-- SUBPROJECTS CARDS GRID -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
@@ -351,7 +430,7 @@
 
         </div>
 
-        <!-- STREAMING_CHUNK: Integrating the reflex testing dashboard into bottom layout column span -->
+        <!-- STREAMING_CHUNK: Constructing Jitter and Reaction canvas metrics modules -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             <!-- Real-time Network Jitter Oscilloscope -->
@@ -373,16 +452,16 @@
                 </div>
             </div>
 
-            <!-- PREMIUM REFLEX REACTION TEST (Replaces useless logger) -->
+            <!-- PREMIUM REFLEX REACTION TEST WITH HIGH-SCORE -->
             <div class="lg:col-span-8 glass-panel border border-brand-border rounded-2xl p-5 flex flex-col justify-between min-h-[220px] relative overflow-hidden">
                 <div class="flex justify-between items-center border-b border-brand-border pb-3 z-10 relative">
                     <h3 class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
                         <i class="fa-solid fa-bolt text-brand-purple animate-pulse"></i> Калибратор рефлексов // Reflex Reaction Matrix
                     </h3>
-                    <div class="flex gap-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-brand-purple/20 border border-brand-purple/40"></span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-brand-cyan/20 border border-brand-cyan/40"></span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-brand-orange/20 border border-brand-orange/40"></span>
+                    
+                    <!-- Real-Time High-score display -->
+                    <div class="flex items-center gap-2 font-mono text-[9px] text-yellow-400 bg-yellow-400/10 px-2.5 py-0.5 rounded-full border border-yellow-400/20 uppercase font-semibold">
+                        <i class="fa-solid fa-crown animate-pulse"></i> Рекорд: <span id="reactionPbText" class="font-bold text-white">--- ms</span>
                     </div>
                 </div>
                 
@@ -411,7 +490,7 @@
         </div>
     </footer>
 
-    <!-- STREAMING_CHUNK: Coding professional resonant lowpass filter synthesizer in Web Audio API -->
+    <!-- STREAMING_CHUNK: Developing lowpass envelope audio synthesizer engine -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let audioEnabled = true;
@@ -474,7 +553,7 @@
 
                 ambientGain = audioCtx.createGain();
                 ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                ambientGain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 3.0); // Very low comfortable volume (0.01)
+                ambientGain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 3.0); // Quiet comfy background drone
 
                 const splitter = audioCtx.createChannelMerger(2);
 
@@ -538,7 +617,8 @@
         });
     </script>
 
-    <!-- STREAMING_CHUNK: Instantiating Three.js 3D starry constellations scene on bbackground -->
+    <!-- STREAMING_CHUNK: Loading and initializing Three.js wireframe torus knot (FACEIT Shield Core) -->
+    <!-- THREE.JS 3D ENHANCED COGNITIVE SPHERE CORE BACKDROP -->
     <script>
         const container = document.getElementById('canvasContainer');
         const scene = new THREE.Scene();
@@ -548,8 +628,20 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        // Generation of beautiful constellation particles
-        const particleCount = 200;
+        // Generate glowing purple / cyan torus knot database core
+        const coreGeometry = new THREE.TorusKnotGeometry(7, 2.2, 120, 16);
+        const coreMaterial = new THREE.MeshBasicMaterial({
+            color: 0x8B5CF6,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.12,
+            blending: THREE.AdditiveBlending
+        });
+        const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
+        scene.add(coreMesh);
+
+        // Rotating outer particles constellation grid
+        const particleCount = 180;
         const geometry = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const colors = new Float32Array(particleCount * 3);
@@ -558,9 +650,9 @@
         const cyanColor = new THREE.Color('#00E5FF');
 
         for (let i = 0; i < particleCount * 3; i += 3) {
-            positions[i] = (Math.random() - 0.5) * 50;
-            positions[i + 1] = (Math.random() - 0.5) * 50;
-            positions[i + 2] = (Math.random() - 0.5) * 50;
+            positions[i] = (Math.random() - 0.5) * 60;
+            positions[i + 1] = (Math.random() - 0.5) * 60;
+            positions[i + 2] = (Math.random() - 0.5) * 60;
 
             const mixedColor = purpleColor.clone().lerp(cyanColor, Math.random());
             colors[i] = mixedColor.r;
@@ -572,45 +664,15 @@
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
         const material = new THREE.PointsMaterial({
-            size: 0.25,
+            size: 0.28,
             vertexColors: true,
             transparent: true,
-            opacity: 0.8,
+            opacity: 0.65,
             blending: THREE.AdditiveBlending
         });
 
         const particleSystem = new THREE.Points(geometry, material);
         scene.add(particleSystem);
-
-        // Lines connecting points
-        const lineMaterial = new THREE.LineBasicMaterial({
-            color: 0x8B5CF6,
-            transparent: true,
-            opacity: 0.05,
-            blending: THREE.AdditiveBlending
-        });
-
-        const lineGeometry = new THREE.BufferGeometry();
-        const linePositions = [];
-
-        const posArr = geometry.attributes.position.array;
-        for (let i = 0; i < particleCount; i++) {
-            for (let j = i + 1; j < particleCount; j++) {
-                const dx = posArr[i * 3] - posArr[j * 3];
-                const dy = posArr[i * 3 + 1] - posArr[j * 3 + 1];
-                const dz = posArr[i * 3 + 2] - posArr[j * 3 + 2];
-                const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-                if (dist < 8.0) {
-                    linePositions.push(posArr[i * 3], posArr[i * 3 + 1], posArr[i * 3 + 2]);
-                    linePositions.push(posArr[j * 3], posArr[j * 3 + 1], posArr[j * 3 + 2]);
-                }
-            }
-        }
-
-        lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-        const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-        scene.add(lines);
 
         camera.position.z = 25;
 
@@ -621,13 +683,14 @@
         let targetY = 0;
 
         window.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - window.innerWidth / 2) * 0.015;
-            mouseY = (event.clientY - window.innerHeight / 2) * 0.015;
+            mouseX = (event.clientX - window.innerWidth / 2) * 0.02;
+            mouseY = (event.clientY - window.innerHeight / 2) * 0.02;
         });
 
         function animateThree() {
             requestAnimationFrame(animateThree);
 
+            // Elastic camera tracking coordinates damping
             targetX += (mouseX - targetX) * 0.05;
             targetY += (mouseY - targetY) * 0.05;
 
@@ -635,10 +698,11 @@
             camera.position.y = -targetY;
             camera.lookAt(scene.position);
 
-            particleSystem.rotation.y += 0.0012;
-            particleSystem.rotation.x += 0.0006;
-            lines.rotation.y += 0.0012;
-            lines.rotation.x += 0.0006;
+            coreMesh.rotation.y += 0.0018;
+            coreMesh.rotation.x += 0.0009;
+
+            particleSystem.rotation.y += 0.0008;
+            particleSystem.rotation.x += 0.0004;
 
             renderer.render(scene, camera);
         }
@@ -652,7 +716,7 @@
         animateThree();
     </script>
 
-    <!-- STREAMING_CHUNK: Setting up interactive hover event triggers for card modules -->
+    <!-- STREAMING_CHUNK: Coding tilt-card movements and sound-sweep events -->
     <script>
         const cards = document.querySelectorAll('.tilt-card');
 
@@ -697,11 +761,96 @@
         });
     </script>
 
-    <!-- STREAMING_CHUNK: Modeling sliders metrics and building network jitter oscilloscope canvas -->
+    <!-- STREAMING_CHUNK: Coding the Map Veto compiler system logic and recommendations -->
+    <!-- COMPACT TACTICAL MAP VETO COMPILER SYSTEM ENGINE -->
+    <script>
+        const vetoRecommendationMatrix = {
+            high: "De_Mirage",
+            med: "De_Anubis",
+            low: "De_Nuke"
+        };
+
+        let bannedMaps = new Set();
+
+        function toggleMapVeto(mapName, element) {
+            const badge = element.querySelector('.veto-status-badge');
+            
+            if (bannedMaps.has(mapName)) {
+                // UNBAN MAP
+                bannedMaps.delete(mapName);
+                element.classList.remove('border-brand-red/60', 'opacity-50');
+                element.classList.add('hover:border-brand-orange/50');
+                
+                badge.textContent = "Active";
+                badge.className = "text-[8px] font-mono font-black uppercase text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 px-2 py-0.5 rounded veto-status-badge";
+                
+                playSynthSound(440, 0.12, 0.06, 'sine');
+            } else {
+                // BAN MAP
+                bannedMaps.add(mapName);
+                element.classList.remove('hover:border-brand-orange/50');
+                element.classList.add('border-brand-red/60', 'opacity-50');
+                
+                badge.textContent = "Banned";
+                badge.className = "text-[8px] font-mono font-black uppercase text-brand-red bg-brand-red/10 border border-brand-red/20 px-2 py-0.5 rounded veto-status-badge";
+                
+                // Low warning alarm buzz on banning map
+                playSynthSound(130, 0.22, 0.15, 'sawtooth');
+            }
+
+            recomputeOptimalDecider();
+        }
+
+        function recomputeOptimalDecider() {
+            const confidenceVal = parseInt(confidenceSlider.value);
+            let recommendationGroup = "med";
+            if (confidenceVal > 80) recommendationGroup = "high";
+            if (confidenceVal < 40) recommendationGroup = "low";
+
+            const allMaps = ["Mirage", "Anubis", "Nuke", "Ancient", "Inferno", "Vertigo", "Dust 2"];
+            let deciderFound = "De_Inferno"; // Default Decider map
+
+            // Find first unbanned map matching priority sequence
+            const preferredMap = vetoRecommendationMatrix[recommendationGroup].replace("De_", "");
+            if (!bannedMaps.has(preferredMap)) {
+                deciderFound = "De_" + preferredMap;
+            } else {
+                for (let map of allMaps) {
+                    if (!bannedMaps.has(map)) {
+                        deciderFound = "De_" + map;
+                        break;
+                    }
+                }
+            }
+
+            if (bannedMaps.size === allMaps.length) {
+                deciderFound = "ALL MAPS BANNED";
+            }
+
+            document.getElementById('deciderMapText').textContent = deciderFound;
+        }
+    </script>
+
+    <!-- STREAMING_CHUNK: Coding ELO Slider brackets and Level Badge changes in real time -->
+    <!-- ELO SLIDER MATRIX INDICATOR SYSTEM -->
     <script>
         const confidenceSlider = document.getElementById('confidenceSlider');
         const txtConfidencePercent = document.getElementById('txtConfidencePercent');
         const forecastEloValue = document.getElementById('forecastEloValue');
+        const eloLevelBadge = document.getElementById('eloLevelBadge');
+
+        const faceitLevelBadges = {
+            1: { name: "1", color: "bg-neutral-600 shadow-neutral-600/30 text-white border-neutral-500/20" },
+            2: { name: "2", color: "bg-emerald-600 shadow-emerald-600/30 text-white border-emerald-500/20" },
+            3: { name: "3", color: "bg-emerald-600 shadow-emerald-600/30 text-white border-emerald-500/20" },
+            4: { name: "4", color: "bg-yellow-600 shadow-yellow-600/30 text-white border-yellow-500/20" },
+            5: { name: "5", color: "bg-yellow-600 shadow-yellow-600/30 text-white border-yellow-500/20" },
+            6: { name: "6", color: "bg-yellow-600 shadow-yellow-600/30 text-white border-yellow-500/20" },
+            7: { name: "7", color: "bg-yellow-600 shadow-yellow-600/30 text-white border-yellow-500/20" },
+            8: { name: "8", color: "bg-orange-600 shadow-orange-600/30 text-white border-orange-500/20" },
+            9: { name: "9", color: "bg-orange-600 shadow-orange-600/30 text-white border-orange-500/20" },
+            10: { name: "10", color: "bg-orange-600 shadow-orange-600/30 text-white border-orange-500/20" }
+        };
 
         confidenceSlider.addEventListener('input', (e) => {
             const val = parseInt(e.target.value);
@@ -710,23 +859,39 @@
             let predictedElo = Math.floor(val * 0.4);
             forecastEloValue.textContent = `+${predictedElo} ELO`;
             
+            // Map 10-100 values to FACEIT levels 1 to 10
+            let calculatedLvl = Math.ceil(val / 10);
+            if (calculatedLvl < 1) calculatedLvl = 1;
+            if (calculatedLvl > 10) calculatedLvl = 10;
+
+            const badgeConfig = faceitLevelBadges[calculatedLvl];
+            eloLevelBadge.textContent = badgeConfig.name;
+            
+            // Reapply stylized rank gradients
+            eloLevelBadge.className = `w-14 h-14 rounded-lg flex flex-col items-center justify-center text-white font-extrabold text-2xl tracking-tighter shadow-lg transition-all duration-200 transform scale-110 ${badgeConfig.color}`;
+            const subSpan = document.createElement('span');
+            subSpan.className = "text-[8px] uppercase tracking-widest text-white/80 mt-0.5 font-bold leading-none";
+            subSpan.textContent = "Level";
+            eloLevelBadge.appendChild(subSpan);
+
             playSynthSound(200 + val * 4, 0.08, 0.02, 'sine');
+            recomputeOptimalDecider();
         });
 
         // Canvas live jitter graph setup
-        const jitterCanvas = document.getElementById('jitterCanvas');
-        const jitterCtx = jitterCanvas.getContext('2d');
+        const JitterCanvas = document.getElementById('jitterCanvas');
+        const JitterCtx = JitterCanvas.getContext('2d');
 
         function resizeJitterCanvas() {
-            jitterCanvas.width = jitterCanvas.parentElement.offsetWidth;
-            jitterCanvas.height = jitterCanvas.parentElement.offsetHeight;
+            JitterCanvas.width = JitterCanvas.parentElement.offsetWidth;
+            JitterCanvas.height = JitterCanvas.parentElement.offsetHeight;
         }
         window.addEventListener('resize', resizeJitterCanvas);
         resizeJitterCanvas();
 
-        let jitterPoints = [];
+        let JitterPoints = [];
         for (let i = 0; i < 40; i++) {
-            jitterPoints.push(0.03);
+            JitterPoints.push(0.03);
         }
 
         setInterval(() => {
@@ -734,52 +899,52 @@
             if (Math.random() < 0.1) nextJitter += 0.09; 
             
             document.getElementById('liveJitterValue').textContent = `${nextJitter.toFixed(2)} ms`;
-            jitterPoints.push(nextJitter);
-            if (jitterPoints.length > 45) jitterPoints.shift();
+            JitterPoints.push(nextJitter);
+            if (JitterPoints.length > 45) JitterPoints.shift();
         }, 300);
 
         function drawJitterGraph() {
             requestAnimationFrame(drawJitterGraph);
-            jitterCtx.clearRect(0, 0, jitterCanvas.width, jitterCanvas.height);
+            JitterCtx.clearRect(0, 0, JitterCanvas.width, JitterCanvas.height);
 
-            jitterCtx.strokeStyle = '#10131b';
-            jitterCtx.lineWidth = 1;
-            for (let i = 0; i < jitterCanvas.height; i += 20) {
-                jitterCtx.beginPath();
-                jitterCtx.moveTo(0, i);
-                jitterCtx.lineTo(jitterCanvas.width, i);
-                jitterCtx.stroke();
+            JitterCtx.strokeStyle = '#10131b';
+            JitterCtx.lineWidth = 1;
+            for (let i = 0; i < JitterCanvas.height; i += 20) {
+                JitterCtx.beginPath();
+                JitterCtx.moveTo(0, i);
+                JitterCtx.lineTo(JitterCanvas.width, i);
+                JitterCtx.stroke();
             }
 
-            if (jitterPoints.length < 2) return;
+            if (JitterPoints.length < 2) return;
 
-            jitterCtx.beginPath();
-            jitterCtx.strokeStyle = '#00E5FF';
-            jitterCtx.lineWidth = 1.5;
+            JitterCtx.beginPath();
+            JitterCtx.strokeStyle = '#00E5FF';
+            JitterCtx.lineWidth = 1.5;
 
             const max = 0.25;
-            const w = jitterCanvas.width / (jitterPoints.length - 1);
+            const w = JitterCanvas.width / (JitterPoints.length - 1);
 
-            for (let i = 0; i < jitterPoints.length; i++) {
+            for (let i = 0; i < JitterPoints.length; i++) {
                 const x = i * w;
-                const y = jitterCanvas.height - (jitterPoints[i] / max) * (jitterCanvas.height - 15) - 8;
-                if (i === 0) jitterCtx.moveTo(x, y);
-                else jitterCtx.lineTo(x, y);
+                const y = JitterCanvas.height - (JitterPoints[i] / max) * (JitterCanvas.height - 15) - 8;
+                if (i === 0) JitterCtx.moveTo(x, y);
+                else JitterCtx.lineTo(x, y);
             }
-            jitterCtx.stroke();
+            JitterCtx.stroke();
 
-            const grad = jitterCtx.createLinearGradient(0, 0, 0, jitterCanvas.height);
+            const grad = JitterCtx.createLinearGradient(0, 0, 0, JitterCanvas.height);
             grad.addColorStop(0, 'rgba(0, 229, 255, 0.08)');
             grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            jitterCtx.fillStyle = grad;
-            jitterCtx.lineTo(jitterCanvas.width, jitterCanvas.height);
-            jitterCtx.lineTo(0, jitterCanvas.height);
-            jitterCtx.fill();
+            JitterCtx.fillStyle = grad;
+            JitterCtx.lineTo(JitterCanvas.width, JitterCanvas.height);
+            JitterCtx.lineTo(0, JitterCanvas.height);
+            JitterCtx.fill();
         }
         drawJitterGraph();
     </script>
 
-    <!-- STREAMING_CHUNK: Coding HTML5 Canvas game loops for the reaction test module -->
+    <!-- STREAMING_CHUNK: Coding the HTML5 Reflex reaction game canvas and local High-Score updates -->
     <!-- INTERACTIVE HUB REACTION CANVAS MODULE -->
     <script>
         const rxCanvas = document.getElementById('hubReactionCanvas');
@@ -798,6 +963,12 @@
         }
         window.addEventListener('resize', resizeRxCanvas);
         resizeRxCanvas();
+
+        // Local high-score loading
+        let personalBest = localStorage.getItem('hub_reaction_pb');
+        if (personalBest) {
+            document.getElementById('reactionPbText').textContent = `${personalBest} ms`;
+        }
 
         rxCanvas.addEventListener('mousedown', () => {
             if (rxState === 'idle') {
@@ -829,6 +1000,14 @@
                 } else {
                     rxRating = 'TIER 4 - CRITICAL (TILTED)';
                 }
+
+                // Check and write new personal best record
+                if (!personalBest || rxTimeResult < parseInt(personalBest)) {
+                    personalBest = rxTimeResult;
+                    localStorage.setItem('hub_reaction_pb', personalBest);
+                    document.getElementById('reactionPbText').textContent = `${personalBest} ms`;
+                }
+
                 rxState = 'result';
             } 
             else if (rxState === 'result' || rxState === 'foul') {
@@ -837,6 +1016,7 @@
             }
         });
 
+        // STREAMING_CHUNK: Painting reaction canvas states with glow properties -->
         function drawReactionCanvas() {
             rxCtx.clearRect(0, 0, rxCanvas.width, rxCanvas.height);
             rxPulse += 0.04;
@@ -934,6 +1114,7 @@
         requestAnimationFrame(drawReactionCanvas);
     </script>
 
+    <!-- STREAMING_CHUNK: Loading localStorage options and starting ambient drone audio loops -->
     <script>
         const gamerInput = document.getElementById('gamerTagInput');
         
