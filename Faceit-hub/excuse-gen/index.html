@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tactical Alibi Deployment System (T.A.D.S)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            orange: '#FF5500',
+                            orangeHover: '#E04B00',
+                            dark: '#08090C',
+                            card: '#11131A',
+                            border: '#1E212B',
+                            lightBorder: '#2E3342',
+                            textMuted: '#8A92A6',
+                            terminal: '#050608',
+                            cyan: '#00E5FF',
+                            accentRed: '#EF4444'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Share Tech Mono', 'monospace'],
+                        code: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #08090C;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glow-orange {
+            box-shadow: 0 0 25px rgba(255, 85, 0, 0.15);
+        }
+        .glow-orange-bright {
+            box-shadow: 0 0 35px rgba(255, 85, 0, 0.35);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.15);
+        }
+        .glow-red {
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.15);
+        }
+        .text-neon-orange {
+            text-shadow: 0 0 8px rgba(255, 85, 0, 0.6);
+        }
+        .bg-grid-dark {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 85, 0, 0.01) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 85, 0, 0.01) 1px, transparent 1px);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08090C;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E212B;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF5500;
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        /* Scanline container is now static and ultra-subtle only for background */
+        .noise-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.012;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-orange selection:text-black bg-grid-dark relative">
+
+    <!-- Subtle military noise pattern -->
+    <div class="absolute inset-0 noise-overlay pointer-events-none z-0"></div>
+
+    <!-- Main Header -->
+    <header class="border-b border-brand-border bg-brand-card/95 backdrop-blur sticky top-0 z-40 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <div class="bg-gradient-to-br from-neutral-800 to-brand-orange p-2.5 rounded-lg text-white font-black text-xl tracking-tight leading-none glow-orange">
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-orange border-2 border-brand-card rounded-full animate-ping"></div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-base font-black tracking-wider uppercase text-white">
+                            TACTICAL ALIBI DEPLOYMENT <span class="text-brand-orange">SYSTEM (T.A.D.S)</span>
+                        </h1>
+                        <span class="text-[9px] bg-brand-orange/10 text-brand-orange border border-brand-orange/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">SECURE PRO v5.0</span>
+                    </div>
+                    <p class="text-xs text-brand-textMuted flex items-center gap-1.5">
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-orange"></span>
+                        Модуль маскировки тильта: <span class="font-mono text-gray-300">ANTI_TILT_CORE.dll</span>
+                        <span class="mx-1 text-brand-border">|</span>
+                        Канал связи: <span class="text-gray-300">Clean Professional Spectrum</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button id="toggleAudioBtn" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-orange/40 transition-all text-xs flex items-center space-x-2">
+                    <i id="audioIcon" class="fas fa-volume-high text-brand-orange"></i>
+                    <span class="font-mono text-gray-300">ЗВУКОВЫЕ ЭФФЕКТЫ: ВКЛ</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
+
+        <!-- Calibration Notice and Protocol Info -->
+        <div class="bg-brand-card border border-brand-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex gap-3">
+                <div class="text-brand-orange text-xl mt-0.5"><i class="fa-solid fa-shield-halved"></i></div>
+                <div>
+                    <h4 class="font-bold text-sm text-white uppercase tracking-wider">
+                        Протокол генерации алиби для подавления критики в чате FACEIT
+                    </h4>
+                    <p class="text-xs text-brand-textMuted max-w-4xl">
+                        Инструмент генерирует верифицированные и термостойкие оправдания для покрытия любых технических, физиологических, ментальных или квантовых провалов в катке. Выберите целевую категорию и уровень деградации геймплея.
+                    </p>
+                </div>
+            </div>
+            <div class="text-xs font-mono text-brand-orange bg-brand-orange/5 px-3 py-2 rounded-lg border border-brand-orange/20 flex flex-col items-end whitespace-nowrap">
+                <span>DODGE STATUS: READY</span>
+                <span class="text-[10px] text-gray-500">REALTIME_ALIBI_GENERATOR</span>
+            </div>
+        </div>
+
+        <!-- Core Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Panel: Parameter tuning -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-brand-card border border-brand-border rounded-xl p-5 space-y-6">
+                    <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                        <h3 class="text-xs font-bold text-brand-orange uppercase tracking-widest flex items-center gap-2">
+                            <i class="fa-solid fa-sliders"></i> Параметры Алиби
+                        </h3>
+                        <span class="text-[10px] font-mono text-brand-orange bg-brand-orange/10 px-2 py-0.5 rounded border border-brand-orange/20">CONFIGURATOR</span>
+                    </div>
+
+                    <!-- Alibi Categories -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-wider">Тип Маскировки (Категория):</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="selectCategory('realistic')" id="cat_realistic" class="cat-btn active py-2.5 px-3 rounded-lg border text-xs font-semibold flex items-center justify-between transition-all bg-brand-orange/5 border-brand-orange text-white">
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-shield-halved"></i> Реалистичная</span>
+                                <i class="fa-solid fa-circle-check text-[10px] text-brand-orange"></i>
+                            </button>
+                            <button onclick="selectCategory('toxic')" id="cat_toxic" class="cat-btn py-2.5 px-3 rounded-lg border border-brand-border hover:border-brand-lightBorder text-brand-textMuted hover:text-white text-xs font-semibold flex items-center justify-between transition-all bg-transparent">
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-skull"></i> Токсичная</span>
+                                <i class="fa-solid fa-circle-check text-[10px] hidden text-brand-orange"></i>
+                            </button>
+                            <button onclick="selectCategory('absurd')" id="cat_absurd" class="cat-btn py-2.5 px-3 rounded-lg border border-brand-border hover:border-brand-lightBorder text-brand-textMuted hover:text-white text-xs font-semibold flex items-center justify-between transition-all bg-transparent">
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-circle-question"></i> Абсурдная</span>
+                                <i class="fa-solid fa-circle-check text-[10px] hidden text-brand-orange"></i>
+                            </button>
+                            <button onclick="selectCategory('quantum')" id="cat_quantum" class="cat-btn py-2.5 px-3 rounded-lg border border-brand-border hover:border-brand-lightBorder text-brand-textMuted hover:text-white text-xs font-semibold flex items-center justify-between transition-all bg-transparent">
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-atom"></i> Научная (Сложная)</span>
+                                <i class="fa-solid fa-circle-check text-[10px] hidden text-brand-orange"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Severity Sliders -->
+                    <div class="space-y-3 pt-2">
+                        <div class="flex justify-between text-xs font-mono">
+                            <span class="text-brand-textMuted uppercase tracking-wider">Градус безумия / Уровень отмазки:</span>
+                            <span id="severityLabel" class="text-brand-orange font-black uppercase">Уровень 1</span>
+                        </div>
+                        <input type="range" id="rngSeverity" min="1" max="5" value="1" 
+                               class="w-full h-1.5 bg-brand-terminal rounded-lg appearance-none cursor-pointer accent-brand-orange">
+                        <div class="text-[10px] text-brand-textMuted flex items-center gap-1.5 font-mono leading-relaxed">
+                            <i class="fa-solid fa-circle-info"></i> Повышение уровня усложняет структуру оправдания, добавляя больше деталей и жесткости.
+                        </div>
+                    </div>
+
+                    <!-- Trigger generation btn -->
+                    <button id="btnGenerateAlibi" class="w-full py-3.5 bg-gradient-to-r from-brand-orange to-red-600 hover:opacity-95 text-white font-extrabold text-xs uppercase tracking-widest rounded-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 glow-orange">
+                        <i class="fa-solid fa-gears"></i> СГЕНЕРИРОВАТЬ ТАКТИЧЕСКОЕ АЛИБИ
+                    </button>
+                </div>
+
+                <!-- Panic Dodge Assistant Widget -->
+                <div class="bg-brand-card border border-brand-border rounded-xl p-5 space-y-4">
+                    <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                        <h3 class="text-xs font-bold text-brand-accentRed uppercase tracking-widest flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-brand-accentRed animate-pulse"></i> Срочный Додж-Помощник
+                        </h3>
+                        <span class="text-[10px] font-mono text-brand-accentRed bg-brand-accentRed/10 px-2 py-0.5 rounded border border-brand-accentRed/20">EMERGENCY</span>
+                    </div>
+                    
+                    <p class="text-xs text-brand-textMuted leading-relaxed">
+                        Нужно срочно отменить матч на стадии вето или пика карт, не получив репорты за трусость? Сгенерируйте паническую причину мгновенного выхода из игры.
+                    </p>
+
+                    <button id="btnPanicDodge" class="w-full py-2.5 bg-brand-accentRed/10 hover:bg-brand-accentRed/20 border border-brand-accentRed/50 hover:border-brand-accentRed text-brand-accentRed font-extrabold text-xs uppercase tracking-widest rounded-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-door-open"></i> СГЕНЕРИРОВАТЬ ПРИЧИНУ ДЛЯ ДОДЖА
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel: High-tech decryption output terminal -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                
+                <div class="bg-brand-card border border-brand-border rounded-xl p-6 flex-grow flex flex-col gap-4 relative overflow-hidden">
+                    
+                    <!-- Decryption Header -->
+                    <div class="flex justify-between items-center border-b border-brand-border pb-3 z-10 relative">
+                        <div class="flex items-center gap-3">
+                            <span class="relative flex h-3 w-3">
+                                <span id="radarDotAnimate" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
+                                <span id="radarDot" class="relative inline-flex rounded-full h-3 w-3 bg-brand-orange"></span>
+                            </span>
+                            <div>
+                                <h2 class="text-xs font-bold uppercase tracking-widest text-white" id="terminalStatusHeader">Режим ожидания</h2>
+                                <p class="text-[10px] text-brand-textMuted" id="terminalStatusSub">Дешифратор T.A.D.S готов к генерации</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Dynamic bind key configurator -->
+                        <div class="bg-brand-terminal border border-brand-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-2">
+                            <span class="text-brand-textMuted uppercase">Клавиша:</span>
+                            <input type="text" id="bindKeyInput" value="F" maxlength="8" class="w-12 bg-transparent border-b border-brand-lightBorder hover:border-brand-orange focus:border-brand-orange text-center font-bold text-brand-orange focus:outline-none uppercase transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Live terminal screen for typewriter decrypt outputs -->
+                    <div class="flex-grow bg-brand-terminal border border-brand-border p-5 rounded-xl relative overflow-hidden flex flex-col justify-between min-h-[320px]">
+                        
+                        <div class="space-y-4 font-mono text-xs text-brand-orange z-10 relative select-text">
+                            <!-- Status bar -->
+                            <div class="flex justify-between text-[10px] text-brand-textMuted border-b border-brand-border/40 pb-1.5">
+                                <span>[PIPELINE_STATUS: STANDBY]</span>
+                                <span id="timestampClock">00:00:00 UTC</span>
+                            </div>
+
+                            <!-- Generated excuse block -->
+                            <div class="space-y-3">
+                                <div class="text-[11px] text-brand-orange/90 tracking-wider uppercase font-extrabold">&gt;&gt; РАСШИФРОВАННЫЙ ТЕКСТ ОТМАЗКИ:</div>
+                                <p id="excuseOutputText" class="text-base sm:text-lg font-bold text-white leading-relaxed border-l-3 border-brand-orange pl-4">
+                                    "Инициируйте процедуру генерации, выбрав нужный класс и градус безумия. Тактическое оправдание будет скомпилировано в реальном времени."
+                                </p>
+                            </div>
+
+                            <!-- CS2 Console Bind box -->
+                            <div class="space-y-2.5 pt-4 border-t border-brand-border/40">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[11px] text-brand-orange/90 tracking-wider uppercase font-extrabold">&gt;&gt; ГОТОВАЯ КОМАНДА ДЛЯ КОНСОЛИ CS2:</span>
+                                    <span class="text-[9px] bg-brand-orange/10 text-brand-orange px-1.5 py-0.5 rounded border border-brand-orange/20 font-bold uppercase">AUTO-BIND</span>
+                                </div>
+                                <div class="p-4 bg-black/90 border border-brand-lightBorder rounded-lg font-code text-xs text-neutral-200 leading-normal flex justify-between items-center gap-3 overflow-x-auto select-all">
+                                    <span id="consoleBindOutput" class="text-neutral-200 font-mono tracking-wide">bind "F" "say_team Да блин у меня..."</span>
+                                    <button onclick="copyToClipboard('consoleBindOutput')" class="p-1.5 text-brand-orange hover:bg-brand-orange/10 rounded transition-all shrink-0" title="Скопировать бинд">
+                                        <i class="fa-regular fa-copy text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar during generation -->
+                        <div id="decryptionProgressContainer" class="h-1 bg-brand-border w-full rounded-full overflow-hidden mt-4 hidden">
+                            <div id="decryptionProgressBar" class="h-full bg-brand-orange w-0 transition-all duration-100 ease-out"></div>
+                        </div>
+                    </div>
+
+                    <!-- Fast copy / share hub -->
+                    <div class="grid grid-cols-2 gap-3 z-10 relative">
+                        <button onclick="copyToClipboard('excuseOutputText', 'Отмазка скопирована!')" class="py-2.5 bg-brand-orange/5 hover:bg-brand-orange/10 border border-brand-border hover:border-brand-orange/40 text-white font-bold rounded-lg text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                            <i class="fa-regular fa-clipboard"></i> Копировать отмазку
+                        </button>
+                        <button id="btnSpamChat" onclick="shareExcuse()" class="py-2.5 bg-gradient-to-r from-brand-orange to-red-600 text-white font-extrabold rounded-lg text-xs uppercase tracking-wider transition-all hover:opacity-90 flex items-center justify-center gap-2 shadow-lg shadow-brand-orange/10">
+                            <i class="fa-solid fa-share-nodes"></i> Поделиться алиби
+                        </button>
+                    </div>
+
+                    <!-- Technical footer info -->
+                    <div class="flex items-center justify-between text-[10px] text-brand-textMuted font-mono uppercase tracking-wider border-t border-brand-border/40 pt-3 z-10 relative">
+                        <span>* ДЕШИФРАЦИЯ ЧЕРЕЗ АЛГОРИТМ AES-256</span>
+                        <span class="text-brand-orange font-semibold"><i class="fa-solid fa-circle-check"></i> SECURE ALIBI</span>
+                    </div>
+                </div>
+
+                <!-- Custom Hotkeys Bind Guide -->
+                <div class="bg-brand-card border border-brand-border rounded-xl p-5 space-y-3 font-mono text-xs">
+                    <h4 class="font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-terminal text-brand-orange"></i> ИНСТРУКЦИЯ ПО ИСПОЛЬЗОВАНИЮ БИНДА
+                    </h4>
+                    <ol class="list-decimal list-inside space-y-1.5 text-brand-textMuted leading-relaxed">
+                        <li>Задайте желаемую клавишу бинда в правом верхнем углу терминала.</li>
+                        <li>Сгенерируйте оптимальное оправдание с нужным уровнем детализации.</li>
+                        <li>Нажмите кнопку копирования консольного бинда.</li>
+                        <li>Вставьте скопированный текст в игровую консоль (клавиша <strong class="text-white">`</strong> или <strong class="text-white">~</strong>) в CS2 и нажмите Enter.</li>
+                        <li>Теперь при нажатии указанной клавиши отмазка мгновенно улетит в командный чат матча!</li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Custom Toaster (Fallback for alerts) -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-brand-card/90 text-white border border-brand-orange px-5 py-3 rounded-xl shadow-lg shadow-black/80 flex items-center space-x-3 max-w-sm">
+        <i class="fa-solid fa-circle-check text-brand-orange text-lg"></i>
+        <span id="toastMessage" class="text-xs font-semibold font-mono">Алиби скопировано в буфер!</span>
+    </div>
+
+    <!-- AUDIO INTERFACES FOR RADIO CLICKS & Decryption Static -->
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let audioEnabled = true;
+
+        function playRadioStatic(duration = 0.5, type = 'high') {
+            if (!audioEnabled) return;
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                // Generate professional static white noise
+                const bufferSize = audioCtx.sampleRate * duration;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noiseNode = audioCtx.createBufferSource();
+                noiseNode.buffer = buffer;
+
+                const filterNode = audioCtx.createBiquadFilter();
+                filterNode.type = 'bandpass';
+                filterNode.frequency.setValueAtTime(type === 'high' ? 1000 : 600, audioCtx.currentTime);
+                filterNode.Q.setValueAtTime(4, audioCtx.currentTime);
+
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+                noiseNode.connect(filterNode);
+                filterNode.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                noiseNode.start();
+                noiseNode.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio static error: ", e);
+            }
+        }
+
+        function playSynthBeep(freq, duration, vol = 0.04) {
+            if (!audioEnabled) return;
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Synth error: ", e);
+            }
+        }
+
+        function playRadioClickOn() {
+            playRadioStatic(0.12, 'high');
+            setTimeout(() => playSynthBeep(1200, 0.04, 0.03), 10);
+        }
+
+        function playRadioClickOff() {
+            setTimeout(() => playRadioStatic(0.15, 'low'), 20);
+            playSynthBeep(900, 0.06, 0.03);
+        }
+
+        function playDecryptionProgress() {
+            playSynthBeep(1100, 0.02, 0.015);
+            setTimeout(() => playSynthBeep(1300, 0.02, 0.015), 40);
+        }
+
+        // Toggle sound control
+        document.getElementById('toggleAudioBtn').addEventListener('click', () => {
+            audioEnabled = !audioEnabled;
+            const btnText = document.querySelector('#toggleAudioBtn span');
+            const btnIcon = document.getElementById('audioIcon');
+            if (audioEnabled) {
+                btnText.textContent = "ЗВУКОВЫЕ ЭФФЕКТЫ: ВКЛ";
+                btnIcon.className = "fas fa-volume-high text-brand-orange";
+                playRadioClickOn();
+            } else {
+                btnText.textContent = "ЗВУКОВЫЕ ЭФФЕКТЫ: ВЫКЛ";
+                btnIcon.className = "fas fa-volume-mute text-brand-textMuted";
+            }
+        });
+
+        // Update Clock
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = now.toISOString().substring(11, 19) + " UTC";
+            document.getElementById('timestampClock').textContent = timeStr;
+        }, 1000);
+    </script>
+
+    <!-- DATABASE & GENERATION ENGINES -->
+    <script>
+        // State management
+        let activeCategory = 'realistic';
+
+        // Precise level-based database (Work perfectly without custom variable inputs)
+        const excusesDatabase = {
+            realistic: {
+                1: "Да блин, у меня просто мышка за ковер зацепилась, сенсор дернуло вверх.",
+                2: "У меня пинг резко до 120 подскочил прямо во время пика, хитбоксы пустые.",
+                3: "Дикий просад фпс пошел из-за смоков, CS2 просто зависла на полсекунды.",
+                4: "Провод от наушников натянулся и заблокировал мышку, я не смог развернуться.",
+                5: "Античит FACEIT вызвал конфликт с драйвером ввода Windows, устройство позиционирования отключилось на зажиме."
+            },
+            toxic: {
+                1: "Да как играть с вами вообще, вы карту хоть иногда контролируете?",
+                2: "Я дал вам идеальную инфу, а вы сливаетесь без фрагов в первые секунды раунда.",
+                3: "У нас на четверых одна извилина на радаре, вы бегаете кругами без разменов.",
+                4: "Я играю с людьми, которые впервые запустили шутеры. Сдайте уже эту игру, не позорьтесь.",
+                5: "Уровень вашей командной координации официально отрицательный. Мой тильт полностью оправдан."
+            },
+            absurd: {
+                1: "Кот прыгнул на клавиатуру и нажал пробел ровно в момент моего спрея.",
+                2: "Сосед снизу так громко чихнул, что сейсмическая волна сдвинула мой стол.",
+                3: "Люстра сорвалась с потолка и упала на стол, заблокировав мне обзор и клавишу W.",
+                4: "У меня чайник на кухне засвистел точь-в-точь как шаги врага, я побежал плиту спасать.",
+                5: "В окно влетел майский жук размером с кулак и атаковал мой лоб, я защищался клавиатурой."
+            },
+            quantum: {
+                1: "Произошла кратковременная рассинхронизация синаптических нейропередатчиков правого запястья.",
+                2: "Локальный коллапс волновой функции вызвал слепоту фоторецепторов сетчатки на частоте 360 Гц.",
+                3: "Интерференция терагерцовых волн роутера с тепловым излучением батареи спровоцировала джиттер UDP-пакетов.",
+                4: "Анизотропная фильтрация трехмерного пространства вошла в конфликт с буфером глубины шейдерного конвейера.",
+                5: "Гравитационный потенциал ретроградного Меркурия сместил фазовый вектор скольжения мыши на атомарном уровне."
+            }
+        };
+
+        // Emergency Dodge Excuses (Unrelated, panic-stricken and realistic)
+        const dodgeExcuses = [
+            "Парни, без обид, у меня трубу прорвало в коридоре! Вода хлещет прямо под щиток, мне надо срочно рубить электричество! Ливаю!",
+            "У меня отец зашел в комнату, увидел оценки и выдернул провод питания из розетки. Я пишу с телефона, сорри, доджу лобби.",
+            "На кухне стиралка сорвалась с креплений и начала крушить стену на отжиме. Мне надо бежать спасать технику!",
+            "У меня кошка рожает прямо на коврик! Я не могу на это смотреть и играть одновременно, срочно ливаю!",
+            "Случайно опрокинул горячий кофе прямо себе на колени и клавиатуру, всё искрит и горит, я ушел тушить!"
+        ];
+
+        // Custom descriptions for severity levels
+        const severityClasses = [
+            "Уровень 1 (Простая отмазка)",
+            "Уровень 2 (Локальная помеха)",
+            "Уровень 3 (Серьезное препятствие)",
+            "Уровень 4 (Катастрофический форс-мажор)",
+            "Уровень 5 (Максимальная деградация)"
+        ];
+
+        function selectCategory(cat) {
+            playRadioClickOn();
+            activeCategory = cat;
+            
+            // Toggle active classes on buttons
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn py-2.5 px-3 rounded-lg border border-brand-border hover:border-brand-lightBorder text-brand-textMuted hover:text-white text-xs font-semibold flex items-center justify-between transition-all bg-transparent";
+                btn.querySelector('.fa-circle-check').classList.add('hidden');
+            });
+
+            const activeBtn = document.getElementById(`cat_${cat}`);
+            activeBtn.className = "cat-btn active py-2.5 px-3 rounded-lg border text-xs font-semibold flex items-center justify-between transition-all bg-brand-orange/5 border-brand-orange text-white";
+            activeBtn.querySelector('.fa-circle-check').classList.remove('hidden');
+        }
+
+        // Severity slider tracker
+        const severitySlider = document.getElementById('rngSeverity');
+        const severityLabel = document.getElementById('severityLabel');
+
+        severitySlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            severityLabel.textContent = severityClasses[val - 1];
+            playSynthBeep(400 + val * 80, 0.04, 0.02);
+        });
+
+        const btnGenerateAlibi = document.getElementById('btnGenerateAlibi');
+        const excuseOutputText = document.getElementById('excuseOutputText');
+        const consoleBindOutput = document.getElementById('consoleBindOutput');
+        const decryptionProgressContainer = document.getElementById('decryptionProgressContainer');
+        const decryptionProgressBar = document.getElementById('decryptionProgressBar');
+        const terminalStatusHeader = document.getElementById('terminalStatusHeader');
+        const terminalStatusSub = document.getElementById('terminalStatusSub');
+        const bindKeyInput = document.getElementById('bindKeyInput');
+
+        // Regenerate bind when editing input key
+        bindKeyInput.addEventListener('input', () => {
+            const key = bindKeyInput.value.trim().toUpperCase() || 'F';
+            const currentExcuse = excuseOutputText.textContent;
+            if (!currentExcuse.startsWith('"Инициируйте')) {
+                updateConsoleBind(key, currentExcuse);
+            }
+        });
+
+        btnGenerateAlibi.addEventListener('click', () => {
+            playRadioClickOn();
+            generateStrategicExcuse();
+        });
+
+        function generateStrategicExcuse() {
+            // Start progress animation simulation
+            decryptionProgressContainer.classList.remove('hidden');
+            decryptionProgressBar.style.width = '0%';
+            terminalStatusHeader.textContent = "ДЕШИФРАЦИЯ...";
+            terminalStatusSub.textContent = "Обсчет матричного кода и квантовых переменных";
+
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 20;
+                decryptionProgressBar.style.width = `${progress}%`;
+                playDecryptionProgress();
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        decryptionProgressContainer.classList.add('hidden');
+                        renderDecryptedExcuse();
+                    }, 150);
+                }
+            }, 60);
+        }
+
+        function renderDecryptedExcuse() {
+            const severityVal = parseInt(severitySlider.value);
+            const finalExcuse = excusesDatabase[activeCategory][severityVal];
+
+            // Typewriter effect on screen
+            excuseOutputText.textContent = "";
+            let charIndex = 0;
+            const typeSpeed = 12; // ms
+            
+            function typeChar() {
+                if (charIndex < finalExcuse.length) {
+                    excuseOutputText.textContent += finalExcuse.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeChar, typeSpeed);
+                } else {
+                    terminalStatusHeader.textContent = "ДЕШИФРОВАНО!";
+                    terminalStatusSub.textContent = "Алиби готово к тактическому применению";
+                    playRadioClickOff();
+                }
+            }
+            typeChar();
+
+            const bindKey = bindKeyInput.value.trim().toUpperCase() || 'F';
+            updateConsoleBind(bindKey, finalExcuse);
+        }
+
+        function updateConsoleBind(key, excuseText) {
+            const formattedBind = `bind "${key}" "say_team ${excuseText}"`;
+            consoleBindOutput.textContent = formattedBind;
+        }
+
+        // Emergency Dodge Generator
+        const btnPanicDodge = document.getElementById('btnPanicDodge');
+        btnPanicDodge.addEventListener('click', () => {
+            playRadioClickOn();
+            
+            excuseOutputText.textContent = "";
+            const randomDodge = dodgeExcuses[Math.floor(Math.random() * dodgeExcuses.length)];
+            
+            terminalStatusHeader.textContent = "ЭКСТРЕННЫЙ ВЫХОД!";
+            terminalStatusSub.textContent = "Генерация непредвиденного форс-мажора";
+
+            excuseOutputText.textContent = randomDodge;
+
+            const bindKey = bindKeyInput.value.trim().toUpperCase() || 'F';
+            const formattedBind = `bind "${bindKey}" "say ${randomDodge}"`;
+            consoleBindOutput.textContent = formattedBind;
+
+            playRadioClickOff();
+        });
+
+        // Copy Mechanism
+        function copyToClipboard(elementId, successMsg = "Команда скопирована!") {
+            playRadioStatic(0.1, 'high');
+            playSynthBeep(1000, 0.08, 0.03);
+            
+            const targetElement = document.getElementById(elementId);
+            const textToCopy = targetElement.textContent;
+
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToastNotification(successMsg);
+                } else {
+                    showToastNotification("Ошибка копирования.");
+                }
+            } catch (err) {
+                showToastNotification("Ошибка доступа.");
+            }
+
+            document.body.removeChild(tempTextArea);
+        }
+
+        // Custom Toast
+        function showToastNotification(message) {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.textContent = message;
+
+            toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 bg-brand-card/90 text-white border border-brand-orange px-5 py-3 rounded-xl shadow-lg shadow-black/80 flex items-center space-x-3 max-w-sm";
+            setTimeout(() => {
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-brand-card/90 text-white border border-brand-orange px-5 py-3 rounded-xl shadow-lg shadow-black/80 flex items-center space-x-3 max-w-sm";
+            }, 2500);
+        }
+
+        // Share Excuse Link simulation
+        function shareExcuse() {
+            playRadioClickOn();
+            const text = excuseOutputText.textContent;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Тактическое Алиби CS2',
+                    text: text,
+                    url: window.location.href,
+                }).catch(err => {
+                    copyToClipboard('excuseOutputText', 'Отмазка скопирована для отправки!');
+                });
+            } else {
+                copyToClipboard('excuseOutputText', 'Отмазка скопирована для отправки!');
+            }
+        }
+
+        // Initial launch
+        window.onload = function() {
+            generateStrategicExcuse();
+        }
+    </script>
+</body>
+</html>
