@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura & Faceit Scan HUD // FACEIT Cockpit</title>
+    <title>FACEIT Tactical Command Cockpit // N.R.S. Lab</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -15,24 +15,23 @@
     <!-- Three.js Library for 3D Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
+    <!-- STREAMING_CHUNK: Configuring Tailwind variables and visual tokens -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         brand: {
-                            purple: '#8B5CF6',
-                            purpleHover: '#7C3AED',
-                            pink: '#EC4899',
                             dark: '#040507',
                             card: '#0c0e14',
                             border: '#161924',
                             lightBorder: '#272d3f',
                             textMuted: '#64748b',
-                            terminal: '#050608',
+                            purple: '#8B5CF6',
+                            orange: '#FF5500',
                             cyan: '#00E5FF',
-                            accentRed: '#EF4444',
-                            emerald: '#10B981'
+                            red: '#EF4444',
+                            emerald: '#10B981',
                         }
                     },
                     fontFamily: {
@@ -44,7 +43,8 @@
             }
         }
     </script>
-    <!-- STREAMING_CHUNK: Styling layout overlays and responsive canvas boundaries -->
+    
+    <!-- STREAMING_CHUNK: Adding layout CSS styles, glitch animations, and custom scrollbars -->
     <style>
         body {
             background-color: #040507;
@@ -53,44 +53,26 @@
             overflow-x: hidden;
         }
         
+        /* Premium sci-fi shadows and backdrops */
         .glass-panel {
-            background: rgba(12, 14, 20, 0.75);
+            background: rgba(12, 14, 20, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(139, 92, 246, 0.25);
+            border: 1px solid rgba(38, 45, 63, 0.5);
         }
         
-        .glow-purple {
-            box-shadow: 0 0 35px rgba(139, 92, 246, 0.15);
-        }
-        .glow-green {
-            box-shadow: 0 0 35px rgba(16, 185, 129, 0.15);
-        }
-        .glow-red {
-            box-shadow: 0 0 35px rgba(239, 68, 68, 0.15);
-        }
-        .text-neon-purple {
-            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
-        }
-        .text-neon-green {
-            text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
-        }
-        .text-neon-red {
-            text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
-        }
+        .glow-purple { box-shadow: 0 0 30px rgba(139, 92, 246, 0.15); }
+        .glow-cyan { box-shadow: 0 0 30px rgba(0, 229, 255, 0.15); }
+        .glow-orange { box-shadow: 0 0 30px rgba(255, 85, 0, 0.15); }
+        .glow-red { box-shadow: 0 0 30px rgba(239, 68, 68, 0.15); }
         
+        /* 3D card tilt smooth transition */
         .tilt-card {
             transform-style: preserve-3d;
             transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
         }
         
-        .bg-grid-dark {
-            background-size: 50px 50px;
-            background-image: 
-                linear-gradient(to right, rgba(139, 92, 246, 0.015) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(139, 92, 246, 0.015) 1px, transparent 1px);
-        }
-        
+        /* Scanline scrolling grid effect */
         @keyframes scanline {
             0% { transform: translateY(-100%); }
             100% { transform: translateY(100%); }
@@ -99,253 +81,318 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(139, 92, 246, 0) 0%, rgba(139, 92, 246, 0.012) 10%, rgba(139, 92, 246, 0) 20%);
+            background: linear-gradient(to bottom, rgba(139, 92, 246, 0) 0%, rgba(139, 92, 246, 0.01) 10%, rgba(139, 92, 246, 0) 20%);
             animation: scanline 12s linear infinite;
             pointer-events: none;
             z-index: 5;
         }
-        
+
+        /* Glitch animations for key indicators */
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 #f0f, -0.05em -0.025em 0 #0ff; }
+            15% { text-shadow: 0.05em 0 0 #f0f, -0.05em -0.025em 0 #0ff; }
+            16% { text-shadow: -0.05em -0.025em 0 #f0f, 0.025em 0.035em 0 #0ff; }
+            49% { text-shadow: -0.05em -0.025em 0 #f0f, 0.025em 0.035em 0 #0ff; }
+            50% { text-shadow: 0.03em 0.025em 0 #f0f, -0.03em -0.025em 0 #0ff; }
+            99% { text-shadow: 0.03em 0.025em 0 #f0f, -0.03em -0.025em 0 #0ff; }
+            100% { text-shadow: -0.025em 0 0 #f0f, -0.025em -0.025em 0 #0ff; }
+        }
+        .text-glitch {
+            animation: glitch 3s infinite;
+        }
+
+        /* Custom scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
             background: #040507;
         }
         ::-webkit-scrollbar-thumb {
             background: #161924;
-            border-radius: 3px;
+            border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #8B5CF6;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-purple selection:text-black bg-grid-dark relative scanline">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-purple selection:text-black relative scanline">
 
     <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
 
-    <!-- Main Header -->
+    <!-- MAIN COCKPIT HEADER -->
+    <!-- STREAMING_CHUNK: Rendering main header navigation bar with profile and sound controllers -->
     <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            <!-- Left Header Logo and Server Status -->
+            <div class="flex items-center gap-3">
                 <div class="relative">
-                    <div class="bg-gradient-to-br from-brand-purple via-brand-pink to-brand-cyan p-2.5 rounded-lg text-white font-black text-xl tracking-tight leading-none glow-purple">
-                        <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i>
+                    <div class="bg-gradient-to-br from-brand-purple via-pink-600 to-brand-orange p-3 rounded-xl text-white font-black text-2xl tracking-tight leading-none glow-purple">
+                        <i class="fa-solid fa-gamepad animate-pulse"></i>
                     </div>
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-purple border-2 border-brand-card rounded-full animate-ping"></div>
+                    <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-brand-emerald border-2 border-brand-dark rounded-full animate-pulse"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-base font-black tracking-wider uppercase text-white tracking-widest">
-                            AURA <span class="text-brand-purple">ANALYZER SYSTEM</span>
+                        <h1 class="text-base font-black tracking-wider uppercase text-white tracking-widest text-glitch">
+                            FACEIT TACTICAL <span class="text-brand-purple">COCKPIT</span>
                         </h1>
-                        <span class="text-[9px] bg-brand-purple/15 text-brand-purple border border-brand-purple/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">LAB GRADE v2.6</span>
+                        <span class="text-[9px] bg-brand-purple/15 text-brand-purple border border-brand-purple/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">CORE V2.0</span>
                     </div>
                     <p class="text-xs text-brand-textMuted flex items-center gap-1.5">
-                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-purple animate-pulse"></span>
-                        Спектральный мост: <span class="font-mono text-gray-300">AURA_RESONANCE.sys</span>
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-emerald"></span>
+                        Связующий шлюз: <span class="font-mono text-gray-300">FACEIT_SHIELD_V2.sys</span>
                         <span class="mx-1 text-brand-border">|</span>
-                        Статус матрицы: <span class="text-emerald-400 font-semibold uppercase font-mono tracking-tight" id="matrixStatus">STABLE</span>
+                        Спектральный мост: <span class="text-brand-emerald font-semibold uppercase font-mono tracking-tight animate-pulse">ONLINE</span>
                     </p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-3">
-                <!-- Back to Hub Button -->
-                <a href="../index.html" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-purple/40 hover:text-white transition-all text-xs flex items-center space-x-2">
-                    <i class="fa-solid fa-arrow-left text-brand-purple"></i>
-                    <span class="font-mono text-gray-300">В ХАБ</span>
-                </a>
-                <button id="toggleAudioBtn" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-purple/40 transition-all text-xs flex items-center space-x-2">
+            <!-- Right Header Profile & Audio Controllers -->
+            <div class="flex items-center gap-4">
+                <!-- Gamer profile -->
+                <div class="flex items-center gap-2.5 bg-brand-border/40 border border-brand-border px-3.5 py-1.5 rounded-xl">
+                    <div class="w-7 h-7 rounded-full bg-brand-purple/20 border border-brand-purple/50 flex items-center justify-center text-xs text-brand-purple font-bold">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-[8px] uppercase text-brand-textMuted leading-none font-bold">Оператор боевой зоны:</span>
+                        <input type="text" id="gamerTagInput" value="Gamer_Guest" 
+                               class="bg-transparent border-none text-xs font-mono font-bold text-white focus:outline-none focus:ring-0 focus:border-b focus:border-brand-purple max-w-[110px] p-0" 
+                               title="Редактировать никнейм">
+                    </div>
+                </div>
+
+                <!-- Global Space Acoustic Modulator -->
+                <button id="toggleAudioBtn" class="px-3.5 py-2.5 rounded-xl bg-brand-border/60 border border-brand-border hover:border-brand-purple/40 transition-all text-xs flex items-center space-x-2">
                     <i id="audioIcon" class="fas fa-volume-high text-brand-purple"></i>
-                    <span class="font-mono text-gray-300">ЗВУК: ВКЛ</span>
+                    <span class="font-mono text-gray-300 hidden md:inline">ЗВУК СИСТЕМЫ: ВКЛ</span>
                 </button>
-                <div id="hudTime" class="text-xs font-mono text-brand-textMuted border-l border-brand-border pl-3 hidden md:block">00:00:00</div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center items-center relative z-10">
+    <!-- STREAMING_CHUNK: Laying out central HUD system info and interactive ELO forecast widgets -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
         
-        <div class="w-full max-w-xl">
-
-            <!-- SCREEN 1: Welcome / Setup Configuration -->
-            <div id="welcomeScreen" class="bg-brand-card border border-brand-border rounded-2xl p-6 md:p-8 space-y-6 glow-purple transition-all duration-300 relative overflow-hidden tilt-card">
-                <div class="absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 bg-brand-purple/5 rounded-full blur-3xl pointer-events-none"></div>
-
-                <div class="text-center space-y-3">
-                    <div class="inline-block p-4 bg-brand-purple/10 border border-brand-purple/20 rounded-2xl text-brand-purple text-4xl mb-2">
-                        <i class="fa-solid fa-shield-halved animate-pulse"></i>
-                    </div>
-                    <h2 class="text-2xl font-black text-white uppercase tracking-wider">Калибратор Когнитивной Ауры</h2>
-                    <p class="text-xs text-brand-textMuted leading-relaxed max-w-md mx-auto">
-                        Запустите полное сканирование астрального и технического состояния вашего профиля перед началом сессии поиска матча на платформе FACEIT.
+        <!-- Welcome Banner + Dynamic ELO Predictor Configurator -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Welcome Info Section -->
+            <div class="lg:col-span-8 glass-panel border border-brand-border rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-brand-purple/5 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="space-y-3">
+                    <h2 class="font-black text-xl text-white uppercase tracking-wider flex items-center gap-3">
+                        <i class="fa-solid fa-microchip text-brand-purple animate-pulse"></i> ЕДИНЫЙ КОМАНДНЫЙ ИНТЕРФЕЙС FACEIT TACTICAL
+                    </h2>
+                    <p class="text-sm text-brand-textMuted leading-relaxed max-w-4xl">
+                        Добро пожаловать на капитанский мостик. Здесь объединены все твои калибровочные и защитные модули FACEIT. Оцени ауру, проверь инпут на уровне ядра ОС, создай алиби для чата или восстанови мышечный тонус перед поиском матча. Проекты изолированы и работают на полной оригинальной мощности.
                     </p>
                 </div>
 
-                <div class="space-y-4">
-                    <!-- Name Input -->
-                    <div class="space-y-2">
-                        <label class="block text-[11px] font-bold text-white uppercase tracking-wider font-mono">Игровой никнейм (оператор):</label>
-                        <div class="relative">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-purple"><i class="fa-solid fa-gamepad"></i></span>
-                            <input id="playerNameInput" type="text" placeholder="Gamer_Operator" 
-                                   class="w-full bg-brand-terminal border border-brand-border rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-brand-textMuted focus:outline-none focus:border-brand-purple transition-all font-medium">
-                        </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 font-semibold">
+                    <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
+                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Связанные модули</span>
+                        <span class="text-sm font-black text-white">4 Активно</span>
                     </div>
-
-                    <!-- Game Selector Grid -->
-                    <div class="space-y-2">
-                        <label class="block text-[11px] font-bold text-white uppercase tracking-wider font-mono">Целевая дисциплина:</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="selectGame('cs')" id="gameCS" class="game-selector py-3 rounded-xl border border-brand-purple bg-brand-purple/5 text-white flex flex-col items-center space-y-1 transition-all">
-                                <i class="fa-solid fa-crosshairs text-lg text-brand-purple"></i>
-                                <span class="text-[11px] font-bold uppercase tracking-wider font-mono">Counter-Strike 2</span>
-                            </button>
-                            <button onclick="selectGame('dota')" id="gameDota" class="game-selector py-3 rounded-xl border border-brand-border bg-brand-terminal text-brand-textMuted hover:text-white flex flex-col items-center space-y-1 transition-all">
-                                <i class="fa-solid fa-fire text-lg"></i>
-                                <span class="text-[11px] font-bold uppercase tracking-wider font-mono">Dota 2</span>
-                            </button>
-                        </div>
+                    <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
+                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Ядро Симуляции</span>
+                        <span class="text-sm font-black text-brand-purple">Three.js active</span>
+                    </div>
+                    <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
+                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Рефлекс-тестер</span>
+                        <span class="text-sm font-black text-brand-cyan">Canvas Active</span>
+                    </div>
+                    <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
+                        <span class="text-[9px] uppercase text-brand-textMuted font-bold">Акустика</span>
+                        <span class="text-sm font-black text-brand-orange">Binaural enabled</span>
                     </div>
                 </div>
-
-                <button id="startScanBtn" class="w-full py-4 bg-gradient-to-r from-brand-purple via-brand-pink to-brand-cyan hover:opacity-95 text-white font-extrabold uppercase rounded-xl tracking-widest text-xs transition-all transform active:scale-[0.98] glow-purple flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-fingerprint"></i> Запустить полный квантовый замер
-                </button>
             </div>
 
-            <!-- SCREEN 2: Loading & Scanning (6 steps * 2s = 12s) (STABLE - NO TILT CARD CLASS) -->
-            <div id="scanScreen" class="hidden bg-brand-card border border-brand-border rounded-2xl p-6 md:p-8 space-y-6 glow-purple transition-all duration-300 relative overflow-hidden">
+            <!-- ELO Interactive Calibrator Widgets -->
+            <div class="lg:col-span-4 glass-panel border border-brand-border rounded-2xl p-6 flex flex-col justify-between glow-purple">
+                <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-purple">Калибратор Настроя ELO</span>
+                    <span class="text-[9px] font-mono text-brand-purple bg-brand-purple/15 px-2.5 py-0.5 rounded-full border border-brand-purple/20">LIVE COMPUTE</span>
+                </div>
+
+                <!-- Interactive Slider -->
+                <div class="space-y-3 my-4">
+                    <div class="flex justify-between text-xs font-mono">
+                        <span class="text-brand-textMuted">Уровень боевой готовности:</span>
+                        <span id="txtConfidencePercent" class="text-brand-purple font-black">75%</span>
+                    </div>
+                    <input type="range" id="confidenceSlider" min="10" max="100" value="75" 
+                           class="w-full h-1 bg-brand-border rounded-lg appearance-none cursor-pointer accent-brand-purple">
+                    <p class="text-[10px] text-brand-textMuted leading-snug">
+                        Регулируй уровень уверенности, чтобы калибровать математическую проекцию ELO.
+                    </p>
+                </div>
+
+                <div class="bg-brand-dark/80 border border-brand-border p-3.5 rounded-xl flex items-center justify-between text-xs font-mono">
+                    <span class="text-brand-textMuted">ФОКУС-МАТРИЦА ELO:</span>
+                    <span id="forecastEloValue" class="font-extrabold text-brand-purple animate-pulse">+25 ELO</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STREAMING_CHUNK: Generating individual subproject access card links -->
+        <!-- SUBPROJECTS CARDS GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- CARD 1: ANALYZER (AURA-CHECK) -->
+            <a href="./aura-check/aura_and_faceit_checker.html" id="cardAura" class="group tilt-card glass-panel border border-brand-border rounded-2xl p-5 hover:border-brand-purple hover:scale-[1.02] flex flex-col justify-between min-h-[300px] relative overflow-hidden transition-all duration-300 shadow-md">
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all"></div>
                 
-                <div class="text-center space-y-2">
-                    <span class="font-mono text-[9px] uppercase tracking-widest text-brand-purple bg-brand-purple/15 px-3 py-1 rounded-full border border-brand-purple/30 font-bold">
-                        ЭТАП <span id="currentStageNum">1</span> ИЗ 6
-                    </span>
-                    <h2 id="currentStageName" class="text-xl font-black text-white uppercase tracking-wider mt-1">Проверка ауры</h2>
-                    <p id="stageSubtext" class="text-xs text-brand-textMuted italic">Сонастройка с эфирным астральным телом...</p>
-                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20 font-bold tracking-widest uppercase">AURA HUD</span>
+                    </div>
 
-                <!-- Premium High-Tech Scan Canvas Container -->
-                <div class="relative w-full aspect-[4/3] bg-brand-terminal border border-brand-border rounded-xl overflow-hidden cursor-crosshair">
-                    <canvas id="auraScanCanvas" class="absolute inset-0 w-full h-full block z-10"></canvas>
-                    
-                    <!-- Sweep Scanner Bar Overlay -->
-                    <div class="absolute left-0 right-0 h-[1.5px] bg-brand-purple/50 shadow-[0_0_15px_#8B5CF6] scanner-sweep pointer-events-none z-20"></div>
-                </div>
-
-                <!-- Step Telemetry Status Box -->
-                <div class="space-y-2 bg-brand-terminal/60 border border-brand-border p-4 rounded-xl font-mono text-xs">
-                    <div id="status_aura" class="flex justify-between items-center text-brand-textMuted">
-                        <span class="flex items-center"><i class="fa-solid fa-moon mr-2 text-[10px]"></i> 1. Проверка ауры</span>
-                        <span class="text-[10px] font-bold status-label">ОЖИДАНИЕ</span>
-                    </div>
-                    <div id="status_mana" class="flex justify-between items-center text-brand-textMuted">
-                        <span class="flex items-center"><i class="fa-solid fa-droplet mr-2 text-[10px]"></i> 2. Проверка маны</span>
-                        <span class="text-[10px] font-bold status-label">ОЖИДАНИЕ</span>
-                    </div>
-                    <div id="status_curse" class="flex justify-between items-center text-brand-textMuted">
-                        <span class="flex items-center"><i class="fa-solid fa-skull mr-2 text-[10px]"></i> 3. Проверка на проклятие</span>
-                        <span class="text-[10px] font-bold status-label">ОЖИДАНИЕ</span>
-                    </div>
-                    <div id="status_spoilage" class="flex justify-between items-center text-brand-textMuted">
-                        <span class="flex items-center"><i class="fa-solid fa-biohazard mr-2 text-[10px]"></i> 4. Проверка на порчу</span>
-                        <span class="text-[10px] font-bold status-label">ОЖИДАНИЕ</span>
-                    </div>
-                    <div id="status_badluck" class="flex justify-between items-center text-brand-textMuted">
-                        <span class="flex items-center"><i class="fa-solid fa-dice mr-2 text-[10px]"></i> 5. Проверка на неудачу</span>
-                        <span class="text-[10px] font-bold status-label">ОЖИДАНИЕ</span>
-                    </div>
-                    <div id="status_inputlag" class="flex justify-between items-center text-brand-textMuted">
-                        <span class="flex items-center"><i class="fa-solid fa-bolt mr-2 text-[10px]"></i> 6. Проверка на инпутлаг</span>
-                        <span class="text-[10px] font-bold status-label">ОЖИДАНИЕ</span>
+                    <div>
+                        <h3 class="text-base font-bold text-white uppercase tracking-wider group-hover:text-purple-400 transition-colors">Анализатор Ауры</h3>
+                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed">
+                            Узнай свои шансы на FACEIT перед тем, как нажать «Поиск». Полная диагностика кармы и скрытого пула за 12 секунд.
+                        </p>
                     </div>
                 </div>
 
-                <!-- STREAMING_CHUNK: Integrating the reflex reaction canvas module inside loading container -->
-                <!-- HIGH-TECH REFLEX REACTION TEST REPLACING CONSOLE -->
-                <div class="relative w-full h-24 bg-brand-terminal border border-brand-border rounded-xl overflow-hidden">
-                    <canvas id="reactionCanvas" class="absolute inset-0 w-full h-full block cursor-pointer z-10"></canvas>
+                <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
+                    <span class="group-hover:text-purple-400 transition-colors"><i class="fa-solid fa-moon mr-1.5 text-[8px]"></i> 6 этапов сканирования</span>
+                    <span class="text-purple-400 group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                </div>
+            </a>
+
+            <!-- CARD 2: INPUT ANALYZER (INPUT-CHECK) -->
+            <a href="./input-check/cs2_faceit_flow_latency_analyzer.html" id="cardInput" class="group tilt-card glass-panel border border-brand-border rounded-2xl p-5 hover:border-brand-cyan hover:scale-[1.02] flex flex-col justify-between min-h-[300px] relative overflow-hidden transition-all duration-300 shadow-md">
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all"></div>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-brand-cyan text-xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-brand-cyan bg-brand-cyan/10 px-2.5 py-1 rounded-full border border-brand-cyan/20 font-bold tracking-widest uppercase">FLOW REGISTRY</span>
+                    </div>
+
+                    <div>
+                        <h3 class="text-base font-bold text-white uppercase tracking-wider group-hover:text-brand-cyan transition-colors">Проверка Инпута</h3>
+                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed">
+                            Аппаратный замер задержки и анализ стабильности опроса USB на уровне ядра ОС. Проверка джиттера по таймеру HPET.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
+                    <span class="group-hover:text-brand-cyan transition-colors"><i class="fa-solid fa-wave-sine mr-1.5 text-[8px]"></i> Realtime QPC замеры</span>
+                    <span class="text-brand-cyan group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                </div>
+            </a>
+
+            <!-- CARD 3: ANTI-TILT ALIBI (EXCUSE-GEN) -->
+            <a href="./excuse-gen/faceit_tactical_excuse_generator.html" id="cardExcuse" class="group tilt-card glass-panel border border-brand-border rounded-2xl p-5 hover:border-brand-orange hover:scale-[1.02] flex flex-col justify-between min-h-[300px] relative overflow-hidden transition-all duration-300 shadow-md">
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-brand-orange/5 rounded-full blur-2xl group-hover:bg-brand-orange/10 transition-all"></div>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 rounded-xl bg-brand-orange/10 border border-brand-orange/30 flex items-center justify-center text-brand-orange text-xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-bolt-lightning"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-brand-orange bg-brand-orange/10 px-2.5 py-1 rounded-full border border-brand-orange/20 font-bold tracking-widest uppercase">T.A.D.S</span>
+                    </div>
+
+                    <div>
+                        <h3 class="text-base font-bold text-white uppercase tracking-wider group-hover:text-brand-orange transition-colors">Генератор Отмазок</h3>
+                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed">
+                            Тактическая дешифрация железобетонных оправданий для FACEIT-чата. Встроенные авто-бинды для игровой консоли CS2.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
+                    <span class="group-hover:text-brand-orange transition-colors"><i class="fa-solid fa-shield-halved mr-1.5 text-[8px]"></i> 5 уровней усложнения</span>
+                    <span class="text-brand-orange group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                </div>
+            </a>
+
+            <!-- CARD 4: MEDITATION & FOCUS (MEDITATION) -->
+            <a href="./meditation/aura_recovery_comeback_system.html" id="cardMeditation" class="group tilt-card glass-panel border border-brand-border rounded-2xl p-5 hover:border-brand-red hover:scale-[1.02] flex flex-col justify-between min-h-[300px] relative overflow-hidden transition-all duration-300 shadow-md">
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-brand-red/5 rounded-full blur-2xl group-hover:bg-brand-red/10 transition-all"></div>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 rounded-xl bg-brand-red/10 border border-brand-red/30 flex items-center justify-center text-brand-red text-xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <span class="text-[9px] font-mono text-brand-red bg-brand-red/10 px-2.5 py-1 rounded-full border border-brand-red/20 font-bold tracking-widest uppercase">N.R.S LABS</span>
+                    </div>
+
+                    <div>
+                        <h3 class="text-base font-bold text-white uppercase tracking-wider group-hover:text-brand-red transition-colors">Нейро-Медитация</h3>
+                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed">
+                            Аппаратное снятие мышечной зажатости кистей и пальцев, калибровка внимания под аккомпанемент бинауральных волн.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
+                    <span class="group-hover:text-brand-red transition-colors"><i class="fa-solid fa-headset mr-1.5 text-[8px]"></i> Delta/Theta модуляция</span>
+                    <span class="text-brand-red group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- STREAMING_CHUNK: Integrating the reflex testing dashboard into bottom layout column span -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Real-time Network Jitter Oscilloscope -->
+            <div class="lg:col-span-4 glass-panel border border-brand-border rounded-2xl p-5 flex flex-col justify-between min-h-[220px]">
+                <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                    <h3 class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-wave-sine text-brand-cyan animate-pulse"></i> Осциллограф джиттера шины
+                    </h3>
+                    <span class="text-[9px] font-mono text-brand-cyan" id="liveJitterValue">0.03 ms</span>
+                </div>
+
+                <div class="h-28 bg-black/60 rounded-xl border border-brand-border overflow-hidden relative my-3">
+                    <canvas id="jitterCanvas" class="w-full h-full block"></canvas>
+                </div>
+
+                <div class="flex justify-between items-center text-[10px] text-brand-textMuted font-mono uppercase">
+                    <span>* HPET ТАЙМЕР ядра</span>
+                    <span class="text-brand-cyan">Стабильно</span>
                 </div>
             </div>
 
-            <!-- SCREEN 3: Scan Results Dashboard -->
-            <div id="resultScreen" class="hidden bg-brand-card border border-brand-border rounded-2xl p-6 md:p-8 space-y-6 transition-all duration-300 relative overflow-hidden">
-                <div id="resultGlowCircle" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none"></div>
-
-                <div class="text-center">
-                    <span class="font-mono text-[9px] uppercase tracking-widest text-brand-purple bg-brand-purple/10 border border-brand-purple/20 px-3 py-1 rounded-full">РЕЗУЛЬТАТ ДИАГНОСТИКИ OPERATOR: <span id="resPlayerName" class="text-white font-bold"></span></span>
-                    <h2 class="text-2xl font-black text-white mt-3 uppercase tracking-wider">Твоя Аура Игрока</h2>
-                </div>
-
-                <!-- Giant Percentage Display -->
-                <div class="relative flex flex-col items-center justify-center p-6 border rounded-2xl w-full max-w-sm mx-auto text-center" id="auraCard">
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest uppercase text-white" id="auraBadge">
-                        АУРИЧЕСКИЙ БАЛАНС
-                    </div>
-                    
-                    <span id="auraValueDisplay" class="text-5xl font-black tracking-tighter">0%</span>
-                    
-                    <div class="w-full border-t border-brand-border my-3"></div>
-                    
-                    <p id="auraVerdict" class="text-xs font-semibold italic text-brand-textMuted px-2"></p>
-                </div>
-
-                <!-- ELO & Match Prediction Box -->
-                <div id="faceitBox" class="w-full border p-5 rounded-2xl text-center relative overflow-hidden flex flex-col items-center space-y-3">
-                    <div class="absolute inset-0 bg-brand-terminal/20 pointer-events-none"></div>
-                    
-                    <div class="flex items-center justify-center space-x-2.5">
-                        <div id="faceitIndicatorLight" class="w-3.5 h-3.5 rounded-full"></div>
-                        <h3 id="faceitTitle" class="text-base font-black uppercase tracking-wider"></h3>
-                    </div>
-                    
-                    <p id="faceitDescription" class="text-xs text-brand-textMuted leading-relaxed max-w-md"></p>
-                    
-                    <!-- ELO Widget -->
-                    <div id="eloWidget" class="px-4 py-2 rounded-xl bg-brand-terminal/80 border border-brand-border flex items-center space-x-3 text-xs font-mono">
-                        <span class="text-brand-textMuted">ПРОГНОЗ ELO:</span>
-                        <span id="eloValue" class="font-bold"></span>
+            <!-- PREMIUM REFLEX REACTION TEST (Replaces useless logger) -->
+            <div class="lg:col-span-8 glass-panel border border-brand-border rounded-2xl p-5 flex flex-col justify-between min-h-[220px] relative overflow-hidden">
+                <div class="flex justify-between items-center border-b border-brand-border pb-3 z-10 relative">
+                    <h3 class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-brand-purple animate-pulse"></i> Калибратор рефлексов // Reflex Reaction Matrix
+                    </h3>
+                    <div class="flex gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand-purple/20 border border-brand-purple/40"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand-cyan/20 border border-brand-cyan/40"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand-orange/20 border border-brand-orange/40"></span>
                     </div>
                 </div>
-
-                <!-- Diagnostic Breakdown metrics -->
-                <div class="bg-brand-terminal border border-brand-border p-4 rounded-xl space-y-2.5 text-xs font-mono">
-                    <div class="flex justify-between items-center">
-                        <span class="text-brand-textMuted">Пул небесной Маны:</span>
-                        <span id="breakdownMana" class="font-bold text-white"></span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-brand-textMuted">Ментальное проклятие:</span>
-                        <span id="breakdownCurse" class="font-bold text-white"></span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-brand-textMuted">Порча от тиммейтов:</span>
-                        <span id="breakdownSpoilage" class="font-bold text-white"></span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-brand-textMuted">Фактор слепой Удачи:</span>
-                        <span id="breakdownBadluck" class="font-bold text-white"></span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-brand-textMuted">Физический Импутлаг:</span>
-                        <span id="breakdownInputlag" class="font-bold text-white"></span>
-                    </div>
+                
+                <div class="h-28 bg-black/50 border border-brand-border rounded-xl overflow-hidden relative my-3 z-10">
+                    <canvas id="hubReactionCanvas" class="w-full h-full block cursor-pointer"></canvas>
                 </div>
 
-                <!-- Action Button Matrix -->
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <button onclick="shareResults()" class="py-3 bg-brand-border/60 border border-brand-border hover:border-brand-purple/40 hover:bg-brand-purple/5 text-white font-bold uppercase rounded-xl text-xs tracking-wider transition-all flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-share-nodes text-brand-purple"></i>
-                        <span>Поделиться</span>
-                    </button>
-                    
-                    <button onclick="restartApp()" class="py-3 bg-gradient-to-r from-brand-purple to-pink-600 hover:opacity-95 text-white font-bold uppercase rounded-xl text-xs tracking-wider transition-all flex items-center justify-center space-x-2 shadow-lg shadow-brand-purple/10">
-                        <i class="fa-solid fa-rotate-right"></i>
-                        <span>Перезапуск</span>
-                    </button>
+                <div class="flex justify-between items-center text-[10px] text-brand-textMuted font-mono uppercase z-10 relative">
+                    <span>* Замер скорости нейронного отклика оператора</span>
+                    <span class="text-brand-purple">Тест калибровки активен</span>
                 </div>
             </div>
 
@@ -353,455 +400,391 @@
 
     </main>
 
-    <!-- Suite Footer -->
-    <footer class="w-full max-w-7xl mx-auto px-6 py-4 border-t border-brand-border/40 bg-brand-card/90 backdrop-blur z-10 flex flex-col md:flex-row justify-between items-center gap-3 text-center">
+    <!-- FOOTER WITH LAB STATUS -->
+    <footer class="w-full max-w-7xl mx-auto px-6 py-4 border-t border-brand-border/40 bg-brand-dark/80 backdrop-blur flex flex-col md:flex-row justify-between items-center gap-4 text-center z-10">
         <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider">
-            © 2026 AURA_CHECKER // NRS LABS. Использовать перед каждой соревновательной каткой.
+            © 2026 FACEIT TACTICAL COCKPIT. Разработано для оптимизации киберспортивных кондиций и ELO.
         </span>
-        <div class="flex space-x-4 text-[10px] font-mono tracking-widest text-brand-textMuted">
-            <span class="text-emerald-400"><i class="fa-solid fa-wifi text-[9px] mr-1"></i> FACEIT API: STABLE</span>
-            <span class="text-brand-purple"><i class="fa-solid fa-circle-nodes text-[9px] mr-1"></i> KINETIC MATRIX: LINKED</span>
+        <div class="flex space-x-6 text-[10px] font-mono tracking-widest text-brand-textMuted">
+            <span class="text-brand-purple"><i class="fa-solid fa-shield-halved mr-1.5"></i> COGNITIVE PRESET READY</span>
+            <span class="text-brand-cyan"><i class="fa-solid fa-bolt mr-1.5"></i> NO INPUT THROTTLING</span>
         </div>
     </footer>
 
-    <!-- Custom Toaster Feedback -->
-    <div id="toastBox" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-brand-card border border-brand-purple px-5 py-3 rounded-xl shadow-lg shadow-black flex items-center space-x-3 max-w-sm">
-        <i class="fa-solid fa-circle-info text-brand-purple text-lg animate-pulse"></i>
-        <span id="toastMessage" class="text-xs font-semibold font-mono text-white">Сообщение скопировано в буфер!</span>
-    </div>
-
-    <!-- STREAMING_CHUNK: Architecting advanced Web Audio synthesizer engine for Wow-HUD effects -->
-    <!-- SCRIPT LOGIC AND CORE MATHEMATICS -->
+    <!-- STREAMING_CHUNK: Coding professional resonant lowpass filter synthesizer in Web Audio API -->
     <script>
-        let selectedGameType = 'cs';
-        let totalClicks = 0;
-        let clickBonus = 0.0;
-        let scanStage = 0; // 0 to 6
-        let countdownTimer = null;
-        let stageTimerInterval = null;
-        let currentStageSeconds = 2.0;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let audioEnabled = true;
+        let ambientOscL = null;
+        let ambientOscR = null;
+        let ambientGain = null;
 
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx = null;
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new AudioContext();
-            }
-        }
-
-        // --- HIGH END COCKPIT SYNTHESIZER ---
-        function playSound(type) {
+        // --- HIGH END FILTER SYNTHESIZER ---
+        function playSynthSound(freq, duration, vol = 0.05, type = 'sine') {
             if (!audioEnabled) return;
             try {
-                initAudio();
                 if (audioCtx.state === 'suspended') {
                     audioCtx.resume();
                 }
-
+                const osc = audioCtx.createOscillator();
+                const subOsc = audioCtx.createOscillator();
+                const filter = audioCtx.createBiquadFilter();
+                const gain = audioCtx.createGain();
+                
                 const now = audioCtx.currentTime;
 
-                if (type === 'click') {
-                    // Tactile military pop
-                    const osc = audioCtx.createOscillator();
-                    const subOsc = audioCtx.createOscillator();
-                    const filter = audioCtx.createBiquadFilter();
-                    const gain = audioCtx.createGain();
+                // Configure resonant analog filter sweep for premium pop
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+                osc.frequency.exponentialRampToValueAtTime(freq * 0.4, now + duration);
 
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(650, now);
-                    osc.frequency.exponentialRampToValueAtTime(120, now + 0.08);
+                subOsc.type = 'sine';
+                subOsc.frequency.setValueAtTime(freq * 0.5, now);
 
-                    subOsc.type = 'sine';
-                    subOsc.frequency.setValueAtTime(110, now);
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(freq * 1.8, now);
+                filter.frequency.exponentialRampToValueAtTime(120, now + duration);
+                filter.Q.setValueAtTime(5, now);
 
-                    filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(250, now);
-
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-
-                    osc.connect(filter);
-                    subOsc.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(audioCtx.destination);
-
-                    osc.start(now);
-                    osc.stop(now + 0.09);
-                    subOsc.start(now);
-                    subOsc.stop(now + 0.09);
-                } 
-                else if (type === 'stage-complete') {
-                    // Sci-Fi perfect fifth chime chord
-                    const osc1 = audioCtx.createOscillator();
-                    const osc2 = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-
-                    osc1.type = 'sine';
-                    osc1.frequency.setValueAtTime(587.33, now); // D5
-
-                    osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(880.00, now); // A5
-
-                    gain.gain.setValueAtTime(0, now);
-                    gain.gain.linearRampToValueAtTime(0.12, now + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-
-                    osc1.connect(gain);
-                    osc2.connect(gain);
-                    gain.connect(audioCtx.destination);
-
-                    osc1.start(now);
-                    osc1.stop(now + 0.45);
-                    osc2.start(now);
-                    osc2.stop(now + 0.45);
-                } 
-                else if (type === 'win') {
-                    // Majestic Major Seventh cinematic riser chord
-                    const freqs = [261.63, 329.63, 392.00, 493.88, 587.33]; // Cmaj9
-                    const masterGain = audioCtx.createGain();
-                    const filter = audioCtx.createBiquadFilter();
-
-                    filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(150, now);
-                    filter.frequency.exponentialRampToValueAtTime(2400, now + 1.2);
-
-                    masterGain.gain.setValueAtTime(0, now);
-                    masterGain.gain.linearRampToValueAtTime(0.15, now + 0.3);
-                    masterGain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
-
-                    freqs.forEach((freq, i) => {
-                        const osc = audioCtx.createOscillator();
-                        osc.type = 'sawtooth';
-                        osc.frequency.setValueAtTime(freq, now);
-                        osc.connect(filter);
-                        osc.start(now);
-                        osc.stop(now + 1.5);
-                    });
-
-                    filter.connect(masterGain);
-                    masterGain.connect(audioCtx.destination);
-                } 
-                else if (type === 'lose') {
-                    // Heavy analog synth sub-drop
-                    const osc = audioCtx.createOscillator();
-                    const filter = audioCtx.createBiquadFilter();
-                    const gain = audioCtx.createGain();
-
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(110, now);
-                    osc.frequency.exponentialRampToValueAtTime(32, now + 1.2);
-
-                    filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(140, now);
-
-                    gain.gain.setValueAtTime(0, now);
-                    gain.gain.linearRampToValueAtTime(0.3, now + 0.05);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
-
-                    osc.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(audioCtx.destination);
-
-                    osc.start(now);
-                    osc.stop(now + 1.3);
-                }
-                else if (type === 'test-start') {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(300, now);
-                    osc.frequency.exponentialRampToValueAtTime(1500, now + 0.15);
-                    gain.gain.setValueAtTime(0.08, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.15);
-                }
-                else if (type === 'test-flash') {
-                    const osc1 = audioCtx.createOscillator();
-                    const osc2 = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc1.type = 'triangle';
-                    osc1.frequency.setValueAtTime(880, now);
-                    osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(1760, now);
-                    gain.gain.setValueAtTime(0.15, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-                    osc1.connect(gain);
-                    osc2.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc1.start(now);
-                    osc1.stop(now + 0.13);
-                    osc2.start(now);
-                    osc2.stop(now + 0.13);
-                }
-                else if (type === 'test-foul') {
-                    const osc = audioCtx.createOscillator();
-                    const filter = audioCtx.createBiquadFilter();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(130, now);
-                    filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(300, now);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-                    osc.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.36);
-                }
+                gain.gain.setValueAtTime(vol, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+                
+                osc.connect(filter);
+                subOsc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now);
+                subOsc.start(now);
+                osc.stop(now + duration);
+                subOsc.stop(now + duration);
             } catch (e) {
-                console.warn("Audio context failure", e);
+                console.log("Audio play error: ", e);
             }
         }
 
-        // Toggle Audio Controller
+        // Ambient космический гул (drone)
+        function startAmbientDrone() {
+            if (!audioEnabled) return;
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                stopAmbientDrone();
+
+                ambientGain = audioCtx.createGain();
+                ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                ambientGain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 3.0); // Very low comfortable volume (0.01)
+
+                const splitter = audioCtx.createChannelMerger(2);
+
+                ambientOscL = audioCtx.createOscillator();
+                ambientOscL.type = 'sawtooth';
+                ambientOscL.frequency.setValueAtTime(55, audioCtx.currentTime); // Low lambda note
+
+                // Low pass filter to warm up sawtooth
+                const lpFilter = audioCtx.createBiquadFilter();
+                lpFilter.type = 'lowpass';
+                lpFilter.frequency.setValueAtTime(120, audioCtx.currentTime);
+
+                ambientOscR = audioCtx.createOscillator();
+                ambientOscR.type = 'sine';
+                ambientOscR.frequency.setValueAtTime(56, audioCtx.currentTime);
+
+                ambientOscL.connect(lpFilter);
+                lpFilter.connect(splitter, 0, 0);
+                ambientOscR.connect(splitter, 0, 1);
+
+                splitter.connect(ambientGain);
+                ambientGain.connect(audioCtx.destination);
+
+                ambientOscL.start();
+                ambientOscR.start();
+            } catch (e) {}
+        }
+
+        function stopAmbientDrone() {
+            try {
+                if (ambientOscL) {
+                    ambientOscL.stop();
+                    ambientOscL = null;
+                }
+                if (ambientOscR) {
+                    ambientOscR.stop();
+                    ambientOscR = null;
+                }
+                if (ambientGain) {
+                    ambientGain.disconnect();
+                    ambientGain = null;
+                }
+            } catch(e) {}
+        }
+
+        // Toggle Audio Button
         document.getElementById('toggleAudioBtn').addEventListener('click', () => {
             audioEnabled = !audioEnabled;
             const btnText = document.querySelector('#toggleAudioBtn span');
             const btnIcon = document.getElementById('audioIcon');
             if (audioEnabled) {
-                btnText.textContent = "ЗВУК: ВКЛ";
+                btnText.textContent = "ЗВУК СИСТЕМЫ: ВКЛ";
                 btnIcon.className = "fas fa-volume-high text-brand-purple";
-                playSound('click');
+                playSynthSound(600, 0.1, 0.05, 'triangle');
+                startAmbientDrone();
             } else {
-                btnText.textContent = "ЗВУК: ВЫКЛ";
+                btnText.textContent = "ЗВУК СИСТЕМЫ: ВЫКЛ";
                 btnIcon.className = "fas fa-volume-mute text-brand-textMuted";
+                stopAmbientDrone();
             }
         });
+    </script>
 
-        // Live Header Time clock ticker
-        setInterval(() => {
-            const now = new Date();
-            const pad = (n) => String(n).padStart(2, '0');
-            document.getElementById('hudTime').textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-        }, 1000);
-
-        // Select discipline game mode
-        function selectGame(game) {
-            playSound('click');
-            selectedGameType = game;
-            const csBtn = document.getElementById('gameCS');
-            const dotaBtn = document.getElementById('gameDota');
-            
-            if (game === 'cs') {
-                csBtn.className = "game-selector py-3 rounded-xl border border-brand-purple bg-brand-purple/5 text-white flex flex-col items-center space-y-1 transition-all";
-                dotaBtn.className = "game-selector py-3 rounded-xl border border-brand-border bg-brand-terminal text-brand-textMuted hover:text-white flex flex-col items-center space-y-1 transition-all";
-            } else {
-                dotaBtn.className = "game-selector py-3 rounded-xl border border-brand-purple bg-brand-purple/5 text-white flex flex-col items-center space-y-1 transition-all";
-                csBtn.className = "game-selector py-3 rounded-xl border border-brand-border bg-brand-terminal text-brand-textMuted hover:text-white flex flex-col items-center space-y-1 transition-all";
-            }
-        }
-
-        // Custom Toaster popup alert alternative
-        function showToast(message) {
-            const toast = document.getElementById('toastBox');
-            document.getElementById('toastMessage').textContent = message;
-            toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 bg-brand-card border border-brand-purple px-5 py-3 rounded-xl shadow-lg shadow-black flex items-center space-x-3 max-w-sm";
-            setTimeout(() => {
-                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-brand-card border border-brand-purple px-5 py-3 rounded-xl shadow-lg shadow-black flex items-center space-x-3 max-w-sm";
-            }, 3000);
-        }
-
-        // STREAMING_CHUNK: Coding the HTML5 Scan central Core Orb mechanics and loops
-        // --- High-Performance HTML5 Scanner Canvas Setup ---
-        const scanCanvas = document.getElementById('auraScanCanvas');
-        const scanCtx = scanCanvas.getContext('2d');
-        let isScanning = false;
-        let astralParticles = [];
-        let canvasRipples = [];
-        let corePulseVal = 0;
-        let coreRadius = 55;
-        let scanCoreX = 0;
-        let scanCoreY = 0;
-
-        function resizeScanCanvas() {
-            const r = scanCanvas.parentNode.getBoundingClientRect();
-            scanCanvas.width = r.width;
-            scanCanvas.height = r.height;
-            scanCoreX = scanCanvas.width / 2;
-            scanCoreY = scanCanvas.height / 2;
-        }
-        window.addEventListener('resize', resizeScanCanvas);
-        resizeScanCanvas();
-
-        class AstralCharge {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                if (Math.random() < 0.5) {
-                    this.x = Math.random() < 0.5 ? 0 : scanCanvas.width;
-                    this.y = Math.random() * scanCanvas.height;
-                } else {
-                    this.x = Math.random() * scanCanvas.width;
-                    this.y = Math.random() < 0.5 ? 0 : scanCanvas.height;
-                }
-                this.speed = Math.random() * 1.5 + 0.8;
-                this.size = Math.random() * 2 + 1.5;
-                this.color = Math.random() < 0.4 ? 'rgba(236, 72, 153, 0.45)' : 'rgba(139, 92, 246, 0.45)';
-            }
-            update() {
-                const dx = scanCoreX - this.x;
-                const dy = scanCoreY - this.y;
-                const dist = Math.hypot(dx, dy);
-
-                if (dist < coreRadius - 10) {
-                    this.reset();
-                } else {
-                    this.x += (dx / dist) * this.speed;
-                    this.y += (dy / dist) * this.speed;
-                }
-            }
-            draw() {
-                scanCtx.beginPath();
-                scanCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                scanCtx.fillStyle = this.color;
-                scanCtx.fill();
-            }
-        }
-
-        function initScanEngine() {
-            astralParticles = [];
-            for (let i = 0; i < 35; i++) {
-                astralParticles.push(new AstralCharge());
-            }
-            canvasRipples = [];
-        }
-
-        scanCanvas.addEventListener('mousedown', (e) => {
-            if (!isScanning) return;
-            const rect = scanCanvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
-
-            const dist = Math.hypot(clickX - scanCoreX, clickY - scanCoreY);
-            if (dist <= coreRadius + 15) {
-                totalClicks++;
-                clickBonus += 0.5;
-                playSound('click');
-
-                canvasRipples.push({
-                    x: scanCoreX,
-                    y: scanCoreY,
-                    r: coreRadius,
-                    maxR: coreRadius + 45,
-                    alpha: 1.0,
-                    text: `+0.5% Aura`
-                });
-            } else {
-                canvasRipples.push({
-                    x: clickX,
-                    y: clickY,
-                    r: 4,
-                    maxR: 24,
-                    alpha: 0.6,
-                    text: null
-                });
-            }
-        });
-
-        // STREAMING_CHUNK: Rendering the Scan Orb viewport frame and progress indicators
-        function drawScanningViewport() {
-            if (!isScanning) return;
-
-            scanCtx.fillStyle = 'rgba(5, 6, 8, 0.2)';
-            scanCtx.fillRect(0, 0, scanCanvas.width, scanCanvas.height);
-
-            scanCtx.strokeStyle = 'rgba(139, 92, 246, 0.04)';
-            scanCtx.lineWidth = 1;
-            scanCtx.beginPath();
-            scanCtx.arc(scanCoreX, scanCoreY, Math.min(scanCanvas.width, scanCanvas.height) * 0.42, 0, Math.PI * 2);
-            scanCtx.stroke();
-
-            astralParticles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-
-            corePulseVal += 0.04;
-            const curPulseRadius = coreRadius + Math.sin(corePulseVal) * 3.5;
-
-            const radGrad = scanCtx.createRadialGradient(
-                scanCoreX - 5, scanCoreY - 5, 2, 
-                scanCoreX, scanCoreY, curPulseRadius
-            );
-            const isCriticalStage = scanStage >= 3;
-            radGrad.addColorStop(0, '#ffffff');
-            radGrad.addColorStop(0.3, isCriticalStage ? '#EC4899' : '#8B5CF6');
-            radGrad.addColorStop(1, 'rgba(12, 14, 20, 0.85)');
-
-            scanCtx.beginPath();
-            scanCtx.arc(scanCoreX, scanCoreY, curPulseRadius, 0, Math.PI * 2);
-            scanCtx.fillStyle = radGrad;
-            scanCtx.shadowBlur = 25;
-            scanCtx.shadowColor = isCriticalStage ? 'rgba(236, 72, 153, 0.45)' : 'rgba(139, 92, 246, 0.45)';
-            scanCtx.fill();
-            scanCtx.shadowBlur = 0;
-
-            scanCtx.strokeStyle = 'rgba(139, 92, 246, 0.25)';
-            scanCtx.lineWidth = 1.5;
-            scanCtx.setLineDash([12, 15]);
-            scanCtx.beginPath();
-            scanCtx.arc(scanCoreX, scanCoreY, coreRadius + 20, corePulseVal * 0.5, corePulseVal * 0.5 + Math.PI * 2);
-            scanCtx.stroke();
-            scanCtx.setLineDash([]);
-
-            const totalProgressRatio = scanStage / 6;
-            scanCtx.strokeStyle = '#EC4899';
-            scanCtx.lineWidth = 2.5;
-            scanCtx.beginPath();
-            scanCtx.arc(scanCoreX, scanCoreY, coreRadius + 30, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * totalProgressRatio));
-            scanCtx.stroke();
-
-            canvasRipples.forEach((r, idx) => {
-                r.r += 1.8;
-                r.alpha -= 0.035;
-                if (r.alpha <= 0) {
-                    canvasRipples.splice(idx, 1);
-                    return;
-                }
-
-                scanCtx.strokeStyle = `rgba(139, 92, 246, ${r.alpha})`;
-                scanCtx.lineWidth = 1.5;
-                scanCtx.beginPath();
-                scanCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
-                scanCtx.stroke();
-
-                if (r.text) {
-                    scanCtx.fillStyle = `rgba(236, 72, 153, ${r.alpha})`;
-                    scanCtx.font = 'bold 11px "JetBrains Mono"';
-                    scanCtx.textAlign = 'center';
-                    scanCtx.fillText(r.text, r.x, r.y - r.r - 8);
-                }
-            });
-
-            scanCtx.fillStyle = '#ffffff';
-            scanCtx.font = 'bold 16px "Share Tech Mono"';
-            scanCtx.textAlign = 'center';
-            scanCtx.fillText(currentStageSeconds.toFixed(1) + 's', scanCoreX, scanCoreY + 5);
-
-            scanCtx.fillStyle = 'rgba(139, 92, 246, 0.7)';
-            scanCtx.font = 'bold 9px "JetBrains Mono"';
-            scanCtx.fillText('TAP CORE TO MEDITATE', scanCoreX, scanCoreY + coreRadius + 50);
-
-            scanCtx.fillStyle = '#EC4899';
-            scanCtx.font = 'bold 10px "Share Tech Mono"';
-            scanCtx.textAlign = 'left';
-            scanCtx.fillText(`AURA BONUS: +${clickBonus.toFixed(1)}%`, 20, scanCanvas.height - 20);
-
-            requestAnimationFrame(drawScanningViewport);
-        }
-
-        // STREAMING_CHUNK: Developing the high performance HTML5 Reaction Canvas Reflex mini-game
-        // --- High-Performance HTML5 Reflex reaction game Canvas ---
-        const rxCanvas = document.getElementById('reactionCanvas');
-        const rxCtx = rxCanvas.getContext('2d');
+    <!-- STREAMING_CHUNK: Instantiating Three.js 3D starry constellations scene on bbackground -->
+    <script>
+        const container = document.getElementById('canvasContainer');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Generation of beautiful constellation particles
+        const particleCount = 200;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        const purpleColor = new THREE.Color('#8B5CF6');
+        const cyanColor = new THREE.Color('#00E5FF');
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 50;
+            positions[i + 1] = (Math.random() - 0.5) * 50;
+            positions[i + 2] = (Math.random() - 0.5) * 50;
+
+            const mixedColor = purpleColor.clone().lerp(cyanColor, Math.random());
+            colors[i] = mixedColor.r;
+            colors[i + 1] = mixedColor.g;
+            colors[i + 2] = mixedColor.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.25,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particleSystem = new THREE.Points(geometry, material);
+        scene.add(particleSystem);
+
+        // Lines connecting points
+        const lineMaterial = new THREE.LineBasicMaterial({
+            color: 0x8B5CF6,
+            transparent: true,
+            opacity: 0.05,
+            blending: THREE.AdditiveBlending
+        });
+
+        const lineGeometry = new THREE.BufferGeometry();
+        const linePositions = [];
+
+        const posArr = geometry.attributes.position.array;
+        for (let i = 0; i < particleCount; i++) {
+            for (let j = i + 1; j < particleCount; j++) {
+                const dx = posArr[i * 3] - posArr[j * 3];
+                const dy = posArr[i * 3 + 1] - posArr[j * 3 + 1];
+                const dz = posArr[i * 3 + 2] - posArr[j * 3 + 2];
+                const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                if (dist < 8.0) {
+                    linePositions.push(posArr[i * 3], posArr[i * 3 + 1], posArr[i * 3 + 2]);
+                    linePositions.push(posArr[j * 3], posArr[j * 3 + 1], posArr[j * 3 + 2]);
+                }
+            }
+        }
+
+        lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+        const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+        scene.add(lines);
+
+        camera.position.z = 25;
+
+        // Mouse reactive coordinates
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        window.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) * 0.015;
+            mouseY = (event.clientY - window.innerHeight / 2) * 0.015;
+        });
+
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+
+            targetX += (mouseX - targetX) * 0.05;
+            targetY += (mouseY - targetY) * 0.05;
+
+            camera.position.x = targetX;
+            camera.position.y = -targetY;
+            camera.lookAt(scene.position);
+
+            particleSystem.rotation.y += 0.0012;
+            particleSystem.rotation.x += 0.0006;
+            lines.rotation.y += 0.0012;
+            lines.rotation.x += 0.0006;
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animateThree();
+    </script>
+
+    <!-- STREAMING_CHUNK: Setting up interactive hover event triggers for card modules -->
+    <script>
+        const cards = document.querySelectorAll('.tilt-card');
+
+        // Dynamic synthesis notes for premium sweep triggers
+        const noteFrequencies = {
+            cardAura: 650,      // E5
+            cardInput: 580,     // D5
+            cardExcuse: 490,    // B4
+            cardMeditation: 440 // A4
+        };
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                
+                const rotateY = ((x - xc) / xc) * 8; 
+                const rotateX = -((y - yc) / yc) * 8; 
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            // Trigger beautiful analog filter sweep pop on hover
+            card.addEventListener('mouseenter', () => {
+                const freq = noteFrequencies[card.id];
+                if (freq) {
+                    playSynthSound(freq, 0.25, 0.015, 'triangle');
+                }
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+
+            card.addEventListener('click', () => {
+                playSynthSound(900, 0.35, 0.05, 'sawtooth');
+            });
+        });
+    </script>
+
+    <!-- STREAMING_CHUNK: Modeling sliders metrics and building network jitter oscilloscope canvas -->
+    <script>
+        const confidenceSlider = document.getElementById('confidenceSlider');
+        const txtConfidencePercent = document.getElementById('txtConfidencePercent');
+        const forecastEloValue = document.getElementById('forecastEloValue');
+
+        confidenceSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            txtConfidencePercent.textContent = `${val}%`;
+
+            let predictedElo = Math.floor(val * 0.4);
+            forecastEloValue.textContent = `+${predictedElo} ELO`;
+            
+            playSynthSound(200 + val * 4, 0.08, 0.02, 'sine');
+        });
+
+        // Canvas live jitter graph setup
+        const jitterCanvas = document.getElementById('jitterCanvas');
+        const jitterCtx = jitterCanvas.getContext('2d');
+
+        function resizeJitterCanvas() {
+            jitterCanvas.width = jitterCanvas.parentElement.offsetWidth;
+            jitterCanvas.height = jitterCanvas.parentElement.offsetHeight;
+        }
+        window.addEventListener('resize', resizeJitterCanvas);
+        resizeJitterCanvas();
+
+        let jitterPoints = [];
+        for (let i = 0; i < 40; i++) {
+            jitterPoints.push(0.03);
+        }
+
+        setInterval(() => {
+            let nextJitter = (0.02 + Math.random() * 0.05);
+            if (Math.random() < 0.1) nextJitter += 0.09; 
+            
+            document.getElementById('liveJitterValue').textContent = `${nextJitter.toFixed(2)} ms`;
+            jitterPoints.push(nextJitter);
+            if (jitterPoints.length > 45) jitterPoints.shift();
+        }, 300);
+
+        function drawJitterGraph() {
+            requestAnimationFrame(drawJitterGraph);
+            jitterCtx.clearRect(0, 0, jitterCanvas.width, jitterCanvas.height);
+
+            jitterCtx.strokeStyle = '#10131b';
+            jitterCtx.lineWidth = 1;
+            for (let i = 0; i < jitterCanvas.height; i += 20) {
+                jitterCtx.beginPath();
+                jitterCtx.moveTo(0, i);
+                jitterCtx.lineTo(jitterCanvas.width, i);
+                jitterCtx.stroke();
+            }
+
+            if (jitterPoints.length < 2) return;
+
+            jitterCtx.beginPath();
+            jitterCtx.strokeStyle = '#00E5FF';
+            jitterCtx.lineWidth = 1.5;
+
+            const max = 0.25;
+            const w = jitterCanvas.width / (jitterPoints.length - 1);
+
+            for (let i = 0; i < jitterPoints.length; i++) {
+                const x = i * w;
+                const y = jitterCanvas.height - (jitterPoints[i] / max) * (jitterCanvas.height - 15) - 8;
+                if (i === 0) jitterCtx.moveTo(x, y);
+                else jitterCtx.lineTo(x, y);
+            }
+            jitterCtx.stroke();
+
+            const grad = jitterCtx.createLinearGradient(0, 0, 0, jitterCanvas.height);
+            grad.addColorStop(0, 'rgba(0, 229, 255, 0.08)');
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            jitterCtx.fillStyle = grad;
+            jitterCtx.lineTo(jitterCanvas.width, jitterCanvas.height);
+            jitterCtx.lineTo(0, jitterCanvas.height);
+            jitterCtx.fill();
+        }
+        drawJitterGraph();
+    </script>
+
+    <!-- STREAMING_CHUNK: Coding HTML5 Canvas game loops for the reaction test module -->
+    <!-- INTERACTIVE HUB REACTION CANVAS MODULE -->
+    <script>
+        const rxCanvas = document.getElementById('hubReactionCanvas');
+        const rxCtx = rxCanvas.getContext('2d');
+
         let rxState = 'idle'; // 'idle', 'waiting', 'click', 'result', 'foul'
         let rxTimeout = null;
         let rxStartTime = 0;
@@ -817,58 +800,51 @@
         resizeRxCanvas();
 
         rxCanvas.addEventListener('mousedown', () => {
-            if (!isScanning) return; // only run reaction test during active scanning phases!
-            
             if (rxState === 'idle') {
-                playSound('test-start');
+                playSynthSound(400, 0.12, 0.06, 'sine');
                 rxState = 'waiting';
                 const randomDelay = Math.random() * 2500 + 1200; // 1.2s to 3.7s
                 
                 rxTimeout = setTimeout(() => {
                     rxState = 'click';
-                    playSound('test-flash');
+                    playSynthSound(950, 0.15, 0.12, 'square');
                     rxStartTime = performance.now();
                 }, randomDelay);
             } 
             else if (rxState === 'waiting') {
-                // Pre-fire / Foul!
                 clearTimeout(rxTimeout);
-                playSound('test-foul');
+                playSynthSound(130, 0.35, 0.2, 'square');
                 rxState = 'foul';
             } 
             else if (rxState === 'click') {
-                // Hit! Calculate elapsed reaction ms
                 rxTimeResult = Math.round(performance.now() - rxStartTime);
-                playSound('stage-complete');
+                playSynthSound(1100, 0.25, 0.12, 'sine');
                 
-                if (rxTimeResult < 160) {
-                    rxRating = 'TIER 1 // GODLIKE REFLEX';
-                } else if (rxTimeResult < 240) {
-                    rxRating = 'TIER 2 // EXCELLENT REFLEX';
-                } else if (rxTimeResult < 350) {
-                    rxRating = 'TIER 3 // NOMINAL REFLEX';
+                if (rxTimeResult < 150) {
+                    rxRating = 'TIER 1 - GODLIKE [AIM ELITE]';
+                } else if (rxTimeResult < 220) {
+                    rxRating = 'TIER 2 - EXCELLENT [COMMANDER]';
+                } else if (rxTimeResult < 330) {
+                    rxRating = 'TIER 3 - STANDARD (NOMINAL)';
                 } else {
-                    rxRating = 'TIER 4 // SLOW (TILT DETECTED)';
+                    rxRating = 'TIER 4 - CRITICAL (TILTED)';
                 }
                 rxState = 'result';
             } 
             else if (rxState === 'result' || rxState === 'foul') {
-                playSound('click');
+                playSynthSound(500, 0.1, 0.04, 'sine');
                 rxState = 'idle';
             }
         });
 
-        // STREAMING_CHUNK: Drawing reaction states, gradients, and texts inside canvas frame
         function drawReactionCanvas() {
-            if (!rxCanvas) return;
             rxCtx.clearRect(0, 0, rxCanvas.width, rxCanvas.height);
-            
-            rxPulse += 0.05;
+            rxPulse += 0.04;
 
-            // Draw clean cyber HUD grid background
-            rxCtx.strokeStyle = '#12151d';
+            // Draw micro grid background
+            rxCtx.strokeStyle = '#10131d';
             rxCtx.lineWidth = 1;
-            for (let x = 0; x < rxCanvas.width; x += 25) {
+            for (let x = 0; x < rxCanvas.width; x += 30) {
                 rxCtx.beginPath();
                 rxCtx.moveTo(x, 0);
                 rxCtx.lineTo(x, rxCanvas.height);
@@ -881,61 +857,43 @@
                 rxCtx.stroke();
             }
 
-            if (!isScanning) {
-                // Show Locked state
-                rxCtx.fillStyle = 'rgba(5, 6, 8, 0.85)';
-                rxCtx.fillRect(0, 0, rxCanvas.width, rxCanvas.height);
-                
-                rxCtx.fillStyle = '#64748b';
-                rxCtx.font = '10px "Share Tech Mono"';
-                rxCtx.textAlign = 'center';
-                rxCtx.fillText('ТЕСТ РЕАКЦИИ: БЛОКИРОВАН (ЗАПУСТИТЕ ЗАМЕР АУРЫ)', rxCanvas.width / 2, rxCanvas.height / 2 + 3);
-                requestAnimationFrame(drawReactionCanvas);
-                return;
-            }
-
-            // Draw borders
+            // Draw outer border
             rxCtx.strokeStyle = 'rgba(139, 92, 246, 0.15)';
             rxCtx.strokeRect(1, 1, rxCanvas.width - 2, rxCanvas.height - 2);
 
             if (rxState === 'idle') {
-                // Idle ready frame
                 rxCtx.fillStyle = 'rgba(139, 92, 246, 0.03)';
                 rxCtx.fillRect(2, 2, rxCanvas.width - 4, rxCanvas.height - 4);
 
                 rxCtx.fillStyle = '#8B5CF6';
-                rxCtx.font = '11px "Share Tech Mono"';
+                rxCtx.font = 'bold 12px "Share Tech Mono"';
                 rxCtx.textAlign = 'center';
-                rxCtx.fillText('ИНИЦИИРОВАТЬ ТЕСТ РЕАКЦИИ', rxCanvas.width / 2, rxCanvas.height / 2 - 4);
-                
-                rxCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-                rxCtx.font = '9px "JetBrains Mono"';
-                const pulseAlpha = 0.4 + Math.sin(rxPulse) * 0.2;
+                rxCtx.fillText('ЗАПУСТИТЬ ТЕСТ КОГНИТИВНЫХ РЕФЛЕКСОВ', rxCanvas.width / 2, rxCanvas.height / 2 - 3);
+
+                const pulseAlpha = 0.5 + Math.sin(rxPulse) * 0.25;
                 rxCtx.fillStyle = `rgba(255, 255, 255, ${pulseAlpha})`;
-                rxCtx.fillText('КЛИКНИТЕ СЮДА ЧТОБЫ НАЧАТЬ', rxCanvas.width / 2, rxCanvas.height / 2 + 10);
+                rxCtx.font = '10px "Share Tech Mono"';
+                rxCtx.fillText('КЛИКНИТЕ ДЛЯ СТАРТА', rxCanvas.width / 2, rxCanvas.height / 2 + 12);
             } 
             else if (rxState === 'waiting') {
-                // Waiting Red warning block
-                const redPulse = 0.05 + Math.sin(rxPulse * 1.5) * 0.04;
+                const redPulse = 0.06 + Math.sin(rxPulse * 1.5) * 0.04;
                 rxCtx.fillStyle = `rgba(239, 68, 68, ${redPulse})`;
                 rxCtx.fillRect(2, 2, rxCanvas.width - 4, rxCanvas.height - 4);
 
                 rxCtx.fillStyle = '#EF4444';
-                rxCtx.font = '11px "Share Tech Mono"';
+                rxCtx.font = 'bold 12px "Share Tech Mono"';
                 rxCtx.textAlign = 'center';
-                rxCtx.fillText('ОЖИДАНИЕ СИГНАЛА СЕНСОРА...', rxCanvas.width / 2, rxCanvas.height / 2 - 4);
-                
+                rxCtx.fillText('ЖДИТЕ НЕОНОВУЮ ВСПЫШКУ...', rxCanvas.width / 2, rxCanvas.height / 2 - 3);
+
                 rxCtx.fillStyle = 'rgba(239, 68, 68, 0.6)';
-                rxCtx.font = '9px "JetBrains Mono"';
-                rxCtx.fillText('НЕ КЛИКАТЬ ДО СМЕНЫ ЦВЕТА!', rxCanvas.width / 2, rxCanvas.height / 2 + 10);
+                rxCtx.font = '10px "Share Tech Mono"';
+                rxCtx.fillText('НЕ КЛИКАТЬ ДО ИЗМЕНЕНИЯ ЦВЕТА!', rxCanvas.width / 2, rxCanvas.height / 2 + 12);
             } 
             else if (rxState === 'click') {
-                // Bright green flash state
                 rxCtx.fillStyle = '#10B981';
                 rxCtx.fillRect(2, 2, rxCanvas.width - 4, rxCanvas.height - 4);
 
-                // Scanning HUD overlays
-                rxCtx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                rxCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
                 rxCtx.lineWidth = 2;
                 rxCtx.strokeRect(6, 6, rxCanvas.width - 12, rxCanvas.height - 12);
 
@@ -945,477 +903,63 @@
                 rxCtx.fillText('КЛИКАЙ СЕЙЧАС!!!', rxCanvas.width / 2, rxCanvas.height / 2 + 5);
             } 
             else if (rxState === 'result') {
-                // Success metrics frame
-                rxCtx.fillStyle = 'rgba(16, 185, 129, 0.04)';
+                rxCtx.fillStyle = 'rgba(16, 185, 129, 0.03)';
                 rxCtx.fillRect(2, 2, rxCanvas.width - 4, rxCanvas.height - 4);
 
                 rxCtx.fillStyle = '#10B981';
-                rxCtx.font = 'bold 20px "Share Tech Mono"';
+                rxCtx.font = 'bold 22px "Share Tech Mono"';
                 rxCtx.textAlign = 'center';
-                rxCtx.fillText(`${rxTimeResult} ms`, rxCanvas.width / 2, rxCanvas.height / 2 - 4);
+                rxCtx.fillText(`${rxTimeResult} ms`, rxCanvas.width / 2, rxCanvas.height / 2 - 3);
 
-                rxCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                rxCtx.font = '9px "JetBrains Mono"';
-                rxCtx.fillText(rxRating, rxCanvas.width / 2, rxCanvas.height / 2 + 11);
+                rxCtx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                rxCtx.font = '10px "Share Tech Mono"';
+                rxCtx.fillText(rxRating, rxCanvas.width / 2, rxCanvas.height / 2 + 13);
             } 
             else if (rxState === 'foul') {
-                // Foul state frame
-                rxCtx.fillStyle = 'rgba(239, 68, 68, 0.05)';
+                rxCtx.fillStyle = 'rgba(239, 68, 68, 0.04)';
                 rxCtx.fillRect(2, 2, rxCanvas.width - 4, rxCanvas.height - 4);
 
                 rxCtx.fillStyle = '#EF4444';
                 rxCtx.font = 'bold 15px "Share Tech Mono"';
                 rxCtx.textAlign = 'center';
-                rxCtx.fillText(`ФАЛЬСТАРТ!`, rxCanvas.width / 2, rxCanvas.height / 2 - 4);
+                rxCtx.fillText('ФАЛЬСТАРТ!', rxCanvas.width / 2, rxCanvas.height / 2 - 3);
 
-                rxCtx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-                rxCtx.font = '9px "JetBrains Mono"';
-                rxCtx.fillText('КЛИК ДОПУЩЕН СЛИШКОМ РАННО // КЛИКНИ ДЛЯ СБРОСА', rxCanvas.width / 2, rxCanvas.height / 2 + 10);
+                rxCtx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+                rxCtx.font = '10px "Share Tech Mono"';
+                rxCtx.fillText('КЛИК ДОПУЩЕН СЛИШКОМ РАНО // КЛИКНИТЕ ДЛЯ СБРОСА', rxCanvas.width / 2, rxCanvas.height / 2 + 12);
             }
 
             requestAnimationFrame(drawReactionCanvas);
         }
         requestAnimationFrame(drawReactionCanvas);
+    </script>
 
-        // STREAMING_CHUNK: Running main scanning stages timers and triggering completions
-        function startScanSequence() {
-            scanStage = 0;
-            totalClicks = 0;
-            clickBonus = 0.0;
-            runNextStage();
-        }
-
-        function runNextStage() {
-            if (scanStage >= 6) {
-                finishScan();
-                return;
-            }
-
-            const currentConfig = stagesConfig[scanStage];
-            
-            document.getElementById('currentStageNum').textContent = scanStage + 1;
-            document.getElementById('currentStageName').textContent = currentConfig.name;
-            document.getElementById('stageSubtext').textContent = currentConfig.subtext;
-
-            const stageElement = document.getElementById(currentConfig.id);
-            stageElement.className = "flex justify-between items-center text-xs text-brand-pink font-semibold";
-            const label = stageElement.querySelector('.status-label');
-            label.textContent = "СКАНИРОВАНИЕ...";
-            label.className = "status-label text-brand-pink animate-pulse";
-
-            currentStageSeconds = 2.0;
-
-            currentConfig.logs.forEach((logText, index) => {
-                setTimeout(() => {
-                    if (isScanning && scanStage === stagesConfig.indexOf(currentConfig)) {
-                        appendConsoleLog(logText);
-                    }
-                }, index * 350);
-            });
-
-            const tickRate = 50;
-            const totalTicks = 2000 / tickRate;
-            let elapsedTicks = 0;
-
-            stageTimerInterval = setInterval(() => {
-                elapsedTicks++;
-                currentStageSeconds = Math.max(0, 2.0 - (elapsedTicks * tickRate / 1000));
-
-                if (elapsedTicks >= totalTicks) {
-                    clearInterval(stageTimerInterval);
-                    
-                    playSound('stage-complete');
-                    stageElement.className = "flex justify-between items-center text-xs text-emerald-400 font-semibold";
-                    label.textContent = "ГОТОВО";
-                    label.className = "status-label text-brand-emerald";
-
-                    calculateMetricForStage(currentConfig.id);
-
-                    scanStage++;
-                    runNextStage();
-                }
-            }, tickRate);
-        }
-
-        function calculateMetricForStage(stageId) {
-            switch (stageId) {
-                case 'status_mana':
-                    calculatedMetrics.mana = Math.floor(Math.random() * 150) + 50 + ' / 200 MP';
-                    break;
-                case 'status_curse':
-                    const curses = ['Отсутствует', 'Скрытый пул Valve', 'Гнев Габена', 'Порча 10-го лузстрика', 'Сглаз 3-го уровня', 'Проклятие руинера'];
-                    calculatedMetrics.curse = curses[Math.floor(Math.random() * curses.length)];
-                    break;
-                case 'status_spoilage':
-                    calculatedMetrics.spoilage = Math.floor(Math.random() * 100) + '% токсичности';
-                    break;
-                case 'status_badluck':
-                    calculatedMetrics.badluck = (Math.random() * 10).toFixed(2) + ' по шкале Фаталити';
-                    break;
-                case 'status_inputlag':
-                    calculatedMetrics.inputlag = (Math.random() * 4 + 1.2).toFixed(2) + ' ms';
-                    break;
-            }
-        }
-
-        // STREAMING_CHUNK: Processing diagnosis outcomes and showing modal panels on success
-        function finishScan() {
-            isScanning = false;
-            clearInterval(stageTimerInterval);
-            clearTimeout(rxTimeout);
-
-            // Hide scan screen, show result screen
-            document.getElementById('scanScreen').classList.add('hidden');
-            document.getElementById('resultScreen').classList.remove('hidden');
-
-            let minVal = -999;
-            let maxVal = 999;
-            let randomBase = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
-            
-            let finalAura = Math.round(randomBase + clickBonus);
-            if (finalAura > 999) finalAura = 999;
-            if (finalAura < -999) finalAura = -999;
-
-            const display = document.getElementById('auraValueDisplay');
-            const card = document.getElementById('auraCard');
-            const badge = document.getElementById('auraBadge');
-            const verdict = document.getElementById('auraVerdict');
-            const faceitBox = document.getElementById('faceitBox');
-            const indicator = document.getElementById('faceitIndicatorLight');
-            const title = document.getElementById('faceitTitle');
-            const desc = document.getElementById('faceitDescription');
-            const glowCircle = document.getElementById('resultGlowCircle');
-            const eloVal = document.getElementById('eloValue');
-
-            // Set breakdown values on bottom panel
-            document.getElementById('breakdownMana').textContent = calculatedMetrics.mana;
-            document.getElementById('breakdownCurse').textContent = calculatedMetrics.curse;
-            document.getElementById('breakdownSpoilage').textContent = calculatedMetrics.spoilage;
-            document.getElementById('breakdownBadluck').textContent = calculatedMetrics.badluck;
-            document.getElementById('breakdownInputlag').textContent = calculatedMetrics.inputlag;
-
-            animateValue(display, 0, finalAura, 2000, '%');
-
-            if (finalAura >= 0) {
-                playSound('win');
-                card.className = "relative flex flex-col items-center justify-center p-6 border-2 border-emerald-500 bg-emerald-950/20 rounded-2xl w-full max-w-sm mx-auto text-center glow-green";
-                badge.className = "absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase font-mono text-white bg-green-600 shadow-[0_0_10px_rgba(34,197,94,0.4)]";
-                display.className = "text-6xl font-black tracking-tighter text-emerald-400 text-neon-green";
-                
-                if (finalAura > 700) {
-                    verdict.textContent = "«Святой геймер. Твои руки благословлены богами CS/Dota. Тиммейты целуют твои шаги.»";
-                } else if (finalAura > 300) {
-                    verdict.textContent = "«Аура сияет. Ты готов к тащерству без лишнего пота. Враги начинают паниковать.»";
-                } else {
-                    verdict.textContent = "«Умеренная аура силы. Шансы высоки. Не забудь вовремя дать инфу в чат.»";
-                }
-
-                faceitBox.className = "w-full border-2 border-emerald-500/50 bg-emerald-950/20 p-5 rounded-xl text-center relative overflow-hidden flex flex-col items-center space-y-3 glow-green";
-                indicator.className = "w-4 h-4 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#22c55e]";
-                title.textContent = "Победительный стрик ждёт!";
-                title.className = "text-xl font-black uppercase tracking-wider text-green-400 text-neon-green";
-                
-                if (selectedGameType === 'cs') {
-                    desc.textContent = "Каждая пуля полетит прямо в голову. Тиммейты попадутся адекватными, без пикающих колонок и криков. Соперники сдадутся после пистолетки. Запускай прямо сейчас!";
-                } else {
-                    desc.textContent = "Твои крипы будут стакаться идеально, а руны появляться прямо перед тобой. Вражеский мидер ливнет на 5-й минуте. Кнопка «Поиск» ждет легендарного захода!";
-                }
-
-                glowCircle.style.backgroundColor = "rgba(34, 197, 94, 0.4)";
-                
-                const eloPlus = Math.floor(Math.random() * 15) + 25;
-                eloVal.textContent = `+${eloPlus} ELO`;
-                eloVal.className = "text-green-400 font-bold";
-
-                createExplosiveParticles(60, '#22c55e');
-            } 
-            else {
-                playSound('lose');
-                card.className = "relative flex flex-col items-center justify-center p-6 border-2 border-red-500 bg-red-950/20 rounded-2xl w-full max-w-sm mx-auto text-center glow-red";
-                badge.className = "absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase font-mono text-white bg-red-600 shadow-[0_0_10px_rgba(239,68,68,0.4)]";
-                display.className = "text-6xl font-black tracking-tighter text-red-400 text-neon-red";
-
-                if (finalAura < -700) {
-                    verdict.textContent = "«Абсолютная тьма. Компьютер транслирует чистый тильт. Опасность возгорания кресла!»";
-                } else if (finalAura < -300) {
-                    verdict.textContent = "«Проклятая карма. Если нажмешь поиск, тебя ждет игра в соло против бустеров.»";
-                } else {
-                    verdict.textContent = "«Отрицательные вибрации. Твой девайс транслирует мелкие лаги. Сделай перерыв.»";
-                }
-
-                faceitBox.className = "w-full border-2 border-red-500/50 bg-red-950/20 p-5 rounded-xl text-center relative overflow-hidden flex flex-col items-center space-y-3 glow-red";
-                indicator.className = "w-4 h-4 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_#ef4444]";
-                title.textContent = "Откажись от поиска! Слив ELO!";
-                title.className = "text-xl font-black uppercase tracking-wider text-red-400 text-neon-red";
-                
-                if (selectedGameType === 'cs') {
-                    desc.textContent = "Враги будут видеть тебя сквозь стены, а пули полетят по небу. Тиммейты откажутся покупать дроп, а микрофоны у них будут свистеть, как чайники. Иди выпей чаю!";
-                } else {
-                    desc.textContent = "Лесной крип заберёт твой аегис, а саппорты будут фармить твои спавны. Тилт начнется еще на стадии драфта. Срочно очисти разум и не нажимай кнопку!";
-                }
-
-                glowCircle.style.backgroundColor = "rgba(239, 68, 68, 0.4)";
-
-                const eloMinus = Math.floor(Math.random() * 15) + 25;
-                eloVal.textContent = `-${eloMinus} ELO`;
-                eloVal.className = "text-red-400 font-bold";
-
-                createExplosiveParticles(40, '#ef4444');
-            }
-        }
-
-        // Copy mechanism inside frame
-        function shareResults() {
-            playSound('click');
-            const playerName = document.getElementById('resPlayerName').textContent;
-            const auraVal = document.getElementById('auraValueDisplay').textContent;
-            const gameName = selectedGameType === 'cs' ? 'CS2' : 'Dota 2';
-            const prediction = auraVal.includes('-') ? 'НЕ ИГРАТЬ (Слив гарантирован) 🛑' : 'ИГРАТЬ (Победа гарантирована!) 🏆';
-
-            const shareText = `🔮 АНАЛИЗ ГЕЙМЕРСКОЙ АУРЫ 🔮\nИгрок: ${playerName}\nДисциплина: ${gameName}\nУровень ауры: ${auraVal}\nВердикт FACEIT: ${prediction}\n\nПроверь свою ауру перед каткой!`;
-
-            const tempTextArea = document.createElement("textarea");
-            tempTextArea.value = shareText;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showToast("Результаты скопированы в буфер обмена!");
-                } else {
-                    showToast("Не удалось скопировать.");
-                }
-            } catch (err) {
-                showToast("Ошибка копирования.");
-            }
-            
-            document.body.removeChild(tempTextArea);
-        }
-
-        // STREAMING_CHUNK: Restoring state values back to defaults on clicking restart
-        function restartApp() {
-            playSound('click');
-            isScanning = false;
-            clearInterval(stageTimerInterval);
-            clearTimeout(rxTimeout);
-
-            document.getElementById('resultScreen').classList.add('hidden');
-            document.getElementById('welcomeScreen').classList.remove('hidden');
-            
-            const stages = ['status_aura', 'status_mana', 'status_curse', 'status_spoilage', 'status_badluck', 'status_inputlag'];
-            stages.forEach(id => {
-                const element = document.getElementById(id);
-                element.className = "flex justify-between items-center text-sm text-brand-textMuted";
-                const label = element.querySelector('.status-label');
-                label.textContent = "ОЖИДАНИЕ";
-                label.className = "status-label";
-            });
-
-            rxState = 'idle';
-            rxTimeResult = 0;
-            rxRating = '';
-        }
-
-        // Particle background framework
-        const canvas = document.getElementById('canvasContainer');
-        const particlesCanvas = document.createElement('canvas');
-        canvas.appendChild(particlesCanvas);
-        const ctx = particlesCanvas.getContext('2d');
-
-        let particlesArray = [];
-        const numberOfParticles = 40;
-
-        function resizeCanvas() {
-            particlesCanvas.width = window.innerWidth;
-            particlesCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor(color = null) {
-                this.x = Math.random() * particlesCanvas.width;
-                this.y = Math.random() * particlesCanvas.height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedX = Math.random() * 0.4 - 0.2;
-                this.speedY = Math.random() * 0.4 - 0.2;
-                this.color = color || 'rgba(139, 92, 246, 0.25)'; // beautiful calming violet
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                if (this.x > particlesCanvas.width) this.x = 0;
-                else if (this.x < 0) this.x = particlesCanvas.width;
-
-                if (this.y > particlesCanvas.height) this.y = 0;
-                else if (this.y < 0) this.y = particlesCanvas.height;
-            }
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
-            particlesArray = [];
-            for (let i = 0; i < numberOfParticles; i++) {
-                particlesArray.push(new Particle());
-            }
-        }
-        initParticles();
-
-        function createExplosiveParticles(count, color) {
-            for (let i = 0; i < count; i++) {
-                const p = new Particle(color);
-                p.x = particlesCanvas.width / 2 + (Math.random() * 100 - 50);
-                p.y = particlesCanvas.height / 2 + (Math.random() * 100 - 50);
-                p.speedX = Math.random() * 10 - 5;
-                p.speedY = Math.random() * 10 - 5;
-                p.size = Math.random() * 4 + 1;
-                
-                p.life = 100;
-                p.update = function() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    this.speedX *= 0.96;
-                    this.speedY *= 0.96;
-                    this.life--;
-                    this.size *= 0.98;
-                };
-                p.draw = function() {
-                    if (this.life > 0) {
-                        ctx.fillStyle = color;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                };
-                particlesArray.push(p);
-            }
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-
-                if (particlesArray[i].life !== undefined && particlesArray[i].life <= 0) {
-                    particlesArray.splice(i, 1);
-                    i--;
-                }
-            }
-            requestAnimationFrame(animateParticles);
-        }
-
-        // --- Three.js Background Stars Scene Setup ---
-        const threeContainer = document.getElementById('canvasContainer');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    <script>
+        const gamerInput = document.getElementById('gamerTagInput');
         
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        threeContainer.appendChild(renderer.domElement);
-
-        const particleCount = 120;
-        const geometry = new THREE.BufferGeometry();
-        const starsPositions = new Float32Array(particleCount * 3);
-        const starsColors = new Float32Array(particleCount * 3);
-
-        const starPurpleColor = new THREE.Color('#8B5CF6');
-        const starDarkColor = new THREE.Color('#161924');
-
-        for (let i = 0; i < particleCount * 3; i += 3) {
-            starsPositions[i] = (Math.random() - 0.5) * 50;
-            starsPositions[i + 1] = (Math.random() - 0.5) * 50;
-            starsPositions[i + 2] = (Math.random() - 0.5) * 50;
-
-            const mixedColor = starPurpleColor.clone().lerp(starDarkColor, Math.random() * 0.75);
-            starsColors[i] = mixedColor.r;
-            starsColors[i + 1] = mixedColor.g;
-            starsColors[i + 2] = mixedColor.b;
+        const storedGamerName = localStorage.getItem('gamer_hub_name');
+        if (storedGamerName) {
+            gamerInput.value = storedGamerName;
         }
 
-        geometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(starsColors, 3));
-
-        const starsMaterial = new THREE.PointsMaterial({
-            size: 0.3,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.5,
-            blending: THREE.AdditiveBlending
+        gamerInput.addEventListener('change', () => {
+            const newName = gamerInput.value.trim() || 'Gamer_Guest';
+            gamerInput.value = newName;
+            localStorage.setItem('gamer_hub_name', newName);
+            playSynthSound(900, 0.1, 0.03, 'sine');
         });
 
-        const starSystem = new THREE.Points(geometry, starsMaterial);
-        scene.add(starSystem);
-
-        camera.position.z = 25;
-
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-
-        window.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - window.innerWidth / 2) * 0.008;
-            mouseY = (event.clientY - window.innerHeight / 2) * 0.008;
-        });
-
-        function animateThree() {
-            requestAnimationFrame(animateThree);
-
-            targetX += (mouseX - targetX) * 0.05;
-            targetY += (mouseY - targetY) * 0.05;
-
-            camera.position.x = targetX;
-            camera.position.y = -targetY;
-            camera.lookAt(scene.position);
-
-            starSystem.rotation.y += 0.0006;
-            starSystem.rotation.x += 0.0003;
-
-            renderer.render(scene, camera);
-        }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // STREAMING_CHUNK: Initializing responsive canvas sizes and tilt modifiers on window load
         window.onload = function() {
-            animateParticles();
-            animateThree();
-            resizeRxCanvas();
+            startAmbientDrone();
             
-            // 3D card interactive tilt handler
-            const cards = document.querySelectorAll('.tilt-card');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    const xc = rect.width / 2;
-                    const yc = rect.height / 2;
-                    
-                    const rotateY = ((x - xc) / xc) * 5; 
-                    const rotateX = -((y - yc) / yc) * 5; 
-                    
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                });
-            });
+            // Initialization entry audio chime
+            setTimeout(() => {
+                playSynthSound(523.25, 0.25, 0.05, 'sine');
+                setTimeout(() => playSynthSound(659.25, 0.25, 0.05, 'sine'), 100);
+                setTimeout(() => playSynthSound(783.99, 0.45, 0.05, 'sine'), 200);
+            }, 500);
         };
     </script>
+
 </body>
 </html>
