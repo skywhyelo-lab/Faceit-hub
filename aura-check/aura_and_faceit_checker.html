@@ -299,7 +299,7 @@
 
                 <!-- Giant Percentage Display -->
                 <div class="relative flex flex-col items-center justify-center p-6 border rounded-2xl w-full max-w-sm mx-auto text-center" id="auraCard">
-                    <div class="absolute -top-3 px-3 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest uppercase text-white" id="auraBadge">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest uppercase text-white" id="auraBadge">
                         АУРИЧЕСКИЙ БАЛАНС
                     </div>
                     
@@ -314,7 +314,7 @@
                 <div id="faceitBox" class="w-full border p-5 rounded-2xl text-center relative overflow-hidden flex flex-col items-center space-y-3">
                     <div class="absolute inset-0 bg-brand-terminal/20 pointer-events-none"></div>
                     
-                    <div class="flex items-center space-x-2.5">
+                    <div class="flex items-center justify-center space-x-2.5">
                         <div id="faceitIndicatorLight" class="w-3.5 h-3.5 rounded-full"></div>
                         <h3 id="faceitTitle" class="text-base font-black uppercase tracking-wider"></h3>
                     </div>
@@ -783,9 +783,9 @@
 
             if (finalAura >= 0) {
                 playSound('win');
-                card.className = "relative flex flex-col items-center justify-center p-6 border-2 border-emerald-500 bg-emerald-950/20 rounded-2xl w-full max-w-xs text-center neon-border-green";
-                badge.className = "absolute -top-3 px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase mono-font text-white bg-green-600 shadow-[0_0_10px_rgba(34,197,94,0.4)]";
-                display.className = "text-6xl font-black tracking-tighter text-emerald-400 neon-text-green";
+                card.className = "relative flex flex-col items-center justify-center p-6 border-2 border-emerald-500 bg-emerald-950/20 rounded-2xl w-full max-w-sm mx-auto text-center glow-green";
+                badge.className = "absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase font-mono text-white bg-green-600 shadow-[0_0_10px_rgba(34,197,94,0.4)]";
+                display.className = "text-6xl font-black tracking-tighter text-emerald-400 text-neon-green";
                 
                 if (finalAura > 700) {
                     verdict.textContent = "«Святой геймер. Твои руки благословлены богами CS/Dota. Тиммейты целуют твои шаги.»";
@@ -795,10 +795,10 @@
                     verdict.textContent = "«Умеренная аура силы. Шансы высоки. Не забудь вовремя дать инфу в чат.»";
                 }
 
-                faceitBox.className = "w-full border-2 border-emerald-500/50 bg-emerald-950/20 p-5 rounded-xl text-center relative overflow-hidden flex flex-col items-center space-y-3 neon-border-green";
+                faceitBox.className = "w-full border-2 border-emerald-500/50 bg-emerald-950/20 p-5 rounded-xl text-center relative overflow-hidden flex flex-col items-center space-y-3 glow-green";
                 indicator.className = "w-4 h-4 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#22c55e]";
                 title.textContent = "Победительный стрик ждёт!";
-                title.className = "text-xl font-black uppercase tracking-wider text-green-400 neon-text-green";
+                title.className = "text-xl font-black uppercase tracking-wider text-green-400 text-neon-green";
                 
                 if (selectedGameType === 'cs') {
                     desc.textContent = "Каждая пуля полетит прямо в голову. Тиммейты попадутся адекватными, без пикающих колонок и криков. Соперники сдадутся после пистолетки. Запускай прямо сейчас!";
@@ -816,9 +816,9 @@
             } 
             else {
                 playSound('lose');
-                card.className = "relative flex flex-col items-center justify-center p-6 border-2 border-red-500 bg-red-950/20 rounded-2xl w-full max-w-xs text-center neon-border-red";
-                badge.className = "absolute -top-3 px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase mono-font text-white bg-red-600 shadow-[0_0_10px_rgba(239,68,68,0.4)]";
-                display.className = "text-6xl font-black tracking-tighter text-red-400 neon-text-red";
+                card.className = "relative flex flex-col items-center justify-center p-6 border-2 border-red-500 bg-red-950/20 rounded-2xl w-full max-w-sm mx-auto text-center glow-red";
+                badge.className = "absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase font-mono text-white bg-red-600 shadow-[0_0_10px_rgba(239,68,68,0.4)]";
+                display.className = "text-6xl font-black tracking-tighter text-red-400 text-neon-red";
 
                 if (finalAura < -700) {
                     verdict.textContent = "«Абсолютная тьма. Компьютер транслирует чистый тильт. Опасность возгорания кресла!»";
@@ -828,10 +828,10 @@
                     verdict.textContent = "«Отрицательные вибрации. Твой девайс транслирует мелкие лаги. Сделай перерыв.»";
                 }
 
-                faceitBox.className = "w-full border-2 border-red-500/50 bg-red-950/20 p-5 rounded-xl text-center relative overflow-hidden flex flex-col items-center space-y-3 neon-border-red";
+                faceitBox.className = "w-full border-2 border-red-500/50 bg-red-950/20 p-5 rounded-xl text-center relative overflow-hidden flex flex-col items-center space-y-3 glow-red";
                 indicator.className = "w-4 h-4 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_#ef4444]";
                 title.textContent = "Откажись от поиска! Слив ELO!";
-                title.className = "text-xl font-black uppercase tracking-wider text-red-400 neon-text-red";
+                title.className = "text-xl font-black uppercase tracking-wider text-red-400 text-neon-red";
                 
                 if (selectedGameType === 'cs') {
                     desc.textContent = "Враги будут видеть тебя сквозь стены, а пули полетят по небу. Тиммейты откажутся покупать дроп, а микрофоны у них будут свистеть, как чайники. Иди выпей чаю!";
