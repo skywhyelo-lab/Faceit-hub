@@ -448,7 +448,7 @@
 
                 ambientGain = audioCtx.createGain();
                 ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                ambientGain.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 3.0); // плавная громкость
+                ambientGain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 3.0); // Сделано значительно тише (0.01 вместо 0.04)
 
                 const splitter = audioCtx.createChannelMerger(2);
 
