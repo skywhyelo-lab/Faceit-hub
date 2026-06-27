@@ -15,6 +15,7 @@
     <!-- Three.js Library for 3D Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
+    <!-- STREAMING_CHUNK: Configuring Tailwind theme variables and luxury colors -->
     <script>
         tailwind.config = {
             theme: {
@@ -43,6 +44,7 @@
         }
     </script>
     
+    <!-- STREAMING_CHUNK: Designing hardware-accelerated CSS animations, glow states, and transitions -->
     <style>
         body {
             background-color: #040507;
@@ -51,6 +53,7 @@
             overflow-x: hidden;
         }
         
+        /* Premium sci-fi shadows and backdrops */
         .glass-panel {
             background: rgba(12, 14, 20, 0.75);
             backdrop-filter: blur(12px);
@@ -63,11 +66,13 @@
         .glow-orange { box-shadow: 0 0 35px rgba(255, 85, 0, 0.15); }
         .glow-red { box-shadow: 0 0 35px rgba(239, 68, 68, 0.15); }
         
+        /* 3D card tilt smooth transition */
         .tilt-card {
             transform-style: preserve-3d;
             transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
         }
         
+        /* Scanline scrolling grid effect */
         .scanline::after {
             content: '';
             position: absolute;
@@ -89,7 +94,7 @@
             to { opacity: 1; transform: scale(1); }
         }
         .animate-viewport {
-            animation: viewportFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: viewportFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -104,6 +109,7 @@
     </div>
 
     <!-- MAIN COCKPIT HEADER -->
+    <!-- STREAMING_CHUNK: Rendering minimal header without vague descriptions -->
     <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             
@@ -118,12 +124,11 @@
                         <h1 class="text-xl font-extrabold tracking-tighter text-white uppercase">
                             FACEIT <span class="text-brand-purple">HUB</span>
                         </h1>
-                        <span class="text-[9px] bg-brand-purple/15 text-brand-purple border border-brand-purple/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">V2.0</span>
                     </div>
                 </div>
             </div>
             
-            <!-- Right Header: Just audio modulator pop -->
+            <!-- Right Header: Audio modulator switch -->
             <div class="flex items-center gap-4">
                 <button id="toggleAudioBtn" class="px-3.5 py-2.5 rounded-xl bg-brand-border/60 border border-brand-border hover:border-brand-purple/40 transition-all text-xs flex items-center space-x-2">
                     <i id="audioIcon" class="fas fa-volume-high text-brand-purple"></i>
@@ -133,7 +138,8 @@
         </div>
     </header>
 
-    <!-- MAIN CENTRAL VIEWPORT CONTAINER -->
+    <!-- STREAMING_CHUNK: Designing main dashboard layout structure and precise metrics grids -->
+    <!-- MAIN CENTRAL VIEWPORT CONTAINER (PURE CSS TRANSITION TO AVOID LOCKS) -->
     <main id="mainViewport" class="animate-viewport flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
         
         <!-- Welcome Banner + Dynamic ELO Predictor Configurator -->
@@ -160,7 +166,7 @@
                     </div>
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col justify-between">
                         <span class="text-[9px] uppercase text-brand-textMuted font-bold tracking-wider">Кадры Рендера</span>
-                        <span class="text-xs sm:text-sm font-bold text-brand-purple mt-1 font-mono">~360 FPS (Stable)</span>
+                        <span class="text-xs sm:text-sm font-bold text-brand-purple mt-1 font-mono">~67 FPS (Stable)</span>
                     </div>
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col justify-between">
                         <span class="text-[9px] uppercase text-brand-textMuted font-bold tracking-wider">Шина ввода USB</span>
@@ -200,6 +206,7 @@
             </div>
         </div>
 
+        <!-- STREAMING_CHUNK: Generating individual subproject access card links with tight premium fonts -->
         <!-- SUBPROJECTS CARDS GRID -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
@@ -268,7 +275,7 @@
                     </div>
 
                     <div>
-                        <h3 class="text-base font-extrabold text-white uppercase tracking-wider group-hover:text-brand-orange transition-colors">Генератор Отмазок</h3>
+                        <h3 class="text-base font-extrabold text-white uppercase tracking-tight group-hover:text-brand-orange transition-colors">Генератор Отмазок</h3>
                         <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed font-medium">
                             Тактическая дешифрация железобетонных оправданий для FACEIT-чата. Встроенные авто-бинды для игровой консоли CS2.
                         </p>
@@ -309,6 +316,7 @@
 
         </div>
 
+        <!-- STREAMING_CHUNK: Instantiating real-time charts and reaction game blocks in dashboard layout -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             <!-- Real-time Network Jitter Oscilloscope -->
@@ -349,7 +357,7 @@
 
                 <div class="flex justify-between items-center text-[10px] text-brand-textMuted font-mono uppercase z-10 relative">
                     <span>* Замер скорости нейронного отклика оператора</span>
-                    <span class="text-brand-purple">Тест калибровки active</span>
+                    <span class="text-brand-purple">Тест калибровки активен</span>
                 </div>
             </div>
 
@@ -362,10 +370,19 @@
         <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider font-semibold">
             © 2026 FACEIT HUB
         </span>
+        <div class="flex space-x-6 text-[10px] font-mono tracking-widest text-brand-textMuted">
+        
+        </div>
     </footer>
 
     <!-- STREAMING_CHUNK: Coding filter sweep synthesizer in Web Audio API -->
     <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let audioEnabled = true;
+        let ambientOscL = null;
+        let ambientOscR = null;
+        let ambientGain = null;
+
         // Secure storage helper to completely bypass Vercel sandboxed iframe blocks
         const safeStorage = {
             getItem(key) {
@@ -383,12 +400,6 @@
                 }
             }
         };
-
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let audioEnabled = true;
-        let ambientOscL = null;
-        let ambientOscR = null;
-        let ambientGain = null;
 
         // --- HIGH END FILTER SYNTHESIZER ---
         function playSynthSound(freq, duration, vol = 0.05, type = 'sine') {
@@ -807,7 +818,7 @@
         window.addEventListener('resize', resizeRxCanvas);
         resizeRxCanvas();
 
-        // Safe high-score loading using storage protection
+        // Local high-score loading
         let personalBest = safeStorage.getItem('hub_reaction_pb');
         if (personalBest) {
             document.getElementById('reactionPbText').textContent = `${personalBest} ms`;
@@ -888,13 +899,13 @@
                 rxCtx.fillRect(2, 2, rxCanvas.width - 4, rxCanvas.height - 4);
 
                 rxCtx.fillStyle = '#8B5CF6';
-                rxCtx.font = 'bold 12px "Share Tech Mono"';
+                rxCtx.font = 'bold 12px "JetBrains Mono"';
                 rxCtx.textAlign = 'center';
                 rxCtx.fillText('ЗАПУСТИТЬ ТЕСТ КОГНИТИВНЫХ РЕФЛЕКСОВ', rxCanvas.width / 2, rxCanvas.height / 2 - 3);
 
                 const pulseAlpha = 0.5 + Math.sin(rxPulse) * 0.25;
                 rxCtx.fillStyle = `rgba(255, 255, 255, ${pulseAlpha})`;
-                rxCtx.font = '10px "Share Tech Mono"';
+                rxCtx.font = '10px "JetBrains Mono"';
                 rxCtx.fillText('КЛИКНИТЕ ДЛЯ СТАРТА', rxCanvas.width / 2, rxCanvas.height / 2 + 12);
             } 
             else if (rxState === 'waiting') {
@@ -903,12 +914,12 @@
                 rxCtx.fillRect(2, 2, rxCanvas.width - 4, rxCanvas.height - 4);
 
                 rxCtx.fillStyle = '#EF4444';
-                rxCtx.font = 'bold 12px "Share Tech Mono"';
+                rxCtx.font = 'bold 12px "JetBrains Mono"';
                 rxCtx.textAlign = 'center';
                 rxCtx.fillText('ЖДИТЕ НЕОНОВУЮ ВСПЫШКУ...', rxCanvas.width / 2, rxCanvas.height / 2 - 3);
 
                 rxCtx.fillStyle = 'rgba(239, 68, 68, 0.6)';
-                rxCtx.font = '10px "Share Tech Mono"';
+                rxCtx.font = '10px "JetBrains Mono"';
                 rxCtx.fillText('НЕ КЛИКАТЬ ДО ИЗМЕНЕНИЯ ЦВЕТА!', rxCanvas.width / 2, rxCanvas.height / 2 + 12);
             } 
             else if (rxState === 'click') {
