@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hardware Latency & Input Flow Analyzer // FACEIT Cockpit</title>
+    <title>Hardware Latency & Input Flow Analyzer</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Three.js Library for 3D Cosmic Background -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -22,19 +20,18 @@
                     colors: {
                         latency: {
                             cyan: '#00E5FF',
-                            dark: '#040507',
-                            card: '#0c0e14',
-                            border: '#161924',
-                            lightBorder: '#272d3f',
-                            textMuted: '#64748b',
-                            terminal: '#050608',
+                            dark: '#0A0B0D',
+                            card: '#121418',
+                            border: '#1E2229',
+                            lightBorder: '#2B313B',
+                            textMuted: '#6B7280',
+                            terminal: '#0E1013',
                             accent: '#3B82F6'
                         }
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        mono: ['Share Tech Mono', 'monospace'],
-                        code: ['JetBrains Mono', 'monospace']
+                        mono: ['Share Tech Mono', 'monospace']
                     }
                 }
             }
@@ -42,44 +39,37 @@
     </script>
     <style>
         body {
-            background-color: #040507;
+            background-color: #0A0B0D;
             color: #E5E7EB;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
-        
-        .glass-panel {
-            background: rgba(12, 14, 20, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 229, 255, 0.25);
-        }
-        
         .glow-cyan {
-            box-shadow: 0 0 35px rgba(0, 229, 255, 0.15);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.25);
         }
         .glow-blue {
-            box-shadow: 0 0 35px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.25);
         }
         .glow-red {
-            box-shadow: 0 0 35px rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.25);
         }
         .text-neon-cyan {
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.7);
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
         }
-        
-        .tilt-card {
-            transform-style: preserve-3d;
-            transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-        
-        .bg-grid-dark {
-            background-size: 50px 50px;
-            background-image: 
-                linear-gradient(to right, rgba(0, 229, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 229, 255, 0.015) 1px, transparent 1px);
+        ::-webkit-scrollbar-track {
+            background: #0A0B0D;
         }
-        
+        ::-webkit-scrollbar-thumb {
+            background: #1E2229;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00E5FF;
+        }
         @keyframes scanline {
             0% { transform: translateY(-100%); }
             100% { transform: translateY(100%); }
@@ -88,31 +78,13 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(0, 229, 255, 0) 0%, rgba(0, 229, 255, 0.015) 10%, rgba(0, 229, 255, 0) 20%);
+            background: linear-gradient(to bottom, rgba(0, 229, 255, 0) 0%, rgba(0, 229, 255, 0.02) 10%, rgba(0, 229, 255, 0) 20%);
             animation: scanline 8s linear infinite;
             pointer-events: none;
-            z-index: 5;
-        }
-        
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #040507;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #161924;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00E5FF;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-latency-cyan selection:text-black bg-grid-dark relative scanline">
-
-    <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
+<body class="min-h-screen flex flex-col antialiased selection:bg-latency-cyan selection:text-black">
 
     <!-- Professional Hardware Telemetry Header -->
     <header class="border-b border-latency-border bg-latency-card/95 backdrop-blur sticky top-0 z-40 px-6 py-4">
@@ -141,6 +113,11 @@
             </div>
             
             <div class="flex items-center gap-3">
+                <!-- Back to Hub Button -->
+                <a href="../index.html" class="px-3 py-1.5 rounded bg-latency-card/80 border border-latency-border hover:border-latency-cyan/40 hover:text-white transition-all text-xs flex items-center space-x-2 mr-2">
+                    <i class="fa-solid fa-arrow-left text-latency-cyan"></i>
+                    <span class="font-mono text-gray-300">В ХАБ</span>
+                </a>
                 <div class="text-xs font-mono text-right hidden sm:block">
                     <div class="text-white font-semibold">HPET Reference Frequency</div>
                     <div class="text-latency-cyan">10.0000 MHz (Active)</div>
@@ -486,25 +463,6 @@
 
     <!-- TELEMETRY AND CANVAS SYSTEM ENGINE -->
     <script>
-        // Copy Mechanism
-        function copyCode() {
-            const codeText = document.getElementById('codeArea').innerText;
-            const textarea = document.createElement('textarea');
-            textarea.value = codeText;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            
-            const btn = document.querySelector('[onclick="copyCode()"]');
-            btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Скопировано!';
-            btn.classList.add('bg-green-600');
-            setTimeout(() => {
-                btn.innerHTML = '<i class="fa-solid fa-copy"></i> Копировать код драйвера';
-                btn.classList.remove('bg-green-600');
-            }, 2000);
-        }
-
         // --- Kernel Terminal Logger Output Stream ---
         const terminalBody = document.getElementById('terminalBody');
         const dpcSlider = document.getElementById('rngDpcLoad');
@@ -957,11 +915,9 @@
                 sndFail();
             }
 
-
             // Update DOM Elements
             document.getElementById('valAvgPoll').innerText = `${avgHz > 0 ? avgHz : 1000} Hz`;
             document.getElementById('valTimerLag').innerText = `${(computedLag * 0.12).toFixed(2)} ms`;
-            document.getElementById('valJitter').innerText = document.getElementById('currentJitterText').innerText;
             
             const totalLagElem = document.getElementById('valTotalLag');
             totalLagElem.innerText = `${computedLag.toFixed(2)} ms`;
@@ -1001,6 +957,7 @@
             mBadge.className = `w-28 h-28 rounded-2xl flex items-center justify-center text-5xl shadow-lg border relative ${badgeStyle}`;
             mBadge.innerHTML = iconCode;
 
+            // Crown / Trophy element display toggling based on rating
             const mCrown = document.getElementById('modalCrown');
             if (computedLag < 5.0) {
                 mCrown.classList.remove('hidden');
@@ -1009,6 +966,7 @@
                 mCrown.classList.add('hidden');
             }
 
+            // Glowing nodes
             const mGlow = document.getElementById('modalGlow');
             if (computedLag < 5.0) mGlow.className = "absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 rounded-full blur-3xl opacity-20 bg-cyan-500";
             else if (computedLag < 15.0) mGlow.className = "absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 rounded-full blur-3xl opacity-20 bg-blue-500";
@@ -1036,28 +994,6 @@
 
         btnCloseModal.addEventListener('click', closeModal);
         btnModalCloseOk.addEventListener('click', closeModal);
-
-        // 3D card interactive tilt handler
-        const cards = document.querySelectorAll('.tilt-card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const xc = rect.width / 2;
-                const yc = rect.height / 2;
-                
-                const rotateY = ((x - xc) / xc) * 5; 
-                const rotateX = -((y - yc) / yc) * 5; 
-                
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            });
-        });
     </script>
 </body>
 </html>
