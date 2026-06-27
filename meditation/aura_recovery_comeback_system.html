@@ -300,7 +300,8 @@
             <!-- Right Panel: Mental Calibration Chamber -->
             <div class="lg:col-span-8 flex flex-col gap-6">
                 
-                <div class="glass-panel border border-brand-border rounded-2xl p-6 flex-grow flex flex-col gap-5 relative overflow-hidden min-h-[500px] tilt-card glow-purple">
+                <!-- NOTE: The 'tilt-card' class is removed here to ensure 100% stable mouse tracking on the interactive canvas -->
+                <div class="glass-panel border border-brand-border rounded-2xl p-6 flex-grow flex flex-col gap-5 relative overflow-hidden min-h-[500px] glow-purple">
                     
                     <!-- Chamber Header -->
                     <div class="flex justify-between items-center border-b border-brand-border pb-3 z-10 relative">
@@ -330,7 +331,7 @@
                             </div>
                             <h3 class="text-sm font-bold text-white uppercase tracking-wider">Калибровка фокуса</h3>
                             <p class="text-xs text-brand-textMuted max-w-sm mt-2 leading-relaxed">
-                                Запустите сессию, наденьте наушники и начните уничтожать красные триггеры напряжения на холсте, параллельно следуя дыхательному ритму.
+                                Запустите сессию, наденьте наушники и начните уничтожать красные триггеры напряжения на холсте. Дыхательный круг перенесен в левое меню для лучшей точности и аима.
                             </p>
                         </div>
 
@@ -1079,9 +1080,6 @@
             document.getElementById('modalCard').classList.add('scale-95');
             setTimeout(() => {
                 comebackModal.classList.add('hidden');
-                // Return chamber view back to standby
-                chamberStandbyOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                btnLaunchRecharge.classList.add('hidden');
             }, 120);
         }
 
@@ -1094,7 +1092,7 @@
             }, 150);
         });
 
-        // 3D card interactive tilt handler
+        // 3D card interactive tilt handler (applied only to left panel settings cards)
         const cards = document.querySelectorAll('.tilt-card');
         cards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
