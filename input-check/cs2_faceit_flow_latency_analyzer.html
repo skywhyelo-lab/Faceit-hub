@@ -224,7 +224,7 @@
                 </div>
             </div>
 
-            <!-- Column 2: Diagnostic Calibration Canvas Area (STABLE - NO TILT CARD) -->
+            <!-- Column 2: Diagnostic Calibration Canvas Area (STABLE - NO TILT CARD FOR PRECISION) -->
             <div class="lg:col-span-5 space-y-6">
                 <div class="glass-panel border border-latency-border rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden glow-cyan">
                     
@@ -247,7 +247,8 @@
                                 <span class="text-latency-textMuted font-medium">Частота:</span>
                                 <span id="liveHzVal" class="text-latency-cyan font-bold">0 Hz</span>
                             </div>
-                            <div id="packetsCounterBadge" class="bg-latency-terminal border border-latency-border px-2.5 py-1 rounded flex items-center gap-1.5 hidden">
+                            <!-- Uninterrupted packets counter cleanly shown in Header (Resolving overlap layout issue) -->
+                            <div id="packetsCounterBadge" class="bg-latency-terminal border border-latency-border px-2.5 py-1 rounded flex items-center gap-1.5 hidden animate-pulse">
                                 <span class="text-latency-textMuted font-medium">Пакеты:</span>
                                 <span id="countEvents" class="text-emerald-400 font-bold">0</span>
                             </div>
@@ -577,7 +578,7 @@
         let testDuration = 10000; // 10s
         let startTime = 0;
         let totalInputPackets = 0; // Pure high speed numeric counter
-        let mouseTrail = []; // Tight bounded visual trail array to bypass memory lag!
+        let mouseTrail = []; // Tight bounded visual trail array to bypass memory lag! (Max 25 elements)
         let dpcFactor = 0; 
         let sparkHistory = [];
         
@@ -655,7 +656,7 @@
             
             totalInputPackets++;
             
-            // Add to visual trail with strict length capping to prevent curMouse lagging!
+            // Add to visual trail with strict length capping to prevent curMouse lagging! (HARD MEMORY CAPPING AT 25)
             mouseTrail.push({ x: curMouseX, y: curMouseY });
             if (mouseTrail.length > 25) {
                 mouseTrail.shift();
@@ -841,7 +842,7 @@
                 ctx.stroke();
 
                 ctx.fillStyle = `rgba(107, 114, 128, ${r.alpha})`;
-                ctx.font = '9px "Share Tech Mono"';
+                ctx.font = '9px "JetBrains Mono"';
                 ctx.fillText(`HIT_O_SET: [${Math.round(r.x)}, ${Math.round(r.y)}]`, r.x + r.radius + 6, r.y - 4);
             });
 
@@ -865,7 +866,7 @@
             // Active calibration indicator overlay
             if (isTesting) {
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.font = '10px "Share Tech Mono"';
+                ctx.font = '10px "JetBrains Mono"';
                 ctx.fillText('HIGH_FREQUENCY_MONITORING: BUSY', 20, canvas.height - 35);
                 ctx.fillText('QPC TIMESTAMP CLOCK: RUNNING', 20, canvas.height - 20);
 
@@ -891,14 +892,15 @@
 
                 let simHz = diff;
                 if (simHz > 0) {
-                    simHz = Math.min(1000, Math.round(simHz * 4.5 + (Math.random() * 60 - 30)));
+                    // Scaled up mathematical calculation to easily reach up to 8000 Hz
+                    simHz = Math.min(8000, Math.round(simHz * 36.5 + (Math.random() * 150 - 75)));
                     if (simHz < 125) simHz = 125;
                 }
 
                 document.getElementById('liveHzVal').innerText = `${simHz} Hz`;
                 document.getElementById('countEvents').innerText = count;
 
-                document.getElementById('valAvgPoll').innerText = `${simHz > 0 ? simHz : 1000} Hz`;
+                document.getElementById('valAvgPoll').innerText = `${simHz > 0 ? simHz : 8000} Hz`;
                 
                 const jitterSeed = prankTriggered ? (24.1 + Math.random() * 8.5) : (0.08 + (dpcFactor / 22) + Math.random() * 0.15);
                 document.getElementById('currentJitterText').innerText = `${jitterSeed.toFixed(2)} ms`;
@@ -1008,7 +1010,8 @@
             statusSubheader.innerText = "Анализ данных буферизации завершен";
 
             const count = totalInputPackets;
-            let avgHz = Math.min(1000, Math.round((count / 10) * 4.6 + (Math.random() * 20 - 10)));
+            // High frequency scaling for final diagnostic summary up to 8000 Hz
+            let avgHz = Math.min(8000, Math.round((count / 10) * 36.6 + (Math.random() * 100 - 50)));
             if (avgHz < 125) avgHz = 125;
             if (count === 0) avgHz = 0;
 
@@ -1077,7 +1080,7 @@
             }
 
             // Update DOM Elements
-            document.getElementById('valAvgPoll').innerText = `${avgHz > 0 ? avgHz : 1000} Hz`;
+            document.getElementById('valAvgPoll').innerText = `${avgHz > 0 ? avgHz : 8000} Hz`;
             document.getElementById('valTimerLag').innerText = `${(computedLag * 0.12).toFixed(2)} ms`;
             document.getElementById('valJitter').innerText = document.getElementById('currentJitterText').innerText;
             
@@ -1101,7 +1104,7 @@
             document.getElementById('roastMeterBar').style.width = `${fv1stRoastScore}%`;
 
             // Modal setup
-            document.getElementById('modalAvgHz').innerText = avgHz > 0 ? avgHz : 1000;
+            document.getElementById('modalAvgHz').innerText = avgHz > 0 ? avgHz : 8000;
             document.getElementById('modalJitterVal').innerText = document.getElementById('valJitter').innerText;
             document.getElementById('modalTotalLagVal').innerText = `${computedLag.toFixed(2)}ms`;
             
@@ -1179,3 +1182,5 @@
     </script>
 </body>
 </html>
+```
+eof
