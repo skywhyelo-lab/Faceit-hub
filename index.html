@@ -15,7 +15,7 @@
     <!-- Three.js Library for 3D Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- STREAMING_CHUNK: Setting up custom Tailwind theme configuration -->
+    <!-- STREAMING_CHUNK: Declaring Tailwind theme variables -->
     <script>
         tailwind.config = {
             theme: {
@@ -44,7 +44,7 @@
         }
     </script>
     
-    <!-- STREAMING_CHUNK: Crafting custom animation stylesheets and scrollbar layouts -->
+    <!-- STREAMING_CHUNK: Writing custom styles for advanced glow shaders, tilt card support and scrollbars -->
     <style>
         body {
             background-color: #040507;
@@ -134,17 +134,16 @@
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             
             <!-- Left Header Logo and Server Status -->
-            <div class="flex items-center gap-3">
-                <div class="relative">
-                    <div class="bg-gradient-to-br from-brand-purple via-pink-600 to-brand-orange p-3 rounded-xl text-white font-black text-2xl tracking-tight leading-none glow-purple">
-                        <i class="fa-solid fa-gamepad animate-pulse"></i>
-                    </div>
-                    <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-brand-emerald border-2 border-brand-dark rounded-full animate-pulse"></div>
+            <!-- STREAMING_CHUNK: Integrating the color-shifting 3D Quantum Logo canvas into Header -->
+            <div class="flex items-center gap-4">
+                <div class="relative w-14 h-14 flex items-center justify-center">
+                    <canvas id="quantumLogo" width="80" height="80" class="w-14 h-14 rounded-xl border border-brand-border bg-[#020205] glow-purple z-10 relative"></canvas>
+                    <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-brand-emerald border-2 border-brand-dark rounded-full animate-pulse z-20"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-base font-black tracking-wider uppercase text-white tracking-widest text-glitch">
-                            FACEIT TACTICAL <span class="text-brand-purple">COCKPIT</span>
+                            FACEIT <span class="text-brand-purple">HUB</span>
                         </h1>
                         <span class="text-[9px] bg-brand-purple/15 text-brand-purple border border-brand-purple/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">CORE V2.0</span>
                     </div>
@@ -181,7 +180,7 @@
         </div>
     </header>
 
-    <!-- STREAMING_CHUNK: Creating tactical workspace overlay containing realistic telemetry items -->
+    <!-- STREAMING_CHUNK: Coding main workspace grid and welcome overlay interface -->
     <!-- MAIN CENTRAL VIEWPORT CONTAINER (HAVE TRANSITION SUPPORT) -->
     <main id="mainViewport" class="transition-all duration-700 ease-out transform scale-95 opacity-0 flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
         
@@ -201,8 +200,7 @@
                     </p>
                 </div>
 
-                <!-- DYNAMIC TELEMETRY BADGES CONTAINING CLEAN COMP-PRECISE METRICS (REPLACING VAGUE JARGONS) -->
-                <!-- STREAMING_CHUNK: Replacing made-up parameters with realistic competitive gaming metrics -->
+                <!-- DYNAMIC TELEMETRY BADGES CONTAINING CLEAN COMP-PRECISE METRICS -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 font-semibold">
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
                         <span class="text-[9px] uppercase text-brand-textMuted font-bold">FACEIT Anti-Cheat</span>
@@ -210,7 +208,7 @@
                     </div>
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
                         <span class="text-[9px] uppercase text-brand-textMuted font-bold">Кадры Рендера</span>
-                        <span class="text-xs sm:text-sm font-black text-brand-purple uppercase tracking-tight">~67 FPS (Stable)</span>
+                        <span class="text-xs sm:text-sm font-black text-brand-purple uppercase tracking-tight">~360 FPS (Stable)</span>
                     </div>
                     <div class="p-3 bg-brand-dark/60 rounded-xl border border-brand-border flex flex-col">
                         <span class="text-[9px] uppercase text-brand-textMuted font-bold">Шина ввода USB</span>
@@ -401,7 +399,7 @@
 
                 <div class="flex justify-between items-center text-[10px] text-brand-textMuted font-mono uppercase z-10 relative">
                     <span>* Замер скорости нейронного отклика оператора</span>
-                    <span class="text-brand-purple">Тест калибровки активен</span>
+                    <span class="text-brand-purple">Тест калибровки active</span>
                 </div>
             </div>
 
@@ -409,7 +407,18 @@
 
     </main>
 
-    <!-- STREAMING_CHUNK: Building Audio Context synthesizers and managing custom audio events -->
+    <!-- FOOTER WITH LAB STATUS -->
+    <footer class="w-full max-w-7xl mx-auto px-6 py-4 border-t border-brand-border/40 bg-brand-dark/80 backdrop-blur flex flex-col md:flex-row justify-between items-center gap-4 text-center z-10">
+        <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider">
+            © 2026 FACEIT TACTICAL COCKPIT. Разработано для оптимизации киберспортивных кондиций и ELO.
+        </span>
+        <div class="flex space-x-6 text-[10px] font-mono tracking-widest text-brand-textMuted">
+            <span class="text-brand-purple"><i class="fa-solid fa-shield-halved mr-1.5"></i> COGNITIVE PRESET READY</span>
+            <span class="text-brand-cyan"><i class="fa-solid fa-bolt mr-1.5"></i> NO INPUT THROTTLING</span>
+        </div>
+    </footer>
+
+    <!-- STREAMING_CHUNK: Coding filter sweep synthesizer in Web Audio API -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let audioEnabled = true;
@@ -536,8 +545,7 @@
         });
     </script>
 
-    <!-- STREAMING_CHUNK: Initializing 3D interactive star systems using Three.js buffer geometry -->
-    <!-- THREE.JS 3D CONSTELLATIONS SCENE SETUP -->
+    <!-- STREAMING_CHUNK: Instantiating Three.js starry constellations scene background -->
     <script>
         const threeContainer = document.getElementById('canvasContainer');
         const scene = new THREE.Scene();
@@ -798,7 +806,7 @@
         drawJitterGraph();
     </script>
 
-    <!-- STREAMING_CHUNK: Processing reaction reflex mini game canvases -->
+    <!-- STREAMING_CHUNK: Coding the HTML5 Reflex reaction game canvas and local High-Score updates -->
     <!-- INTERACTIVE HUB REACTION CANVAS MODULE -->
     <script>
         const rxCanvas = document.getElementById('hubReactionCanvas');
@@ -983,8 +991,51 @@
             playSynthSound(900, 0.1, 0.03, 'sine');
         });
 
+        // --- INTERACTIVE QUANTUM LOGO ENGINE (ANIMATION IN CANVAS) ---
+        // STREAMING_CHUNK: Coding color-shifting 3D Quantum Logo math simulation
+        const qCanvas = document.getElementById('quantumLogo');
+        const qCtx = qCanvas.getContext('2d');
+        const qSize = 80;
+        let qFrame = 0;
+
+        const qPoints = Array.from({length: 40}, () => ({
+            x: (Math.random() - 0.5) * 45, 
+            y: (Math.random() - 0.5) * 45, 
+            z: (Math.random() - 0.5) * 45, 
+            r: 1.6
+        }));
+
+        function animateQuantumLogo() {
+            // Draw gradient background to blend with navigation bar smoothly
+            qCtx.fillStyle = '#0c0e14'; 
+            qCtx.fillRect(0, 0, qSize, qSize);
+
+            const rot = qFrame++ * 0.015;
+            
+            qPoints.forEach(p => {
+                let x1 = p.x * Math.cos(rot) - p.z * Math.sin(rot);
+                let z1 = p.x * Math.sin(rot) + p.z * Math.cos(rot);
+                let y2 = p.y * Math.cos(rot * 0.5) - z1 * Math.sin(rot * 0.5);
+                let z2 = p.y * Math.sin(rot * 0.5) + z1 * Math.cos(rot * 0.5);
+                
+                let projX = 40 + x1 * (160 / (160 + z2));
+                let projY = 40 + y2 * (160 / (160 + z2));
+                
+                // Beautiful Rainbow color-shifting spectrum on HSL (cycles dynamically matching core)
+                let hue = (qFrame * 0.6 + p.x * 2.5) % 360;
+                qCtx.fillStyle = `hsla(${hue}, 85%, 60%, 0.95)`;
+
+                qCtx.beginPath(); 
+                qCtx.arc(projX, projY, p.r, 0, Math.PI * 2); 
+                qCtx.fill();
+            });
+
+            requestAnimationFrame(animateQuantumLogo);
+        }
+
         window.onload = function() {
             startAmbientDrone();
+            animateQuantumLogo(); // Run quantum core canvas log loop
             
             // --- GENTLE PAGE FADE-IN TRANSITION ---
             const viewport = document.getElementById('mainViewport');
