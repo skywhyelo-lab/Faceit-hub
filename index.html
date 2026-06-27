@@ -15,7 +15,7 @@
     <!-- Three.js Library for 3D Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- STREAMING_CHUNK: Setting up TailWind theme config with luxury color tokens -->
+    <!-- STREAMING_CHUNK: Setting up Tailwind configuration and custom colors -->
     <script>
         tailwind.config = {
             theme: {
@@ -44,7 +44,7 @@
         }
     </script>
     
-    <!-- STREAMING_CHUNK: Crafting custom animation classes and glass panel templates -->
+    <!-- STREAMING_CHUNK: Designing hardware-accelerated CSS animations and styles -->
     <style>
         body {
             background-color: #040507;
@@ -73,10 +73,6 @@
         }
         
         /* Scanline scrolling grid effect */
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
         .scanline::after {
             content: '';
             position: absolute;
@@ -85,6 +81,20 @@
             animation: scanline 12s linear infinite;
             pointer-events: none;
             z-index: 5;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* Pure CSS Fade-in to prevent JS load locking */
+        @keyframes viewportFadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-viewport {
+            animation: viewportFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -99,7 +109,7 @@
     </div>
 
     <!-- MAIN COCKPIT HEADER -->
-    <!-- STREAMING_CHUNK: Rendering minimal header without vague sci-fi descriptions and inputs -->
+    <!-- STREAMING_CHUNK: Rendering high-end cockpit header layout with minimal components -->
     <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             
@@ -107,7 +117,7 @@
             <div class="flex items-center gap-4">
                 <div class="relative w-14 h-14 flex items-center justify-center">
                     <canvas id="quantumLogo" width="80" height="80" class="w-14 h-14 rounded-xl border border-brand-border bg-[#020205] glow-purple z-10 relative"></canvas>
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-emerald border border-brand-dark rounded-full animate-pulse z-20"></div>
+                    <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-brand-emerald border-2 border-brand-dark rounded-full animate-pulse z-20"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
@@ -129,9 +139,9 @@
         </div>
     </header>
 
-    <!-- STREAMING_CHUNK: Designing main dashboard layout structure and precise metrics grids -->
-    <!-- MAIN CENTRAL VIEWPORT CONTAINER (HAVE TRANSITION SUPPORT) -->
-    <main id="mainViewport" class="transition-all duration-700 ease-out transform scale-95 opacity-0 flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
+    <!-- STREAMING_CHUNK: Building core grid dashboard viewport using safe CSS animation -->
+    <!-- MAIN CENTRAL VIEWPORT CONTAINER (PURE CSS TRANSITION TO AVOID LOCKS) -->
+    <main id="mainViewport" class="animate-viewport flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
         
         <!-- Welcome Banner + Dynamic ELO Predictor Configurator -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -197,7 +207,7 @@
             </div>
         </div>
 
-        <!-- STREAMING_CHUNK: Generating individual subproject access card links with tight premium fonts -->
+        <!-- STREAMING_CHUNK: Integrating tool anchors with responsive hover effects -->
         <!-- SUBPROJECTS CARDS GRID -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
@@ -215,7 +225,7 @@
 
                     <div>
                         <h3 class="text-base font-extrabold text-white uppercase tracking-tight group-hover:text-purple-400 transition-colors">Анализатор Ауры</h3>
-                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed">
+                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed font-medium">
                             Узнай свои шансы на FACEIT перед тем, как нажать «Поиск». Полная диагностика кармы и скрытого пула за 12 секунд.
                         </p>
                     </div>
@@ -240,8 +250,8 @@
                     </div>
 
                     <div>
-                        <h3 class="text-base font-extrabold text-white uppercase tracking-tight group-hover:text-brand-cyan transition-colors">Проверка Инпута</h3>
-                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed">
+                        <h3 class="text-base font-bold text-white uppercase tracking-tight group-hover:text-brand-cyan transition-colors">Проверка Инпута</h3>
+                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed font-medium">
                             Аппаратный замер задержки и анализ стабильности опроса USB на уровне ядра ОС. Проверка джиттера по таймеру HPET.
                         </p>
                     </div>
@@ -249,7 +259,7 @@
 
                 <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
                     <span class="group-hover:text-brand-cyan transition-colors"><i class="fa-solid fa-wave-sine mr-1.5 text-[8px]"></i> Realtime QPC замеры</span>
-                    <span class="text-brand-cyan group-hover:translate-x-1 transition-transform font-bold">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                    <span class="text-brand-cyan group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
                 </div>
             </a>
 
@@ -266,8 +276,8 @@
                     </div>
 
                     <div>
-                        <h3 class="text-base font-extrabold text-white uppercase tracking-tight group-hover:text-brand-orange transition-colors">Генератор Отмазок</h3>
-                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed">
+                        <h3 class="text-base font-bold text-white uppercase tracking-wider group-hover:text-brand-orange transition-colors">Генератор Отмазок</h3>
+                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed font-medium">
                             Тактическая дешифрация железобетонных оправданий для FACEIT-чата. Встроенные авто-бинды для игровой консоли CS2.
                         </p>
                     </div>
@@ -275,7 +285,7 @@
 
                 <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
                     <span class="group-hover:text-brand-orange transition-colors"><i class="fa-solid fa-shield-halved mr-1.5 text-[8px]"></i> 5 уровней усложнения</span>
-                    <span class="text-brand-orange group-hover:translate-x-1 transition-transform font-bold">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                    <span class="text-brand-orange group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
                 </div>
             </a>
 
@@ -292,8 +302,8 @@
                     </div>
 
                     <div>
-                        <h3 class="text-base font-extrabold text-white uppercase tracking-tight group-hover:text-brand-red transition-colors">Нейро-Медитация</h3>
-                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed">
+                        <h3 class="text-base font-bold text-white uppercase tracking-wider group-hover:text-brand-red transition-colors">Нейро-Медитация</h3>
+                        <p class="text-xs text-brand-textMuted mt-1.5 leading-relaxed font-medium">
                             Аппаратное снятие мышечной зажатости кистей и пальцев, калибровка внимания под аккомпанемент бинауральных волн.
                         </p>
                     </div>
@@ -301,13 +311,13 @@
 
                 <div class="pt-4 border-t border-brand-border/40 flex justify-between items-center text-[10px] font-mono text-brand-textMuted">
                     <span class="group-hover:text-brand-red transition-colors"><i class="fa-solid fa-headset mr-1.5 text-[8px]"></i> Delta/Theta модуляция</span>
-                    <span class="text-brand-red group-hover:translate-x-1 transition-transform font-bold">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                    <span class="text-brand-red group-hover:translate-x-1 transition-transform">ОТКРЫТЬ <i class="fa-solid fa-chevron-right ml-1"></i></span>
                 </div>
             </a>
 
         </div>
 
-        <!-- STREAMING_CHUNK: Instantiating real-time charts and reaction game blocks in dashboard layout -->
+        <!-- STREAMING_CHUNK: Integrating Jitter and Reflex reaction modules into grid columns -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             <!-- Real-time Network Jitter Oscilloscope -->
@@ -348,7 +358,7 @@
 
                 <div class="flex justify-between items-center text-[10px] text-brand-textMuted font-mono uppercase z-10 relative">
                     <span>* Замер скорости нейронного отклика оператора</span>
-                    <span class="text-brand-purple">Тест калибровки active</span>
+                    <span class="text-brand-purple">Тест калибровки активен</span>
                 </div>
             </div>
 
@@ -356,21 +366,42 @@
 
     </main>
 
-    <!-- FOOTER WITH MINIMALIST LAB STATUS -->
-    <!-- STREAMING_CHUNK: Drawing neat minimal footer displaying only copyright info -->
-    <footer class="w-full max-w-7xl mx-auto px-6 py-4 flex justify-center items-center z-10 border-t border-brand-border/40 bg-brand-dark/80 backdrop-blur">
-        <span class="font-sans text-[10px] text-brand-textMuted/45 uppercase tracking-widest font-semibold">
-            © 2026 FACEIT HUB
+    <!-- FOOTER WITH LAB STATUS -->
+    <footer class="w-full max-w-7xl mx-auto px-6 py-4 border-t border-brand-border/40 bg-brand-dark/80 backdrop-blur flex flex-col md:flex-row justify-between items-center gap-4 text-center z-10">
+        <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider">
+            © 2026 FACEIT TACTICAL COCKPIT. Разработано для оптимизации киберспортивных кондиций и ELO.
         </span>
+        <div class="flex space-x-6 text-[10px] font-mono tracking-widest text-brand-textMuted">
+            <span class="text-brand-purple"><i class="fa-solid fa-shield-halved mr-1.5"></i> COGNITIVE PRESET READY</span>
+            <span class="text-brand-cyan"><i class="fa-solid fa-bolt mr-1.5"></i> NO INPUT THROTTLING</span>
+        </div>
     </footer>
 
-    <!-- STREAMING_CHUNK: Coding resonant lowpass filter synthesizer in Web Audio API -->
+    <!-- STREAMING_CHUNK: Coding filter sweep synthesizer in Web Audio API -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let audioEnabled = true;
         let ambientOscL = null;
         let ambientOscR = null;
         let ambientGain = null;
+
+        // Secure storage helper to completely bypass Vercel sandboxed iframe blocks
+        const safeStorage = {
+            getItem(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    return null;
+                }
+            },
+            setItem(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                } catch (e) {
+                    // silent fallback
+                }
+            }
+        };
 
         // --- HIGH END FILTER SYNTHESIZER ---
         function playSynthSound(freq, duration, vol = 0.05, type = 'sine') {
@@ -386,7 +417,6 @@
                 
                 const now = audioCtx.currentTime;
 
-                // Configure resonant analog filter sweep for premium pop
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, now);
                 osc.frequency.exponentialRampToValueAtTime(freq * 0.4, now + duration);
@@ -416,7 +446,6 @@
             }
         }
 
-        // Ambient космический гул (drone)
         function startAmbientDrone() {
             if (!audioEnabled) return;
             try {
@@ -427,15 +456,14 @@
 
                 ambientGain = audioCtx.createGain();
                 ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                ambientGain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 3.0); // Very low comfortable volume (0.01)
+                ambientGain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 3.0); 
 
                 const splitter = audioCtx.createChannelMerger(2);
 
                 ambientOscL = audioCtx.createOscillator();
                 ambientOscL.type = 'sawtooth';
-                ambientOscL.frequency.setValueAtTime(55, audioCtx.currentTime); // Low lambda note
+                ambientOscL.frequency.setValueAtTime(55, audioCtx.currentTime); 
 
-                // Low pass filter to warm up sawtooth
                 const lpFilter = audioCtx.createBiquadFilter();
                 lpFilter.type = 'lowpass';
                 lpFilter.frequency.setValueAtTime(120, audioCtx.currentTime);
@@ -491,117 +519,130 @@
         });
     </script>
 
-    <!-- STREAMING_CHUNK: Instantiating Three.js starry constellations scene background -->
+    <!-- STREAMING_CHUNK: Instantiating Three.js 3D starry constellations scene back -->
     <script>
-        const threeContainer = document.getElementById('canvasContainer');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        threeContainer.appendChild(renderer.domElement);
+        let starSystem, lines;
+        try {
+            const threeContainer = document.getElementById('canvasContainer');
+            if (threeContainer && typeof THREE !== 'undefined') {
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.domElement.style.position = 'absolute';
+                renderer.domElement.style.top = '0';
+                renderer.domElement.style.left = '0';
+                renderer.domElement.style.width = '100%';
+                renderer.domElement.style.height = '100%';
+                threeContainer.appendChild(renderer.domElement);
 
-        // Generation of beautiful constellation particles
-        const particleCount = 200;
-        const geometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        const colors = new Float32Array(particleCount * 3);
+                // Generation of beautiful constellation particles
+                const particleCount = 200;
+                const geometry = new THREE.BufferGeometry();
+                const positions = new Float32Array(particleCount * 3);
+                const colors = new Float32Array(particleCount * 3);
 
-        const purpleColor = new THREE.Color('#8B5CF6');
-        const cyanColor = new THREE.Color('#00E5FF');
+                const purpleColor = new THREE.Color('#8B5CF6');
+                const cyanColor = new THREE.Color('#00E5FF');
 
-        for (let i = 0; i < particleCount * 3; i += 3) {
-            positions[i] = (Math.random() - 0.5) * 50;
-            positions[i + 1] = (Math.random() - 0.5) * 50;
-            positions[i + 2] = (Math.random() - 0.5) * 50;
+                for (let i = 0; i < particleCount * 3; i += 3) {
+                    positions[i] = (Math.random() - 0.5) * 50;
+                    positions[i + 1] = (Math.random() - 0.5) * 50;
+                    positions[i + 2] = (Math.random() - 0.5) * 50;
 
-            const mixedColor = purpleColor.clone().lerp(cyanColor, Math.random());
-            colors[i] = mixedColor.r;
-            colors[i + 1] = mixedColor.g;
-            colors[i + 2] = mixedColor.b;
-        }
-
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-        const material = new THREE.PointsMaterial({
-            size: 0.25,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending
-        });
-
-        const particleSystem = new THREE.Points(geometry, material);
-        scene.add(particleSystem);
-
-        // Lines connecting points
-        const lineMaterial = new THREE.LineBasicMaterial({
-            color: 0x8B5CF6,
-            transparent: true,
-            opacity: 0.05,
-            blending: THREE.AdditiveBlending
-        });
-
-        const lineGeometry = new THREE.BufferGeometry();
-        const linePositions = [];
-
-        const posArr = geometry.attributes.position.array;
-        for (let i = 0; i < particleCount; i++) {
-            for (let j = i + 1; j < particleCount; j++) {
-                const dx = posArr[i * 3] - posArr[j * 3];
-                const dy = posArr[i * 3 + 1] - posArr[j * 3 + 1];
-                const dz = posArr[i * 3 + 2] - posArr[j * 3 + 2];
-                const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-                if (dist < 8.0) {
-                    linePositions.push(posArr[i * 3], posArr[i * 3 + 1], posArr[i * 3 + 2]);
-                    linePositions.push(posArr[j * 3], posArr[j * 3 + 1], posArr[j * 3 + 2]);
+                    const mixedColor = purpleColor.clone().lerp(cyanColor, Math.random());
+                    colors[i] = mixedColor.r;
+                    colors[i + 1] = mixedColor.g;
+                    colors[i + 2] = mixedColor.b;
                 }
+
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                const material = new THREE.PointsMaterial({
+                    size: 0.25,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.8,
+                    blending: THREE.AdditiveBlending
+                });
+
+                starSystem = new THREE.Points(geometry, material);
+                scene.add(starSystem);
+
+                // Lines connecting points
+                const lineMaterial = new THREE.LineBasicMaterial({
+                    color: 0x8B5CF6,
+                    transparent: true,
+                    opacity: 0.05,
+                    blending: THREE.AdditiveBlending
+                });
+
+                const lineGeometry = new THREE.BufferGeometry();
+                const linePositions = [];
+
+                const posArr = geometry.attributes.position.array;
+                for (let i = 0; i < particleCount; i++) {
+                    for (let j = i + 1; j < particleCount; j++) {
+                        const dx = posArr[i * 3] - posArr[j * 3];
+                        const dy = posArr[i * 3 + 1] - posArr[j * 3 + 1];
+                        const dz = posArr[i * 3 + 2] - posArr[j * 3 + 2];
+                        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                        if (dist < 8.0) {
+                            linePositions.push(posArr[i * 3], posArr[i * 3 + 1], posArr[i * 3 + 2]);
+                            linePositions.push(posArr[j * 3], posArr[j * 3 + 1], posArr[j * 3 + 2]);
+                        }
+                    }
+                }
+
+                lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+                lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+                scene.add(lines);
+
+                camera.position.z = 25;
+
+                // Mouse reactive coordinates
+                let mouseX = 0;
+                let mouseY = 0;
+                let targetX = 0;
+                let targetY = 0;
+
+                window.addEventListener('mousemove', (event) => {
+                    mouseX = (event.clientX - window.innerWidth / 2) * 0.015;
+                    mouseY = (event.clientY - window.innerHeight / 2) * 0.015;
+                });
+
+                function animateThree() {
+                    requestAnimationFrame(animateThree);
+
+                    targetX += (mouseX - targetX) * 0.05;
+                    targetY += (mouseY - targetY) * 0.05;
+
+                    camera.position.x = targetX;
+                    camera.position.y = -targetY;
+                    camera.lookAt(scene.position);
+
+                    starSystem.rotation.y += 0.0012;
+                    starSystem.rotation.x += 0.0006;
+                    lines.rotation.y += 0.0012;
+                    lines.rotation.x += 0.0006;
+
+                    renderer.render(scene, camera);
+                }
+
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+
+                animateThree();
             }
+        } catch (e) {
+            console.warn("Three.js space scene blocked or failed: ", e);
         }
-
-        lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-        const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-        scene.add(lines);
-
-        camera.position.z = 25;
-
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-
-        window.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - window.innerWidth / 2) * 0.015;
-            mouseY = (event.clientY - window.innerHeight / 2) * 0.015;
-        });
-
-        function animateThree() {
-            requestAnimationFrame(animateThree);
-
-            targetX += (mouseX - targetX) * 0.05;
-            targetY += (mouseY - targetY) * 0.05;
-
-            camera.position.x = targetX;
-            camera.position.y = -targetY;
-            camera.lookAt(scene.position);
-
-            particleSystem.rotation.y += 0.0012;
-            particleSystem.rotation.x += 0.0006;
-            lines.rotation.y += 0.0012;
-            lines.rotation.x += 0.0006;
-
-            renderer.render(scene, camera);
-        }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        animateThree();
     </script>
 
     <!-- STREAMING_CHUNK: Coding card 3D tilt behaviors and smooth loading transitions -->
@@ -652,15 +693,18 @@
                 // Play special deep resonant transition synth sound
                 playSynthSound(130, 0.6, 0.15, 'sawtooth');
 
-                // Scale down and fade out main viewport content
+                // Scale down and fade out main viewport content safely
                 const viewport = document.getElementById('mainViewport');
-                viewport.classList.remove('scale-100', 'opacity-100');
-                viewport.classList.add('scale-95', 'opacity-0');
+                if (viewport) {
+                    viewport.classList.add('opacity-0', 'scale-95');
+                }
 
                 // Smoothly fade in transition overlay screen
                 const overlay = document.getElementById('pageTransitionOverlay');
-                overlay.classList.remove('opacity-0', 'pointer-events-none');
-                overlay.classList.add('opacity-100');
+                if (overlay) {
+                    overlay.classList.remove('opacity-0', 'pointer-events-none');
+                    overlay.classList.add('opacity-100');
+                }
 
                 setTimeout(() => {
                     window.location.href = targetUrl;
@@ -714,7 +758,7 @@
             requestAnimationFrame(drawJitterGraph);
             JitterCtx.clearRect(0, 0, JitterCanvas.width, JitterCanvas.height);
 
-            JitterCtx.strokeStyle = '#10131b';
+            JitterCtx.strokeStyle = '#10131d';
             JitterCtx.lineWidth = 1;
             for (let i = 0; i < JitterCanvas.height; i += 20) {
                 JitterCtx.beginPath();
@@ -751,7 +795,7 @@
         drawJitterGraph();
     </script>
 
-    <!-- STREAMING_CHUNK: Processing reaction reflex mini game canvases -->
+    <!-- STREAMING_CHUNK: Processing reaction reflex mini game canvases with secure high score loading -->
     <!-- INTERACTIVE HUB REACTION CANVAS MODULE -->
     <script>
         const rxCanvas = document.getElementById('hubReactionCanvas');
@@ -771,8 +815,8 @@
         window.addEventListener('resize', resizeRxCanvas);
         resizeRxCanvas();
 
-        // Local high-score loading
-        let personalBest = localStorage.getItem('hub_reaction_pb');
+        // Safe high-score loading using storage protection
+        let personalBest = safeStorage.getItem('hub_reaction_pb');
         if (personalBest) {
             document.getElementById('reactionPbText').textContent = `${personalBest} ms`;
         }
@@ -808,10 +852,10 @@
                     rxRating = 'TIER 4 - CRITICAL (TILTED)';
                 }
 
-                // Check and write new personal best record
+                // Check and write new personal best record using safeStorage
                 if (!personalBest || rxTimeResult < parseInt(personalBest)) {
                     personalBest = rxTimeResult;
-                    localStorage.setItem('hub_reaction_pb', personalBest);
+                    safeStorage.setItem('hub_reaction_pb', personalBest);
                     document.getElementById('reactionPbText').textContent = `${personalBest} ms`;
                 }
 
@@ -920,21 +964,23 @@
         requestAnimationFrame(drawReactionCanvas);
     </script>
 
-    <!-- STREAMING_CHUNK: Loading gamer profile options and drawing Quantum Logo rotating elements -->
+    <!-- STREAMING_CHUNK: Triggering gentle page fade-ins and setting up localStorage inputs on loading -->
     <script>
         const gamerInput = document.getElementById('gamerTagInput');
         
-        const storedGamerName = localStorage.getItem('gamer_hub_name');
-        if (storedGamerName) {
+        const storedGamerName = safeStorage.getItem('gamer_hub_name');
+        if (storedGamerName && gamerInput) {
             gamerInput.value = storedGamerName;
         }
 
-        gamerInput.addEventListener('change', () => {
-            const newName = gamerInput.value.trim() || 'Gamer_Guest';
-            gamerInput.value = newName;
-            localStorage.setItem('gamer_hub_name', newName);
-            playSynthSound(900, 0.1, 0.03, 'sine');
-        });
+        if (gamerInput) {
+            gamerInput.addEventListener('change', () => {
+                const newName = gamerInput.value.trim() || 'Gamer_Guest';
+                gamerInput.value = newName;
+                safeStorage.setItem('gamer_hub_name', newName);
+                playSynthSound(900, 0.1, 0.03, 'sine');
+            });
+        }
 
         // --- INTERACTIVE QUANTUM LOGO ENGINE (ANIMATION IN CANVAS) ---
         const qCanvas = document.getElementById('quantumLogo');
@@ -977,14 +1023,10 @@
             requestAnimationFrame(animateQuantumLogo);
         }
 
-        window.onload = function() {
+        // Safely run initializations on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
             startAmbientDrone();
-            animateQuantumLogo(); // Run quantum core canvas log loop
-            
-            // --- GENTLE PAGE FADE-IN TRANSITION ---
-            const viewport = document.getElementById('mainViewport');
-            viewport.classList.remove('scale-95', 'opacity-0');
-            viewport.classList.add('scale-100', 'opacity-100');
+            animateQuantumLogo(); // Run quantum core canvas loop
             
             // Initialization entry audio chime
             setTimeout(() => {
@@ -992,7 +1034,7 @@
                 setTimeout(() => playSynthSound(659.25, 0.25, 0.05, 'sine'), 100);
                 setTimeout(() => playSynthSound(783.99, 0.45, 0.05, 'sine'), 200);
             }, 500);
-        };
+        });
     </script>
 
 </body>
