@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuro-Recovery & Focus System (N.R.S)</title>
+    <title>Neuro-Recovery & Focus System (N.R.S) // FACEIT Cockpit</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js Library for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -21,11 +23,11 @@
                         brand: {
                             orange: '#FF5500',
                             orangeHover: '#E04B00',
-                            dark: '#08090C',
-                            card: '#11131A',
-                            border: '#1E212B',
-                            lightBorder: '#2E3342',
-                            textMuted: '#8A92A6',
+                            dark: '#040507',
+                            card: '#0c0e14',
+                            border: '#161924',
+                            lightBorder: '#272d3f',
+                            textMuted: '#64748b',
                             terminal: '#050608',
                             cyan: '#00E5FF',
                             purple: '#8B5CF6',
@@ -44,73 +46,99 @@
     </script>
     <style>
         body {
-            background-color: #08090C;
+            background-color: #040507;
             color: #E2E8F0;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
-        .glow-orange {
-            box-shadow: 0 0 25px rgba(255, 85, 0, 0.15);
+        
+        .glass-panel {
+            background: rgba(12, 14, 20, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.25);
         }
+        
         .glow-purple {
-            box-shadow: 0 0 35px rgba(139, 92, 246, 0.25);
-        }
-        .text-neon-orange {
-            text-shadow: 0 0 8px rgba(255, 85, 0, 0.6);
+            box-shadow: 0 0 35px rgba(139, 92, 246, 0.15);
         }
         .text-neon-purple {
             text-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
         }
+        
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        
         .bg-grid-dark {
             background-size: 50px 50px;
             background-image: 
                 linear-gradient(to right, rgba(139, 92, 246, 0.015) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(139, 92, 246, 0.015) 1px, transparent 1px);
         }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
         }
-        ::-webkit-scrollbar-track {
-            background: #08090C;
+        .scanline::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(139, 92, 246, 0) 0%, rgba(139, 92, 246, 0.012) 10%, rgba(139, 92, 246, 0) 20%);
+            animation: scanline 12s linear infinite;
+            pointer-events: none;
+            z-index: 5;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #1E212B;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #FF5500;
-        }
+
         /* Breathing Pulse Ring Animation */
         @keyframes breathe {
             0% { transform: scale(0.85); box-shadow: 0 0 20px rgba(139, 92, 246, 0.2); }
-            45% { transform: scale(1.15); box-shadow: 0 0 50px rgba(139, 92, 246, 0.6); }
-            55% { transform: scale(1.15); box-shadow: 0 0 50px rgba(139, 92, 246, 0.6); }
+            45% { transform: scale(1.15); box-shadow: 0 0 50px rgba(139, 92, 246, 0.5); }
+            55% { transform: scale(1.15); box-shadow: 0 0 50px rgba(139, 92, 246, 0.5); }
             100% { transform: scale(0.85); box-shadow: 0 0 20px rgba(139, 92, 246, 0.2); }
         }
         .breathing-ring {
             animation: breathe 8s ease-in-out infinite;
         }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #040507;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #161924;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-brand-orange selection:text-black bg-grid-dark relative">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-purple selection:text-black bg-grid-dark relative scanline">
+
+    <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
 
     <!-- Main Header -->
-    <header class="border-b border-brand-border bg-brand-card/95 backdrop-blur sticky top-0 z-40 px-6 py-4">
+    <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <div class="relative">
-                    <div class="bg-gradient-to-br from-brand-purple to-brand-orange p-2.5 rounded-lg text-white font-black text-xl tracking-tight leading-none glow-orange">
-                        <i class="fa-solid fa-brain"></i>
+                    <div class="bg-gradient-to-br from-brand-purple to-brand-orange p-2.5 rounded-lg text-white font-black text-xl tracking-tight leading-none glow-purple">
+                        <i class="fa-solid fa-brain animate-pulse"></i>
                     </div>
                     <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-purple border-2 border-brand-card rounded-full animate-ping"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-base font-black tracking-wider uppercase text-white">
+                        <h1 class="text-base font-black tracking-wider uppercase text-white tracking-widest">
                             NEURO-RECOVERY <span class="text-brand-purple">SYSTEM (N.R.S)</span>
                         </h1>
-                        <span class="text-[9px] bg-brand-purple/10 text-brand-purple border border-brand-purple/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">LAB GRADE v2.0</span>
+                        <span class="text-[9px] bg-brand-purple/15 text-brand-purple border border-brand-purple/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-bold">LAB GRADE v2.0</span>
                     </div>
                     <p class="text-xs text-brand-textMuted flex items-center gap-1.5">
                         <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
@@ -139,7 +167,7 @@
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
 
         <!-- Informational Strip -->
-        <div class="bg-brand-card border border-brand-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="glass-panel border border-brand-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex gap-3">
                 <div class="text-brand-purple text-xl mt-0.5"><i class="fa-solid fa-waveform-lines"></i></div>
                 <div>
@@ -164,7 +192,7 @@
             <div class="lg:col-span-4 space-y-6">
                 
                 <!-- Step 1: Configuration -->
-                <div id="stepDiagnosticsCard" class="bg-brand-card border border-brand-border rounded-xl p-5 space-y-5 transition-all duration-300">
+                <div id="stepDiagnosticsCard" class="glass-panel border border-brand-border rounded-2xl p-5 space-y-5 transition-all duration-300 tilt-card glow-purple">
                     <div class="flex justify-between items-center border-b border-brand-border pb-3">
                         <h3 class="text-xs font-bold text-brand-purple uppercase tracking-widest flex items-center gap-2">
                             <i class="fa-solid fa-sliders"></i> Настройки сеанса
@@ -193,25 +221,25 @@
                         <label class="block text-[11px] font-bold text-white uppercase tracking-wider">Спектр бинауральной модуляции:</label>
                         <div class="space-y-2">
                             <button onclick="selectWave('delta')" id="wave_delta" class="wave-btn w-full py-2.5 px-3 rounded-lg border text-xs font-semibold flex items-center justify-between transition-all bg-brand-purple/5 border-brand-purple text-white">
-                                <span class="flex flex-col items-start">
+                                <span class="flex flex-col items-start text-left">
                                     <span class="font-bold"><i class="fa-solid fa-wave-square mr-1.5"></i> Delta-ритм (1.0 Hz)</span>
-                                    <span class="text-[9px] text-brand-textMuted font-normal">Снижение ЧСС и блокировка мышечного гнева</span>
+                                    <span class="text-[9px] text-brand-textMuted font-normal leading-tight">Снижение ЧСС и блокировка мышечного гнева</span>
                                 </span>
                                 <i class="fa-solid fa-circle-check text-xs text-brand-purple" id="icon_delta"></i>
                             </button>
                             
                             <button onclick="selectWave('theta')" id="wave_theta" class="wave-btn w-full py-2.5 px-3 rounded-lg border border-brand-border hover:border-brand-lightBorder text-brand-textMuted hover:text-white text-xs font-semibold flex items-center justify-between transition-all bg-transparent">
-                                <span class="flex flex-col items-start">
+                                <span class="flex flex-col items-start text-left">
                                     <span class="font-bold"><i class="fa-solid fa-wave-pulse mr-1.5"></i> Theta-ритм (4.0 Hz)</span>
-                                    <span class="text-[9px] text-brand-textMuted font-normal">Калибровка внимания и моторной координации</span>
+                                    <span class="text-[9px] text-brand-textMuted font-normal leading-tight">Калибровка внимания и моторной координации</span>
                                 </span>
                                 <i class="fa-solid fa-circle-check text-xs hidden text-brand-purple" id="icon_theta"></i>
                             </button>
 
                             <button onclick="selectWave('alpha')" id="wave_alpha" class="wave-btn w-full py-2.5 px-3 rounded-lg border border-brand-border hover:border-brand-lightBorder text-brand-textMuted hover:text-white text-xs font-semibold flex items-center justify-between transition-all bg-transparent">
-                                <span class="flex flex-col items-start">
+                                <span class="flex flex-col items-start text-left">
                                     <span class="font-bold"><i class="fa-solid fa-wave-sine mr-1.5"></i> Alpha-ритм (8.0 Hz)</span>
-                                    <span class="text-[9px] text-brand-textMuted font-normal">Ускорение синапсов и снижение микро-задержек</span>
+                                    <span class="text-[9px] text-brand-textMuted font-normal leading-tight">Ускорение синапсов и снижение микро-задержек</span>
                                 </span>
                                 <i class="fa-solid fa-circle-check text-xs hidden text-brand-purple" id="icon_alpha"></i>
                             </button>
@@ -223,8 +251,27 @@
                     </button>
                 </div>
 
+                <!-- New Breathing Card in Left Column -->
+                <div id="breathingCard" class="glass-panel border border-brand-border rounded-xl p-5 flex flex-col items-center justify-center space-y-4 relative overflow-hidden transition-all duration-300">
+                    <div class="absolute top-0 right-0 -mt-6 -mr-6 w-16 h-16 bg-brand-purple/5 rounded-full blur-xl"></div>
+                    <div class="w-full flex justify-between items-center border-b border-brand-border pb-2.5 mb-2">
+                        <h3 class="text-[10px] font-bold uppercase tracking-widest text-brand-purple flex items-center gap-2">
+                            <i class="fa-solid fa-lungs animate-pulse"></i> Био-ритм дыхания
+                        </h3>
+                        <span class="text-[9px] font-mono text-emerald-400" id="breathingSyncState">ACTIVE</span>
+                    </div>
+                    <!-- Central Breathing Guide Ring -->
+                    <div id="breathingGuideWrapper" class="flex flex-col items-center justify-center transition-all duration-500 opacity-40 transform scale-90">
+                        <div class="w-28 h-28 rounded-full border border-brand-purple/50 bg-brand-purple/5 flex flex-col items-center justify-center text-center breathing-ring relative">
+                            <div class="absolute inset-1.5 rounded-full border border-dashed border-brand-purple/20 animate-spin" style="animation-duration: 15s"></div>
+                            <span id="breathingActionLabel" class="text-xs font-black text-white tracking-widest uppercase">Вдох</span>
+                        </div>
+                        <span id="breathingDesc" class="text-[8px] text-brand-purple font-bold tracking-widest uppercase mt-3 text-neon-purple animate-pulse text-center">Глубокий вдох диафрагмой</span>
+                    </div>
+                </div>
+
                 <!-- Neuro Telemetry Tracker -->
-                <div class="bg-brand-card border border-brand-border rounded-xl p-5 space-y-4">
+                <div class="glass-panel border border-brand-border rounded-xl p-5 space-y-4">
                     <div class="flex justify-between items-center border-b border-brand-border pb-3">
                         <h3 class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
                             <i class="fa-solid fa-gauge"></i> Мониторинг стабильности
@@ -235,7 +282,7 @@
                     <div class="grid grid-cols-2 gap-3 font-mono text-xs">
                         <div class="p-3 bg-brand-terminal rounded border border-brand-border">
                             <span class="text-brand-textMuted block text-[9px] uppercase">Стабилизация ЦНС:</span>
-                            <span id="txtTelemetryStatus" class="text-white font-bold text-xs">ОЖИДАНИЕ</span>
+                            <span id="txtTelemetryStatus" class="text-white font-bold text-xs animate-pulse">ОЖИДАНИЕ</span>
                         </div>
                         <div class="p-3 bg-brand-terminal rounded border border-brand-border">
                             <span class="text-brand-textMuted block text-[9px] uppercase">Снятие зажатости:</span>
@@ -253,13 +300,13 @@
             <!-- Right Panel: Mental Calibration Chamber -->
             <div class="lg:col-span-8 flex flex-col gap-6">
                 
-                <div class="bg-brand-card border border-brand-border rounded-xl p-6 flex-grow flex flex-col gap-5 relative overflow-hidden min-h-[500px]">
+                <div class="glass-panel border border-brand-border rounded-2xl p-6 flex-grow flex flex-col gap-5 relative overflow-hidden min-h-[500px] tilt-card glow-purple">
                     
                     <!-- Chamber Header -->
                     <div class="flex justify-between items-center border-b border-brand-border pb-3 z-10 relative">
                         <div class="flex items-center gap-3">
                             <span class="relative flex h-3 w-3">
-                                <span id="chamberDotAnimate" class="absolute inline-flex h-full w-full rounded-full bg-brand-purple opacity-75"></span>
+                                <span id="chamberDotAnimate" class="absolute inline-flex h-full w-full rounded-full bg-brand-purple opacity-75 animate-ping"></span>
                                 <span id="chamberDot" class="relative inline-flex rounded-full h-3 w-3 bg-brand-purple"></span>
                             </span>
                             <div>
@@ -274,7 +321,7 @@
                     </div>
 
                     <!-- Active Chamber Workspace -->
-                    <div class="flex-grow bg-brand-terminal border border-brand-border rounded-xl relative overflow-hidden flex flex-col justify-between min-h-[350px]">
+                    <div class="flex-grow bg-brand-terminal border border-brand-border rounded-xl relative overflow-hidden flex flex-col justify-between min-h-[450px]">
                         
                         <!-- Screen Overlay: Standby / Pre-activation -->
                         <div id="chamberStandbyOverlay" class="absolute inset-0 bg-brand-terminal/95 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6 z-30 transition-all duration-300">
@@ -288,31 +335,22 @@
                         </div>
 
                         <!-- Main Breathing and Shatter Canvas & UI -->
-                        <div class="absolute inset-0 z-10 flex flex-col justify-between p-5 font-mono text-xs">
+                        <div class="absolute inset-0 z-10 flex flex-col justify-between p-5 font-mono text-xs pointer-events-none">
                             
                             <!-- Telemetry Header inside Workspace -->
-                            <div class="flex justify-between text-[10px] text-brand-textMuted border-b border-brand-border/40 pb-2">
+                            <div class="flex justify-between text-[10px] text-brand-textMuted border-b border-brand-border/40 pb-2 z-20">
                                 <span id="txtTelemetryStatusMsg">[RECOVERY: LOCKED]</span>
                                 <span id="txtTelemetryTimer">00:00.00</span>
                             </div>
 
                             <!-- Chamber Center Stage -->
-                            <div class="flex-grow flex flex-col items-center justify-center relative">
+                            <div class="flex-grow flex flex-col items-center justify-center relative pointer-events-auto">
                                 <!-- Interactive canvas for breaking red dots -->
-                                <canvas id="smashCanvas" class="absolute inset-0 w-full h-full block z-10 cursor-pointer"></canvas>
-
-                                <!-- Central Breathing Guide Ring (Overlay on top of canvas) -->
-                                <div id="breathingGuideWrapper" class="absolute z-20 pointer-events-none flex flex-col items-center justify-center transition-all duration-500 opacity-0 transform scale-75">
-                                    <div class="w-32 h-32 rounded-full border border-brand-purple/50 bg-brand-purple/5 flex flex-col items-center justify-center text-center breathing-ring relative">
-                                        <div class="absolute inset-2 rounded-full border-2 border-dashed border-brand-purple/20 animate-spin" style="animation-duration: 15s"></div>
-                                        <span id="breathingActionLabel" class="text-sm font-black text-white tracking-widest uppercase">Вдох</span>
-                                    </div>
-                                    <span id="breathingDesc" class="text-[9px] text-brand-purple font-bold tracking-widest uppercase mt-4 text-neon-purple animate-pulse">Расширение легких</span>
-                                </div>
+                                <canvas id="smashCanvas" class="absolute inset-0 w-full h-full block z-10 cursor-crosshair"></canvas>
 
                                 <!-- Dynamic Instructions Label Overlay -->
-                                <div id="kineticInstructLabel" class="absolute top-2 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-[9px] text-brand-textMuted bg-brand-card/90 border border-brand-border px-3 py-1 rounded-full uppercase tracking-wider hidden">
-                                    <i class="fa-solid fa-hand-pointer"></i> Кликайте по красным очагам напряжения, чтобы снять спазм запястья
+                                <div id="kineticInstructLabel" class="absolute top-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-[9px] text-brand-cyan bg-brand-card/90 border border-brand-border px-3.5 py-1.5 rounded-full uppercase tracking-wider hidden shadow-lg shadow-black/80">
+                                    <i class="fa-solid fa-hand-pointer text-brand-cyan mr-1.5 animate-pulse"></i> Кликайте по красным очагам напряжения, чтобы снять спазм запястья
                                 </div>
                             </div>
 
@@ -355,11 +393,16 @@
 
     </main>
 
-    <!-- Custom Toaster (Fallback for alerts) -->
-    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-brand-card/90 text-white border border-brand-purple px-5 py-3 rounded-xl shadow-lg shadow-black/80 flex items-center space-x-3 max-w-sm">
-        <i class="fa-solid fa-circle-check text-brand-purple text-lg"></i>
-        <span id="toastMessage" class="text-xs font-semibold font-mono">Сессия завершена!</span>
-    </div>
+    <!-- FOOTER WITH LAB STATUS -->
+    <footer class="w-full max-w-7xl mx-auto px-6 py-4 border-t border-brand-border/40 bg-brand-dark/80 backdrop-blur flex flex-col md:flex-row justify-between items-center gap-4 text-center z-10">
+        <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider">
+            © 2026 FACEIT TACTICAL COCKPIT // N.R.S. LABS. Разработано для маскировки тильта и защиты ELO.
+        </span>
+        <div class="flex space-x-6 text-[10px] font-mono tracking-widest text-brand-textMuted">
+            <span class="text-brand-purple"><i class="fa-solid fa-shield-halved mr-1.5"></i> COGNITIVE PRESET READY</span>
+            <span class="text-brand-cyan"><i class="fa-solid fa-bolt mr-1.5"></i> NO INPUT THROTTLING</span>
+        </div>
+    </footer>
 
     <!-- Comeback Calibration Report Dialog (Modal) -->
     <div id="comebackModal" class="fixed inset-0 bg-brand-dark/95 flex items-center justify-center p-4 z-50 hidden backdrop-blur-md">
@@ -563,6 +606,86 @@
         });
     </script>
 
+    <!-- 3D COSMIC BACKGROUND -->
+    <script>
+        const container = document.getElementById('canvasContainer');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const particleCount = 120;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        const purpleColor = new THREE.Color('#8B5CF6');
+        const darkColor = new THREE.Color('#161924');
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 50;
+            positions[i + 1] = (Math.random() - 0.5) * 50;
+            positions[i + 2] = (Math.random() - 0.5) * 50;
+
+            const mixedColor = purpleColor.clone().lerp(darkColor, Math.random() * 0.75);
+            colors[i] = mixedColor.r;
+            colors[i + 1] = mixedColor.g;
+            colors[i + 2] = mixedColor.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.3,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.5,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particleSystem = new THREE.Points(geometry, material);
+        scene.add(particleSystem);
+
+        camera.position.z = 25;
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        window.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) * 0.008;
+            mouseY = (event.clientY - window.innerHeight / 2) * 0.008;
+        });
+
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+
+            targetX += (mouseX - targetX) * 0.05;
+            targetY += (mouseY - targetY) * 0.05;
+
+            camera.position.x = targetX;
+            camera.position.y = -targetY;
+            camera.lookAt(scene.position);
+
+            particleSystem.rotation.y += 0.0006;
+            particleSystem.rotation.x += 0.0003;
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animateThree();
+    </script>
+
     <!-- DATABASE & APP LOGIC -->
     <script>
         // State variables
@@ -574,6 +697,8 @@
         let telemetryInterval = null;
         let particles = [];
         let destroyedCount = 0;
+        let crosshairX = -100;
+        let crosshairY = -100;
 
         // Breath cycle state
         let breathingCycle = 0; // 0 = Inhale, 1 = Hold, 2 = Exhale
@@ -677,6 +802,18 @@
             }
         }
 
+        // Mousemove logic inside canvas for real-time tactical crosshair
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            crosshairX = e.clientX - rect.left;
+            crosshairY = e.clientY - rect.top;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            crosshairX = -100;
+            crosshairY = -100;
+        });
+
         function renderChamberFrame() {
             if (!isSessionActive) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -685,6 +822,13 @@
 
             ctx.fillStyle = 'rgba(5, 6, 8, 0.15)'; // Trail effect
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Render tactical radar scanlines grid overlay
+            ctx.strokeStyle = 'rgba(139, 92, 246, 0.03)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) * 0.35, 0, Math.PI * 2);
+            ctx.stroke();
 
             // Render, update particles
             particles.forEach((p, idx) => {
@@ -704,6 +848,26 @@
                     particles.splice(idx, 1);
                 }
             });
+
+            // Draw high-tech micro crosshair pointing to user mouse position
+            if (crosshairX >= 0 && crosshairY >= 0) {
+                ctx.strokeStyle = 'rgba(139, 92, 246, 0.25)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                // vertical line
+                ctx.moveTo(crosshairX, crosshairY - 12);
+                ctx.lineTo(crosshairX, crosshairY + 12);
+                // horizontal line
+                ctx.moveTo(crosshairX - 12, crosshairY);
+                ctx.lineTo(crosshairX + 12, crosshairY);
+                ctx.stroke();
+
+                // small ring in the middle
+                ctx.beginPath();
+                ctx.arc(crosshairX, crosshairY, 3, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 229, 255, 0.4)';
+                ctx.fill();
+            }
 
             requestAnimationFrame(renderChamberFrame);
         }
@@ -820,7 +984,12 @@
             chamberStandbyOverlay.classList.add('opacity-0', 'pointer-events-none');
             recalibratingProgressContainer.classList.remove('hidden');
             document.getElementById('kineticInstructLabel').classList.remove('hidden');
-            document.getElementById('breathingGuideWrapper').classList.remove('opacity-0', 'scale-75');
+            
+            // Highlight breathing card with active status
+            document.getElementById('breathingGuideWrapper').classList.remove('opacity-40', 'scale-90');
+            document.getElementById('breathingGuideWrapper').classList.add('opacity-100', 'scale-100');
+            document.getElementById('breathingSyncState').textContent = "SYNC_ACTIVE";
+            document.getElementById('breathingSyncState').className = "text-[9px] font-mono text-brand-purple animate-pulse";
 
             btnInitiateCleansing.disabled = true;
             btnInitiateCleansing.classList.add('opacity-40');
@@ -867,7 +1036,12 @@
             recalibratingProgressContainer.classList.add('hidden');
             recalibratingProgressBar.style.width = '0%';
             document.getElementById('kineticInstructLabel').classList.add('hidden');
-            document.getElementById('breathingGuideWrapper').classList.add('opacity-0', 'scale-75');
+            
+            // Dim breathing card back to idle state
+            document.getElementById('breathingGuideWrapper').classList.add('opacity-40', 'scale-90');
+            document.getElementById('breathingGuideWrapper').classList.remove('opacity-100', 'scale-100');
+            document.getElementById('breathingSyncState').textContent = "ACTIVE";
+            document.getElementById('breathingSyncState').className = "text-[9px] font-mono text-emerald-400";
 
             btnInitiateCleansing.disabled = false;
             btnInitiateCleansing.classList.remove('opacity-40');
@@ -918,6 +1092,28 @@
             setTimeout(() => {
                 window.location.href = "../index.html";
             }, 150);
+        });
+
+        // 3D card interactive tilt handler
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                
+                const rotateY = ((x - xc) / xc) * 5; 
+                const rotateX = -((y - yc) / yc) * 5; 
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
         });
     </script>
 </body>
