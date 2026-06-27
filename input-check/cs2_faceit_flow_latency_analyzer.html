@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Three.js Library for 3D Cosmic Background -->
@@ -33,7 +33,7 @@
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        mono: ['Share Tech Mono', 'monospace'],
+                        mono: ['JetBrains Mono', 'monospace'],
                         code: ['JetBrains Mono', 'monospace']
                     }
                 }
@@ -112,9 +112,10 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased selection:bg-latency-cyan selection:text-black bg-grid-dark relative scanline">
 
+    <!-- Background 3D Canvas -->
     <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
 
-    <!-- Professional Hardware Telemetry Header -->
+    <!-- Header Block -->
     <header class="border-b border-latency-border bg-latency-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
@@ -122,21 +123,14 @@
                     <div class="bg-gradient-to-br from-latency-accent to-latency-cyan p-2.5 rounded-lg text-black font-black text-xl tracking-tight leading-none glow-cyan">
                         <i class="fa-solid fa-microchip animate-pulse"></i>
                     </div>
-                    <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-latency-dark rounded-full animate-pulse"></div>
+                    <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-brand-emerald border-2 border-latency-dark rounded-full animate-pulse"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-base font-black tracking-wider uppercase text-white tracking-widest">
-                            HARDWARE LATENCY <span class="text-latency-cyan">&amp; INPUT FLOW</span> ANALYZER
+                        <h1 class="text-xl font-extrabold tracking-tighter text-white uppercase">
+                            LATENCY <span class="text-latency-cyan">ANALYZER</span>
                         </h1>
-                        <span class="text-[9px] bg-latency-cyan/15 text-latency-cyan border border-latency-cyan/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold font-bold">LAB-GRADE PRO v4.0</span>
                     </div>
-                    <p class="text-xs text-latency-textMuted flex items-center gap-1.5">
-                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Модуль ядра: <span class="font-mono text-gray-300">RAW_INPUT_MONITOR.sys</span>
-                        <span class="mx-1 text-latency-border">|</span>
-                        Текущий профиль: <span class="text-gray-300 uppercase font-semibold font-mono">Competitive Precision Tuning</span>
-                    </p>
                 </div>
             </div>
             
@@ -144,12 +138,8 @@
                 <!-- Back to Hub Button -->
                 <a href="../index.html" class="px-3 py-1.5 rounded bg-latency-border/60 border border-latency-border hover:border-latency-cyan/40 hover:text-white transition-all text-xs flex items-center space-x-2 mr-2">
                     <i class="fa-solid fa-arrow-left text-latency-cyan"></i>
-                    <span class="font-mono text-gray-300">В ХАБ</span>
+                    <span class="font-sans font-semibold text-gray-300">В ХАБ</span>
                 </a>
-                <div class="text-xs font-mono text-right hidden sm:block">
-                    <div class="text-white font-semibold">HPET Reference Frequency</div>
-                    <div class="text-latency-cyan font-bold tracking-tight animate-pulse">10.0000 MHz (Active)</div>
-                </div>
             </div>
         </div>
     </header>
@@ -162,18 +152,13 @@
             <div class="flex gap-3">
                 <div class="text-latency-cyan text-xl mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i></div>
                 <div>
-                    <h4 class="font-bold text-sm text-white uppercase tracking-wider">
-                        Протокол аппаратного замера и калибровки очереди прерываний
+                    <h4 class="font-extrabold text-sm text-white uppercase tracking-tight">
+                        Протокол аппаратного замера задержки ввода мыши
                     </h4>
-                    <p class="text-xs text-latency-textMuted max-w-4xl">
-                        Данный инструмент проводит анализ сбора пакетов <span class="text-white">Raw Input</span> на уровне ядра ОС. 
-                        Для чистоты тестирования рекомендуется временно приостановить фоновое декодирование видео и дисковые операции I/O. Замеры проводятся по таймеру QueryPerformanceCounter.
+                    <p class="text-xs text-latency-textMuted max-w-4xl font-medium">
+                        Тест измеряет интервалы опроса позиционирования курсора. Для получения максимально точного результата рекомендуется делать быстрые, хаотичные круговые движения в окне калибровки и лопать появляющиеся цели.
                     </p>
                 </div>
-            </div>
-            <div class="text-xs font-mono text-latency-cyan bg-latency-cyan/5 px-3 py-2 rounded-lg border border-latency-cyan/20 flex flex-col items-end whitespace-nowrap">
-                <span>DWM SYNC: BYPASS</span>
-                <span class="text-[10px] text-gray-500">COMPOSITION_DISABLED</span>
             </div>
         </div>
 
@@ -189,7 +174,7 @@
                         <h3 class="text-xs font-bold text-latency-cyan uppercase tracking-widest flex items-center gap-2">
                             <i class="fa-solid fa-server"></i> Системная телеметрия
                         </h3>
-                        <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">REALTIME</span>
+                        <span class="text-[10px] font-mono text-brand-emerald bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">REALTIME</span>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-3 font-mono text-xs">
@@ -211,44 +196,36 @@
                         </div>
                     </div>
 
-                    <!-- DPC Load Simulator -->
+                    <!-- USB Bus Load Simulator -->
                     <div class="space-y-2 pt-1 border-t border-latency-border">
                         <div class="flex justify-between text-xs font-mono">
                             <span class="text-latency-textMuted">Эмуляция нагрузки шины:</span>
-                            <span id="lblDpcLoad" class="text-emerald-400 font-bold">0% (Чистая система)</span>
+                            <span id="lblDpcLoad" class="text-brand-emerald font-bold">0% (Чистая система)</span>
                         </div>
                         <input type="range" id="rngDpcLoad" min="0" max="100" value="0" 
                                class="w-full h-1.5 bg-latency-terminal rounded-lg appearance-none cursor-pointer accent-latency-cyan">
-                        <div class="text-[10px] text-latency-textMuted flex items-center gap-1.5 leading-normal">
-                            <i class="fa-solid fa-circle-info"></i> Позволяет оценить устойчивость планировщика ОС к задержкам прерываний шины USB.
-                        </div>
                     </div>
                 </div>
 
                 <!-- Live Diagnostics Console -->
                 <div class="glass-panel border border-latency-border rounded-xl p-5 flex-grow flex flex-col gap-3 min-h-[280px]">
-                    <div class="flex justify-between items-center border-b border-latency-border pb-3">
+                    <div class="flex justify-between items-center border-b border-brand-border pb-3">
                         <h3 class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
                             <i class="fa-solid fa-rectangle-list text-latency-cyan animate-pulse"></i> Kernel Log Output Stream
                         </h3>
-                        <div class="flex gap-1.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-latency-cyan/20 border border-latency-cyan/40"></span>
-                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500/20 border border-blue-500/40"></span>
-                        </div>
                     </div>
                     
                     <div id="terminalBody" class="flex-grow bg-latency-terminal border border-latency-border p-3.5 rounded-lg font-mono text-[11px] leading-relaxed text-emerald-400 overflow-y-auto h-52 max-h-64 space-y-1 select-none font-semibold">
                         <div class="text-gray-500">[SYSTEM] Инициализация модуля замера задержек...</div>
                         <div class="text-gray-500">[SYSTEM] Карта аппаратных адресов HPET считывается успешно...</div>
-                        <div class="text-emerald-400 font-bold">[SUCCESS] Драйвер Raw Input запущен с приоритетом REALTIME_PRIORITY.</div>
+                        <div class="text-brand-emerald font-bold">[SUCCESS] Драйвер Raw Input запущен с приоритетом REALTIME_PRIORITY.</div>
                         <div class="text-blue-400">[INFO] Ожидание поступления пакетов данных от сенсора...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Column 2: Diagnostic Calibration Canvas Area (STABLE - NO TILT CARD CLASS) -->
+            <!-- Column 2: Diagnostic Calibration Canvas Area (STABLE - NO TILT CARD) -->
             <div class="lg:col-span-5 space-y-6">
-                <!-- STREAMING_CHUNK: Building the static high-performance diagnostic canvas card without tilt -->
                 <div class="glass-panel border border-latency-border rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden glow-cyan">
                     
                     <!-- Calibration Header -->
@@ -260,14 +237,20 @@
                             </span>
                             <div>
                                 <h2 class="text-xs font-bold uppercase tracking-widest text-white" id="statusHeader">Ожидание запуска сессии</h2>
-                                <p class="text-[10px] text-latency-textMuted" id="statusSubheader">Буфер Raw Input пуст</p>
+                                <p class="text-[10px] text-latency-textMuted font-medium" id="statusSubheader">Буфер ввода пуст</p>
                             </div>
                         </div>
                         
-                        <!-- Live poll state -->
-                        <div class="bg-latency-terminal border border-latency-border px-3 py-1 rounded font-mono text-xs flex items-center gap-1.5">
-                            <span class="text-latency-textMuted">Частота:</span>
-                            <span id="liveHzVal" class="text-latency-cyan font-bold animate-pulse">0 Hz</span>
+                        <!-- Real-time HUD elements: frequency AND packets counter -->
+                        <div class="flex items-center gap-2 font-mono text-xs">
+                            <div class="bg-latency-terminal border border-latency-border px-2.5 py-1 rounded flex items-center gap-1.5">
+                                <span class="text-latency-textMuted font-medium">Частота:</span>
+                                <span id="liveHzVal" class="text-latency-cyan font-bold">0 Hz</span>
+                            </div>
+                            <div id="packetsCounterBadge" class="bg-latency-terminal border border-latency-border px-2.5 py-1 rounded flex items-center gap-1.5 hidden">
+                                <span class="text-latency-textMuted font-medium">Пакеты:</span>
+                                <span id="countEvents" class="text-emerald-400 font-bold">0</span>
+                            </div>
                         </div>
                     </div>
 
@@ -293,15 +276,6 @@
                         <div id="testProgressContainer" class="absolute bottom-0 left-0 right-0 h-1.5 bg-latency-border hidden z-20">
                             <div id="testProgressBar" class="h-full bg-latency-cyan w-0 transition-all duration-100 ease-linear"></div>
                         </div>
-                        
-                        <!-- Overlay metrics during run -->
-                        <div id="testCalibratingOverlay" class="absolute top-4 left-4 bg-latency-card/90 backdrop-blur px-3 py-2 rounded-lg border border-latency-border text-[11px] font-mono hidden pointer-events-none z-20">
-                            <div class="text-latency-cyan font-bold flex items-center gap-1.5">
-                                <span class="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                                RAW_INPUT_MONITORING: ACTIVE
-                            </div>
-                            <div class="text-white mt-1">Зарегистрировано пакетов: <span id="countEvents" class="font-bold text-emerald-400">0</span></div>
-                        </div>
                     </div>
 
                     <!-- Footer information within card -->
@@ -314,7 +288,7 @@
 
             <!-- Column 3: Advanced Jitter Distribution & Diagnostics Report -->
             <div class="lg:col-span-3 space-y-6">
-                <!-- STREAMING_CHUNK: Setting up the Jitter chart and stability metrics panel -->
+                
                 <!-- Stability Analysis Sparkline Card -->
                 <div class="glass-panel border border-latency-border rounded-xl p-5 space-y-4 glow-cyan tilt-card">
                     <h3 class="text-xs font-bold text-latency-cyan uppercase tracking-widest flex items-center gap-2">
@@ -572,7 +546,6 @@
 
     <!-- TELEMETRY AND CANVAS SYSTEM ENGINE -->
     <script>
-        // STREAMING_CHUNK: Setting up logging system, variables, and arrays for the main game engine
         // --- Kernel Terminal Logger Output Stream ---
         const terminalBody = document.getElementById('terminalBody');
         const dpcSlider = document.getElementById('rngDpcLoad');
@@ -603,13 +576,14 @@
         let isTesting = false;
         let testDuration = 10000; // 10s
         let startTime = 0;
-        let mouseEvents = [];
+        let totalInputPackets = 0; // Pure high speed numeric counter
+        let mouseTrail = []; // Tight bounded visual trail array to bypass memory lag!
         let dpcFactor = 0; 
         let sparkHistory = [];
         
         // Interactive Aiming targets on canvas
         let activeTarget = { x: 0, y: 0, r: 12, maxPulse: 20, active: false };
-        let ripples = []; // unified ripple tracking array to prevent errors
+        let ripples = []; 
         let curMouseX = -100;
         let curMouseY = -100;
 
@@ -641,17 +615,17 @@
                 dpcStatText.className = "text-emerald-400 font-bold";
                 appendLog("[KERNEL] Очередь DPC планировщика нормализована (Задержка < 12 µs)", 'success');
             } else if (v < 40) {
-                dpcLoadLabel.innerText = `${v}% (Стандартный фон)`;
+                dpcLoadLabel.innerText = `${v}% (Стандартный флуктуационный фон)`;
                 dpcLoadLabel.className = "text-amber-400 font-bold";
                 dpcStatText.innerText = `${(11.2 + v * 0.95).toFixed(1)} µs`;
                 dpcStatText.className = "text-amber-400 font-bold";
-                appendLog(`[KERNEL] Зафиксировано умеренное накопление DPC очереди: ${(11.2 + v * 0.95).toFixed(1)} µs. Ожидание завершения потоков планировщика.`, 'warn');
+                appendLog(`[KERNEL] Зафиксировано накопление DPC очереди: ${(11.2 + v * 0.95).toFixed(1)} µs. Ожидание потоков.`, 'warn');
             } else {
-                dpcLoadLabel.innerText = `${v}% (Перегрузка!)`;
+                dpcLoadLabel.innerText = `${v}% (Высокая нагрузка)`;
                 dpcLoadLabel.className = "text-red-500 font-bold";
                 dpcStatText.innerText = `${(11.2 + v * 2.8).toFixed(1)} µs`;
                 dpcStatText.className = "text-red-500 font-bold";
-                appendLog(`[WARNING] Превышение времени ожидания обработки Raw Input! DPC Latency в критическом состоянии: ${(11.2 + v * 2.8).toFixed(1)} µs! Возможна потеря прерываний!`, 'error');
+                appendLog(`[WARNING] Превышение времени ожидания обработки прерываний! DPC Latency в критическом состоянии: ${(11.2 + v * 2.8).toFixed(1)} µs!`, 'error');
             }
         });
 
@@ -671,22 +645,24 @@
             }
         });
 
-        // Mouse handlers inside canvas
+        // Mouse handlers inside canvas - High speed, low memory footprints
         canvas.addEventListener('mousemove', (e) => {
             const r = canvas.getBoundingClientRect();
             curMouseX = e.clientX - r.left;
             curMouseY = e.clientY - r.top;
 
             if (!isTesting) return;
-            mouseEvents.push({
-                t: performance.now(),
-                type: 'move',
-                x: curMouseX,
-                y: curMouseY
-            });
             
-            if (Math.random() < 0.08) {
-                appendLog(`[RAW_MOUSE] Capture Packet: dX=${Math.floor((Math.random() - 0.5) * 40)}, dY=${Math.floor((Math.random() - 0.5) * 40)} | QPC TIMESTAMP: ${Math.round(performance.now() * 1000)}`);
+            totalInputPackets++;
+            
+            // Add to visual trail with strict length capping to prevent curMouse lagging!
+            mouseTrail.push({ x: curMouseX, y: curMouseY });
+            if (mouseTrail.length > 25) {
+                mouseTrail.shift();
+            }
+            
+            if (Math.random() < 0.05) {
+                appendLog(`[INPUT] USB Packet: dX=${Math.floor((Math.random() - 0.5) * 30)}, dY=${Math.floor((Math.random() - 0.5) * 30)} | QPC: ${Math.round(performance.now() * 1000)}`);
             }
         });
 
@@ -698,12 +674,7 @@
 
             if (!isTesting) return;
 
-            mouseEvents.push({
-                t: performance.now(),
-                type: 'click',
-                x: x,
-                y: y
-            });
+            totalInputPackets++;
 
             // Target click detection with clean ripples
             if (activeTarget.active) {
@@ -711,7 +682,7 @@
                 if (dist <= activeTarget.r + 15) {
                     // Success hit! Add explosion ripple
                     ripples.push({ x: activeTarget.x, y: activeTarget.y, radius: activeTarget.r, maxRadius: 35, alpha: 1.0, color: '0, 229, 255' });
-                    appendLog(`[RAW_LKM] Interrupt IRQ 12: Цель поражена! Зарегистрировано прерывание шины за ${Math.round((performance.now() - startTime) % 1000)}ms.`, 'success');
+                    appendLog(`[IRQ 12] Interrupt dispatch: Цель успешно калибрована за ${Math.round((performance.now() - startTime) % 1000)}ms.`, 'success');
                     spawnAimTarget();
                 } else {
                     ripples.push({ x: x, y: y, radius: 4, maxRadius: 20, alpha: 0.8, color: '239, 68, 68' });
@@ -775,11 +746,10 @@
             sparkCtx.fill();
         }
 
-        // STREAMING_CHUNK: Rendering logic and loop for drawing tactical elements onto canvas
         // --- Canvas UI Loop ---
         let scanX = 0;
 
-        function renderChamberFrame() {
+        function renderCanvasFrame() {
             ctx.fillStyle = '#050608';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -808,18 +778,14 @@
             ctx.fillStyle = 'rgba(0, 229, 255, 0.01)';
             ctx.fillRect(scanX - 40, 0, 40, canvas.height);
 
-            // Draw trails
-            if (isTesting && mouseEvents.length > 1) {
+            // Draw trails - O(N) optimized with max 25 iterations for absolute zero latency!
+            if (isTesting && mouseTrail.length > 1) {
                 ctx.beginPath();
-                ctx.strokeStyle = prankTriggered ? 'rgba(239, 68, 68, 0.25)' : 'rgba(0, 229, 255, 0.25)';
-                ctx.lineWidth = 1.5;
-                const limit = Math.max(0, mouseEvents.length - 40);
-                for (let i = mouseEvents.length - 1; i > limit; i--) {
-                    const e = mouseEvents[i];
-                    if (e.type === 'move') {
-                        if (i === mouseEvents.length - 1) ctx.moveTo(e.x, e.y);
-                        else ctx.lineTo(e.x, e.y);
-                    }
+                ctx.strokeStyle = prankTriggered ? 'rgba(239, 68, 68, 0.4)' : 'rgba(0, 229, 255, 0.4)';
+                ctx.lineWidth = 2;
+                ctx.moveTo(mouseTrail[0].x, mouseTrail[0].y);
+                for (let i = 1; i < mouseTrail.length; i++) {
+                    ctx.lineTo(mouseTrail[i].x, mouseTrail[i].y);
                 }
                 ctx.stroke();
             }
@@ -896,7 +862,7 @@
                 ctx.fill();
             }
 
-            // Active calibration indicators overlay
+            // Active calibration indicator overlay
             if (isTesting) {
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
                 ctx.font = '10px "Share Tech Mono"';
@@ -911,15 +877,15 @@
                 }
             }
 
-            requestAnimationFrame(renderChamberFrame);
+            requestAnimationFrame(renderCanvasFrame);
         }
-        requestAnimationFrame(renderChamberFrame);
+        requestAnimationFrame(renderCanvasFrame);
 
         // Core Live frequency updater
         let lastEventCount = 0;
         setInterval(() => {
             if (isTesting) {
-                const count = mouseEvents.length;
+                const count = totalInputPackets;
                 const diff = (count - lastEventCount) * 2;
                 lastEventCount = count;
 
@@ -935,19 +901,17 @@
                 document.getElementById('valAvgPoll').innerText = `${simHz > 0 ? simHz : 1000} Hz`;
                 
                 const jitterSeed = prankTriggered ? (24.1 + Math.random() * 8.5) : (0.08 + (dpcFactor / 22) + Math.random() * 0.15);
-                document.getElementById('liveHzVal').innerText = `${simHz} Hz`;
                 document.getElementById('currentJitterText').innerText = `${jitterSeed.toFixed(2)} ms`;
                 updateSparkline(jitterSeed * 10);
             }
         }, 500);
 
-        // STREAMING_CHUNK: Handling start test triggers and managing progress timer intervals
+
         // --- Trigger diagnostics run ---
         const btnStartTest = document.getElementById('btnStartTest');
         const canvasOverlay = document.getElementById('canvasOverlay');
         const testProgressContainer = document.getElementById('testProgressContainer');
         const testProgressBar = document.getElementById('testProgressBar');
-        const testCalibratingOverlay = document.getElementById('testCalibratingOverlay');
         const statusHeader = document.getElementById('statusHeader');
         const statusSubheader = document.getElementById('statusSubheader');
 
@@ -956,27 +920,34 @@
         const btnModalCloseOk = document.getElementById('btnModalCloseOk');
         const verdictBlock = document.getElementById('verdictBlock');
 
-        let pInterval = null; // Storing intervals as global variables to prevent any memory leaks
+        // Global instances of intervals to completely eradicate memory leaks and infinite runs
+        let pInterval = null;
         let prankCheck = null;
+        let testTimeout = null;
 
         btnStartTest.addEventListener('click', () => {
+            if (isTesting) return; // Prevent overlapping runs
+            
             sndStart();
             isTesting = true;
             prankTriggered = false;
-            mouseEvents = [];
+            totalInputPackets = 0;
+            mouseTrail = [];
+            ripples = [];
             lastEventCount = 0;
             startTime = performance.now();
 
-            // Clear any lingering intervals before starting a fresh run to prevent infinite loops
+            // Clear any lingering loops before executing a clean start
             if (pInterval) clearInterval(pInterval);
             if (prankCheck) clearInterval(prankCheck);
+            if (testTimeout) clearTimeout(testTimeout);
 
             appendLog("[START] Начат сбор данных калибровки шины позиционирования ввода...", 'warn');
             appendLog("[KERNEL] Выделен выделенный поток ядра Windows ID: " + Math.floor(Math.random() * 9000 + 1000), 'success');
 
             canvasOverlay.classList.add('opacity-0', 'pointer-events-none');
             testProgressContainer.classList.remove('hidden');
-            testCalibratingOverlay.classList.remove('hidden');
+            document.getElementById('packetsCounterBadge').classList.remove('hidden'); // Show packets badge in header
 
             statusHeader.innerText = "ИДЕТ ЗАПИСЬ ПОТОКА...";
             statusSubheader.innerText = "Регистрируем физические перемещения мыши";
@@ -1016,28 +987,27 @@
                 testProgressBar.style.width = `${pct}%`;
             }, 50);
 
-            // End test run guaranteed after strictly 10000ms
-            setTimeout(() => {
+            // End test run guaranteed after strictly 10s
+            testTimeout = setTimeout(() => {
                 isTesting = false;
                 activeTarget.active = false; // Turn off gameplay element
-                clearInterval(pInterval); 
+                clearInterval(pInterval);
                 clearInterval(prankCheck);
                 processDiagnosticsResults();
             }, testDuration);
         });
 
-        // STREAMING_CHUNK: Processing analysis results and formatting metrics reports
         // --- Processing Results ---
         function processDiagnosticsResults() {
             canvasOverlay.classList.remove('opacity-0', 'pointer-events-none');
             testProgressContainer.classList.add('hidden');
             testProgressBar.style.width = '0%';
-            testCalibratingOverlay.classList.add('hidden');
+            document.getElementById('packetsCounterBadge').classList.add('hidden'); // Hide packets badge
 
             statusHeader.innerText = "Калибровка окончена";
             statusSubheader.innerText = "Анализ данных буферизации завершен";
 
-            const count = mouseEvents.length;
+            const count = totalInputPackets;
             let avgHz = Math.min(1000, Math.round((count / 10) * 4.6 + (Math.random() * 20 - 10)));
             if (avgHz < 125) avgHz = 125;
             if (count === 0) avgHz = 0;
