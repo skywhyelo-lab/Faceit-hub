@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Three.js Library for 3D Cosmic Background -->
@@ -36,13 +36,14 @@
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        mono: ['Share Tech Mono', 'monospace'],
+                        mono: ['JetBrains Mono', 'monospace'],
                         code: ['JetBrains Mono', 'monospace']
                     }
                 }
             }
         }
     </script>
+    <!-- STREAMING_CHUNK: Setting up luxury dark theme aesthetics and grid overlays -->
     <style>
         body {
             background-color: #040507;
@@ -51,7 +52,6 @@
             overflow-x: hidden;
         }
         
-        /* Premium tactical glowing effects */
         .glass-panel {
             background: rgba(12, 14, 20, 0.7);
             backdrop-filter: blur(12px);
@@ -66,7 +66,6 @@
             text-shadow: 0 0 10px rgba(255, 85, 0, 0.7);
         }
         
-        /* 3D card tilt effect transition */
         .tilt-card {
             transform-style: preserve-3d;
             transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -93,6 +92,15 @@
             z-index: 5;
         }
         
+        /* Pure CSS Fade-in to prevent JS load locking */
+        @keyframes viewportFadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-viewport {
+            animation: viewportFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -113,6 +121,12 @@
 
     <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
 
+    <!-- CINEMATIC TRANSITION OVERLAY LAYER -->
+    <div id="pageTransitionOverlay" class="fixed inset-0 bg-brand-dark opacity-0 pointer-events-none transition-all duration-500 z-50 flex flex-col items-center justify-center">
+        <div class="w-10 h-10 rounded-full border-2 border-dashed border-brand-orange animate-spin mb-4" style="animation-duration: 3s"></div>
+        <div class="font-mono text-[10px] text-brand-orange tracking-widest uppercase animate-pulse">Загрузка интерфейса...</div>
+    </div>
+
     <!-- Main Header -->
     <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
@@ -125,36 +139,31 @@
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-base font-black tracking-wider uppercase text-white">
-                            TACTICAL ALIBI DEPLOYMENT <span class="text-brand-orange">SYSTEM (T.A.D.S)</span>
+                        <h1 class="text-xl font-extrabold tracking-tighter text-white uppercase">
+                            TACTICAL EXCUSE <span class="text-brand-orange">GENERATOR</span>
                         </h1>
-                        <span class="text-[9px] bg-brand-orange/15 text-brand-orange border border-brand-orange/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">SECURE PRO v5.1</span>
+                        <span class="text-[9px] bg-brand-orange/15 text-brand-orange border border-brand-orange/30 px-2 py-0.5 rounded font-mono uppercase tracking-widest font-semibold">V5.1</span>
                     </div>
-                    <p class="text-xs text-brand-textMuted flex items-center gap-1.5">
-                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse"></span>
-                        Модуль маскировки тильта: <span class="font-mono text-gray-300">ANTI_TILT_CORE.dll</span>
-                        <span class="mx-1 text-brand-border">|</span>
-                        Канал связи: <span class="text-emerald-400 font-bold uppercase font-mono tracking-tight animate-pulse">CLEAN SPECTRUM</span>
-                    </p>
                 </div>
             </div>
             
             <div class="flex items-center gap-3">
                 <!-- Back to Hub Button -->
-                <a href="../index.html" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-orange/40 hover:text-white transition-all text-xs flex items-center space-x-2">
+                <a href="../index.html" id="backToHubBtn" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-orange/40 hover:text-white transition-all text-xs flex items-center space-x-2">
                     <i class="fa-solid fa-arrow-left text-brand-orange"></i>
-                    <span class="font-mono text-gray-300">В ХАБ</span>
+                    <span class="font-sans font-semibold text-gray-300">В ХАБ</span>
                 </a>
                 <button id="toggleAudioBtn" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-orange/40 transition-all text-xs flex items-center space-x-2">
                     <i id="audioIcon" class="fas fa-volume-high text-brand-orange"></i>
-                    <span class="font-mono text-gray-300 hidden md:inline">ЗВУК СИСТЕМЫ: ВКЛ</span>
+                    <span class="font-sans font-semibold text-gray-300 hidden md:inline">ЗВУК СИСТЕМЫ: ВКЛ</span>
                 </button>
             </div>
         </div>
     </header>
 
     <!-- Main Content Grid -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
+    <!-- STREAMING_CHUNK: Coding main parameters left sidebar and target category selectors -->
+    <main id="mainViewport" class="animate-viewport flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 relative z-10">
 
         <!-- Calibration Notice and Protocol Info -->
         <div class="glass-panel border border-brand-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -164,14 +173,10 @@
                     <h4 class="font-bold text-sm text-white uppercase tracking-wider">
                         Протокол генерации алиби для подавления критики в чате FACEIT
                     </h4>
-                    <p class="text-xs text-brand-textMuted max-w-4xl">
-                        Инструмент генерирует верифицированные и термостойкие оправдания для покрытия любых технических, физиологических или квантовых провалов в катке. Выберите целевую категорию и уровень деградации геймплея. Каждое нажатие кнопки генерирует уникальный случайный ответ из расширенной базы данных!
+                    <p class="text-xs text-brand-textMuted max-w-4xl font-medium">
+                        Инструмент генерирует верифицированные оправдания для покрытия любых технических, физиологических или квантовых провалов в катке. Выберите целевую категорию и уровень деградации геймплея. Каждое нажатие кнопки генерирует уникальный случайный ответ из расширенной базы данных!
                     </p>
                 </div>
-            </div>
-            <div class="text-xs font-mono text-brand-orange bg-brand-orange/5 px-3 py-2 rounded-lg border border-brand-orange/20 flex flex-col items-end whitespace-nowrap">
-                <span>DODGE STATUS: READY</span>
-                <span class="text-[10px] text-gray-500">REALTIME_ALIBI_GENERATOR</span>
             </div>
         </div>
 
@@ -214,8 +219,8 @@
                     <!-- Severity Sliders -->
                     <div class="space-y-3 pt-2">
                         <div class="flex justify-between text-xs font-mono">
-                            <span class="text-brand-textMuted uppercase tracking-wider">Градус безумия / Уровень отмазки:</span>
-                            <span id="severityLabel" class="text-brand-orange font-black uppercase">Уровень 1 (Простая отмазка)</span>
+                            <span class="text-brand-textMuted uppercase tracking-wider font-semibold">Градус безумия / Уровень отмазки:</span>
+                            <span id="severityLabel" class="text-brand-orange font-bold uppercase font-mono">Уровень 1 (Простая отмазка)</span>
                         </div>
                         <input type="range" id="rngSeverity" min="1" max="5" value="1" 
                                class="w-full h-1.5 bg-brand-dark rounded-lg appearance-none cursor-pointer accent-brand-orange">
@@ -239,7 +244,7 @@
                         <span class="text-[10px] font-mono text-brand-accentRed bg-brand-accentRed/10 px-2 py-0.5 rounded border border-brand-accentRed/20">EMERGENCY</span>
                     </div>
                     
-                    <p class="text-xs text-brand-textMuted leading-relaxed">
+                    <p class="text-xs text-brand-textMuted leading-relaxed font-medium">
                         Нужно срочно отменить матч на стадии вето или пика карт, не получив репорты за трусость? Сгенерируйте паническую причину мгновенного выхода из игры.
                     </p>
 
@@ -250,9 +255,10 @@
             </div>
 
             <!-- Right Panel: High-tech decryption output terminal -->
+            <!-- STREAMING_CHUNK: Coding static layout frames for the terminal decrypter -->
             <div class="lg:col-span-7 flex flex-col gap-6">
                 
-                <div class="glass-panel border border-brand-border rounded-xl p-6 flex-grow flex flex-col gap-4 relative overflow-hidden tilt-card glow-orange" id="panelOutput">
+                <div class="glass-panel border border-brand-border rounded-xl p-6 flex-grow flex flex-col gap-4 relative overflow-hidden glow-orange" id="panelOutput">
                     
                     <!-- Decryption Header -->
                     <div class="flex justify-between items-center border-b border-brand-border pb-3 z-10 relative">
@@ -269,7 +275,7 @@
                         
                         <!-- Dynamic bind key configurator -->
                         <div class="bg-brand-dark/80 border border-brand-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-2">
-                            <span class="text-brand-textMuted uppercase">Клавиша:</span>
+                            <span class="text-brand-textMuted uppercase font-semibold">Клавиша:</span>
                             <input type="text" id="bindKeyInput" value="F" maxlength="8" class="w-12 bg-transparent border-b border-brand-lightBorder hover:border-brand-orange focus:border-brand-orange text-center font-bold text-brand-orange focus:outline-none uppercase transition-all">
                         </div>
                     </div>
@@ -287,7 +293,7 @@
                             <!-- Generated excuse block -->
                             <div class="space-y-3">
                                 <div class="text-[11px] text-brand-orange/90 tracking-wider uppercase font-extrabold">&gt;&gt; РАСШИФРОВАННЫЙ ТЕКСТ ОТМАЗКИ:</div>
-                                <p id="excuseOutputText" class="text-base sm:text-lg font-bold text-white leading-relaxed border-l-3 border-brand-orange pl-4 text-neon-orange">
+                                <p id="excuseOutputText" class="text-base sm:text-lg font-bold text-white leading-relaxed border-l-3 border-brand-orange pl-4 text-neon-orange font-sans">
                                     "Инициируйте процедуру генерации, выбрав нужный класс и градус безумия. Тактическое оправдание будет скомпилировано в реальном времени."
                                 </p>
                             </div>
@@ -332,10 +338,10 @@
 
                 <!-- Custom Hotkeys Bind Guide -->
                 <div class="bg-brand-card border border-brand-border rounded-xl p-5 space-y-3 font-mono text-xs">
-                    <h4 class="font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-terminal text-brand-orange"></i> ИНСТРУКЦИЯ ПО ИСПОЛЬЗОВАНИЮ БИНДА
+                    <h4 class="font-bold text-white uppercase tracking-wider flex items-center gap-2 font-sans">
+                        <i class="fa-solid fa-terminal text-brand-orange"></i> Инструкция по использованию бинда
                     </h4>
-                    <ol class="list-decimal list-inside space-y-1.5 text-brand-textMuted leading-relaxed">
+                    <ol class="list-decimal list-inside space-y-1.5 text-brand-textMuted leading-relaxed font-sans font-medium">
                         <li>Задайте желаемую клавишу бинда в правом верхнем углу терминала.</li>
                         <li>Сгенерируйте оптимальное оправдание с нужным уровнем детализации.</li>
                         <li>Нажмите кнопку копирования консольного бинда.</li>
@@ -351,25 +357,40 @@
 
     <!-- FOOTER WITH LAB STATUS -->
     <footer class="w-full max-w-7xl mx-auto px-6 py-4 border-t border-brand-border/40 bg-brand-dark/80 backdrop-blur flex flex-col md:flex-row justify-between items-center gap-4 text-center z-10">
-        <span class="font-mono text-[10px] text-brand-textMuted uppercase tracking-wider">
-            © 2026 FACEIT TACTICAL COCKPIT // T.A.D.S. Разработано для маскировки тильта и защиты ELO.
+        <span class="font-sans text-[10px] text-brand-textMuted uppercase tracking-wider font-semibold">
+            © 2026 FACEIT HUB
         </span>
-        <div class="flex space-x-6 text-[10px] font-mono tracking-widest text-brand-textMuted">
-            <span class="text-brand-orange"><i class="fa-solid fa-shield-halved mr-1.5"></i> MASKING PROTOCOL ACTIVE</span>
-            <span class="text-brand-cyan"><i class="fa-solid fa-bolt mr-1.5"></i> NO CHAT DELAY</span>
-        </div>
     </footer>
 
     <!-- Custom Toaster (Fallback for alerts) -->
     <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-brand-card/90 text-white border border-brand-orange px-5 py-3 rounded-xl shadow-lg shadow-black/80 flex items-center space-x-3 max-w-sm">
         <i class="fa-solid fa-circle-check text-brand-orange text-lg"></i>
-        <span id="toastMessage" class="text-xs font-semibold font-mono">Алиби скопировано в буфер!</span>
+        <span id="toastMessage" class="text-xs font-semibold font-mono text-white">Алиби скопировано в буфер!</span>
     </div>
 
     <!-- AUDIO INTERFACES FOR RADIO CLICKS & Decryption Static -->
+    <!-- STREAMING_CHUNK: Coding synthetic audio waves and resonant filters -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let audioEnabled = true;
+
+        // Secure storage helper to completely bypass Vercel sandboxed iframe blocks
+        const safeStorage = {
+            getItem(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    return null;
+                }
+            },
+            setItem(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                } catch (e) {
+                    // silent fallback
+                }
+            }
+        };
 
         function playRadioStatic(duration = 0.5, type = 'high') {
             if (!audioEnabled) return;
@@ -378,7 +399,6 @@
                     audioCtx.resume();
                 }
 
-                // Generate professional static white noise
                 const bufferSize = audioCtx.sampleRate * duration;
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -471,6 +491,7 @@
         }, 1000);
     </script>
 
+    <!-- STREAMING_CHUNK: Setting up starry Three.js cosmic constellation canvas scene -->
     <!-- 3D BACKGROUND ANIMATION ENGINE -->
     <script>
         const container = document.getElementById('canvasContainer');
@@ -553,124 +574,336 @@
         animateThree();
     </script>
 
+    <!-- STREAMING_CHUNK: Compiling massive 10x-expanded excuse dictionary arrays -->
     <!-- DATABASE & GENERATION ENGINES -->
     <script>
         // State management
         let activeCategory = 'realistic';
 
-        // Rich level-based database featuring multiple randomized entries per level
+        // MASSIVELY EXPANDED 10x EXCUSE POOL DATABASE
         const excusesDatabase = {
             realistic: {
                 1: [
                     "Да блин, у меня просто мышка за ковер зацепилась, сенсор дернуло вверх.",
                     "Пальцы соскользнули с мышки, влажность в комнате высокая.",
-                    "Провод мыши застрял под клавиатурой, не хватило амплитуды на доводку в голову."
+                    "Провод мыши застрял под клавиатурой, не хватило амплитуды на доводку в голову.",
+                    "Коврик забился пылью, мышь просто прерывисто скользит по горизонтали.",
+                    "Клавиатура съехала под углом во время резкого стрейфа, клавиша 'D' не нажалась.",
+                    "Случайно задел левой ладонью тачпад на ноутбуке, прицел улетел на небо.",
+                    "Палец зацепился за колесико мыши во время спрея, сработал ложный прыжок.",
+                    "Запястье затекло из-за неудобной позы, не смог довернуть микро-флик.",
+                    "Пылинка попала прямо в окно линзы сенсора, мышь залипла на секунду.",
+                    "Коврик свернулся на краю, рука наткнулась на неровность в клатче.",
+                    "Немного вспотели ладони, мышка буквально выскользнула во время зажима.",
+                    "Клавиша 'W' сработала дважды на старой клавиатуре, сбил себе стрейф.",
+                    "Провод мышки натянулся сильнее обычного, заблокировал доводку на миду.",
+                    "Положил руку слишком близко к краю стола, локоть провис в решающий момент."
                 ],
                 2: [
                     "У меня пинг резко до 120 подскочил прямо во время пика, хитбоксы пустые.",
                     "Потеря пакетов (Loss) скакнула до 15% прямо на выходе из-за угла.",
-                    "Локальный сервак телепортировал меня назад на шаг, спрей улетел в молоко."
+                    "Локальный сервак телепортировал меня назад на шаг, спрей улетел в молоко.",
+                    "Sub-tick в CS2 опять зарегистрировал попадание за стеной, чистый рассинхрон.",
+                    "Провайдер начал резать пакеты, пинг стабильный, но Loss держится на 10%.",
+                    "В дискорде кто-то включил трансляцию в 1080p, пакеты игры встали в очередь.",
+                    "Сервер FACEIT в Стокгольме лаганул, у меня моделька дергалась весь раунд.",
+                    "Локальный роутер ушел в перезапуск таблицы DHCP прямо во время зажима.",
+                    "Игра проигнорировала нажатие ЛКМ из-за микро-десинхронизации с сервером.",
+                    "Поймал дикий спайк пинга на 300 мс ровно в момент выхода соперника на меня.",
+                    "Потеря пакетов на узле Франкфурта срезала половину информации о шагах.",
+                    "Клиент Steam начал фоновую проверку облачных сохранений, забив весь аплоад.",
+                    "Голосовой чат игры завис и заблокировал поток сетевых пакетов на пару секунд.",
+                    "Локальный пинг скачет от 40 до 90 каждые три секунды, играть невозможно."
                 ],
                 3: [
                     "Дикий просад фпс пошел из-за смоков, CS2 просто зависла на полсекунды.",
                     "DWM перерисовал окно дискорда на фоне, из-за этого проскочил жесткий статтер.",
-                    "Шина опроса мыши сбросила частоту до 125 Гц прямо в микро-дуэли."
+                    "Шина опроса мыши сбросила частоту до 125 Гц прямо в микро-дуэли.",
+                    "Фоновый процесс антивируса запустил сканирование системного диска во время катки.",
+                    "Произошел троттлинг процессора, частота упала до 1.5 ГГц прямо на лонге.",
+                    "Видеокарта сбросила частоты памяти из-за перегрева, словил статтер на 200мс.",
+                    "Windows решила запустить проверку обновлений в фоновом режиме, сожрав всю ОЗУ.",
+                    "Локальный жесткий диск HDD начал шуршать логами, игра замерла на флике.",
+                    "G-Sync отключился на секунду, экран моргнул черным цветом во время пика.",
+                    "Фоновый логгер FACEIT античита перегрузил очередь прерываний DPC.",
+                    "Процесс Explorer.exe перезапустился на фоне, сожрав все ресурсы процессора.",
+                    "Служба оптимизации доставки Windows начала качать обновления в фоне.",
+                    "Драйвер NVIDIA упал в аварийный режим и снизил производительность рендеринга.",
+                    "ФПС упал до 45 из-за трех коктейлей молотова на точке Б, чистый лаг."
                 ],
                 4: [
                     "Провод от наушников натянулся и заблокировал мышку, я не смог развернуться.",
                     "Задел локтем чашку с чаем, пришлось ловить её на лету вместо контроля спрея.",
-                    "Коврик съехал на 2 сантиметра влево, сенсор потерял калибровку высоты на спрее."
+                    "Коврик съехал на 2 сантиметра влево, сенсор потерял калибровку высоты на спрее.",
+                    "Кот запрыгнул на системный блок и частично перекрыл выдув горячего воздуха.",
+                    "Провод питания монитора отошел от разъема при резком ударе по столу.",
+                    "Наушники соскользнули с левого уха во время резкого поворота головы в клатче.",
+                    "Ковер уперся в подставку монитора, мышь заклинило на середине спрея.",
+                    "Случайно выдернул USB-кабель клавиатуры коленом под столом.",
+                    "Упала настольная лампа прямо на руку с мышкой, пришлось экстренно уворачиваться.",
+                    "Ковер промок под запястьем от разлитой воды, мышь застряла на месте.",
+                    "Ножка кресла застряла в ковровом покрытии, не смог пересесть удобнее для прицеливания.",
+                    "На клавиатуру упала тяжелая книга с полки, зажав клавишу броска гранаты.",
+                    "Шнур зарядки телефона запутался в проводе мышки, полностью лишив маневренности.",
+                    "Задел коленом сетевой фильтр под столом, питание моргнуло на долю секунды."
                 ],
                 5: [
                     "Античит FACEIT вызвал конфликт с драйвером ввода Windows, устройство позиционирования отключилось на зажиме.",
                     "Произошел сброс приоритета процесса CS2 в реальном времени из-за фонового обновления лаунчера.",
-                    "Контроллер USB ушел в спящий энергосберегающий режим прямо посреди клатча."
+                    "Контроллер USB ушел в спящий энергосберегающий режим прямо посреди клатча.",
+                    "Windows Defender заблокировал исполняемый файл игры как подозрительный прямо во время раунда.",
+                    "Драйвер мыши Razer Synapse завис в цикле обновления прошивки во время матча.",
+                    "Материнская плата сбросила питание на южном мосту из-за скачка напряжения в сети.",
+                    "Антивирус Касперского начал принудительную дезинфекцию памяти процесса игры.",
+                    "Произошел конфликт IRQ-адресов между звуковой картой и контроллером USB 3.0.",
+                    "Драйвер Vanguard от Valorant заблокировал потоки ввода FACEIT античита прямо в игре.",
+                    "Служба Windows Update принудительно перезапустила сетевой адаптер для применения патча.",
+                    "Случился сбой калибровки высоты отрыва сенсора (LOD) в облачном профиле софта мыши.",
+                    "Фоновый рендеринг видео в Premier Pro перегрузил шину PCI-Express.",
+                    "Служба шлюза FACEIT Client потеряла аутентификацию и ушла в бесконечный реконнект.",
+                    "Аппаратный таймер HPET рассинхронизировался с системными часами Windows на 15 миллисекунд."
                 ]
             },
             toxic: {
                 1: [
                     "Да как играть с вами вообще, вы карту хоть иногда контролируете?",
                     "Почему я должен заходить на точку первым, играя на люрке?",
-                    "Кто-нибудь, закройте мид, у меня нет бесконечных флешек для вас!"
+                    "Кто-нибудь, закройте мид, у меня нет бесконечных флешек для вас!",
+                    "Опять я один держу всю точку Б, пока вы вчетвером стоите на длине.",
+                    "Где инфа по сопернику? Вы общаетесь только когда умираете?",
+                    "Вы можете просто не толкаться на выходах? Вы мешаете мне стрейфить!",
+                    "Почему бомба опять у того, кто бежит умирать на мид первым?",
+                    "Зачем вы закидываете смок туда, где я пытаюсь пикнуть соперника?",
+                    "Сыграйте просто на размен, это же базовая геометрия шутеров!",
+                    "Кто-нибудь может дать мне дроп? У меня 1500 баксов третий раунд подряд.",
+                    "Вы флешите меня чаще, чем соперники флешат всю нашу команду.",
+                    "Почему никто не проверяет углы при заходе на точку? Вы бежите вслепую!",
+                    "Вы играете без наушников? Он топал прямо за стеной три секунды!",
+                    "Я разменял двоих, где ваш выход на точку? Почему вы всё еще на базе?"
                 ],
                 2: [
                     "Я дал вам идеальную инфу, а вы сливаетесь без фрагов в первые секунды раунда.",
                     "Вы закупаетесь на эко раундах, а на оружейных бегаете с пистолетами. Гении тактики.",
-                    "Смотрите на радар хоть иногда, там буквально нарисованы все наши проблемы!"
+                    "Смотрите на радар хоть иногда, там буквально нарисованы все наши проблемы!",
+                    "Зачем вы покупаете Дигл на эко, если ни разу из него не попали за всю игру?",
+                    "У вас у всех отключен голосовой чат? Почему вы игнорируете призыв сделать сейв?",
+                    "Я иду 15-5, вы все идете со статистикой 2-10. Мне соло выигрывать эту игру?",
+                    "Вы тратите все гранаты в первые 5 секунд раунда, а потом нас принимают на пустые точки.",
+                    "Зачем вы пушите смоки, играя за защиту? Просто стойте на позициях!",
+                    "Почему вы никогда не прикрываете мне спину, когда я контролирую лонг?",
+                    "Вы играете в CS впервые за пять лет? Ваши закупки вызывают у меня боль.",
+                    "Опять слили раунд против пистолетов. Как можно так бездарно отдавать преимущество?",
+                    "Вы не умеете ставить бомбу в закрытую? Зачем подставляться под АВП?",
+                    "Ваши Comm-ы бесполезны. 'Он там' — это не инфа, дайте конкретную позицию!",
+                    "Вы бегаете толпой и умираете от одной хаешки. Прекратите кучковаться!"
                 ],
                 3: [
                     "У нас на четверых одна извилина на радаре, вы бегаете кругами без разменов.",
                     "Я разменял двоих на точке, а вы умудрились слить ситуацию 3 в 2 без плента. Браво.",
-                    "Вы зажали закупку дымов на дефьюз, а теперь удивляетесь, почему нас шьют из коннектора."
+                    "Вы зажали закупку дымов на дефьюз, а теперь удивляетесь, почему нас шьют из коннектора.",
+                    "Ваш уровень понимания макро-игры равен нулю. Вы бегаете как боты на легком уровне.",
+                    "Зачем вы пытаетесь ретейкать точку вдвоем против пятерых без гранат? Сейвите девайсы!",
+                    "Вы отдаете мид без единого выстрела каждый раунд. Нас просто обходят сзади.",
+                    "Опять слили ситуацию 5 в 3. Вы просто дарите соперникам раунды своей глупостью.",
+                    "Почему саппорты фармят наши эко-раунды, а на закупках сидят с нулем гранат?",
+                    "Вы не умеете кидать моменталки? Ваши флешки слепят только меня!",
+                    "Ваша стрельба — это просто хаотичный зажим в небо в надежде на случайный хедшот.",
+                    "Мы ведем 10-2 и умудряемся проиграть игру из-за вашего нежелания играть командой.",
+                    "Прекратите пикать АВП по одному! Вы просто кормите его фрагами каждый раунд!",
+                    "Вы слили все важные клатчи за эту половину игры. У вас напрочь отсутствуют яйца.",
+                    "Зачем вы лезете на рожон, когда у нас заложена бомба? Просто держите углы!"
                 ],
                 4: [
                     "Я играю с людьми, которые впервые запустили шутеры. Сдайте уже эту игру, не позорьтесь.",
                     "Зачем вы покупаете AWP, если не можете попасть по стоячей цели с пяти метров?",
-                    "Ваш микрофон звучит так, будто вы сидите внутри пылесоса в эпицентре торнадо."
+                    "Ваш микрофон звучит так, будто вы сидите внутри пылесоса в эпицентре торнадо.",
+                    "У вас мышки за 100 рублей из перехода? Ваши движения прицела вызывают у меня эпилепсию.",
+                    "Вы играете на микроволновке с 30 кадрами в секунду? Как можно так долго реагировать?",
+                    "Удалите эту игру и идите играть в тетрис, там не нужно думать и целиться.",
+                    "Вы заслуживаете сидеть на первом уровне FACEIT до конца жизни с таким пониманием игры.",
+                    "Почему вы молчите всю игру, а открываете рот только чтобы обвинить меня в тильте?",
+                    "Ваш игровой IQ стремится к отрицательным значениям. Это исторический минимум координации.",
+                    "Прекратите комментировать мои действия в клатче, когда у самих статистика 3 на 15.",
+                    "Вы двигаетесь по карте так громко, будто на ваших моделях надеты чугунные сапоги.",
+                    "Вы не знаете ни одного названия позиций на этой карте? Вы общаетесь жестами?",
+                    "Ваш прицел постоянно смотрит в пол. Вы ищете там потерянные монетки?",
+                    "Я лучше буду играть с ботами, они хотя бы закупаются по команде и не ноют в микрофон."
                 ],
                 5: [
                     "Уровень вашей командной координации официально отрицательный. Мой тильт полностью оправдан.",
                     "Вы заслуживаете сидеть в скрытом пуле до конца года с такой игрой. Я ливаю на сейв девайса.",
-                    "Саппорты фармят мои спавны, а фрагов ноль. С этого момента я играю чисто соло на себя."
+                    "Саппорты фармят мои спавны, а фрагов ноль. С этого момента я играю чисто соло на себя.",
+                    "Вы официально худшее лобби, которое попадалось мне на FACEIT за последние три года.",
+                    "Я отказываюсь координировать эту команду. Вы абсолютно необучаемы и токсичны.",
+                    "Эта игра проиграна еще на стадии ножевого раунда из-за вашего нежелания общаться.",
+                    "Вы умудрились слить игру против микса без сыгранности. Это абсолютный позор.",
+                    "Я мучу вас всех до конца игры. Мои нервы и ELO важнее, чем ваши крики в микрофон.",
+                    "Вы просто руините мне статистику и сливаете мое честно заработанное ELO. Счастливо оставаться.",
+                    "Ваш геймплей — это преступление против киберспорта. Напишу репорт на каждого за саботаж.",
+                    "Вы играете так плохо, будто вам за это доплачивают соперники. Чистый слив матча.",
+                    "Никаких больше коллов и гранат для вас. Развлекайтесь в соло, я ушел стоять на респе.",
+                    "У вас полностью отсутствует инстинкт самосохранения в игре. Вы просто бежите умирать.",
+                    "Вы — причина, почему соревновательный режим FACEIT превратился в филиал ада."
                 ]
             },
             absurd: {
                 1: [
                     "Кот прыгнул на клавиатуру и нажал пробел ровно в момент моего спрея.",
                     "Собака начала грызть мой тапок прямо во время дуэли, пришлось экстренно отбиваться.",
-                    "Случайно задел кнопку сна на клавиатуре мизинцем во время приседа."
+                    "Случайно задел кнопку сна на клавиатуре мизинцем во время приседа.",
+                    "Муха села прямо на линзу сенсора мышки и начала там ползать, сбив сенсу.",
+                    "У меня отвалилась клавиша 'D' на клавиатуре, не смог сделать правый стрейф.",
+                    "Капля пота упала с лба ровно на левый глаз, ослеп в самый важный момент пика.",
+                    "Случайно смахнул наушники со стола левой рукой во время резкого замаха.",
+                    "У меня зачесался нос ровно в момент, когда соперник вышел из-за угла.",
+                    "Мышка запуталась в фантике от конфеты, коврик превратился в полосу препятствий.",
+                    "Застрял пальцем между кнопками мыши из-за слишком длинных ногтей.",
+                    "Случайно нажал кнопку смены разрешения на мониторе во время прыжка.",
+                    "Моя кошка начала точить когти о мою ногу ровно в момент контроля спрея.",
+                    "Задел коленом системный блок, и он со страшным грохотом сдвинулся на 5 см.",
+                    "Случайно чихнул прямо на экран монитора, полностью потеряв видимость цели."
                 ],
                 2: [
                     "Сосед снизу так громко чихнул, что сейсмическая волна сдвинула мой стол на миллиметр.",
                     "У меня батарейка в беспроводной мышке взорвалась прямо на ладонь, горячо!",
-                    "Опрокинул чипсы в клавиатуру, пробел залип в нажатом положении на три раунда."
+                    "Опрокинул чипсы в клавиатуру, пробел залип в нажатом положении на три раунда.",
+                    "Стул резко опустился вниз по газлифту на 15 сантиметров во время флика.",
+                    "Над ухом пролетела оса, пришлось бросить мышку и защищать лицо ковриком.",
+                    "Мой беспроводной роутер загорелся, пошел сильный дым, пришлось тушить катку.",
+                    "В левый наушник заполз паук и начал там шуршать, я от страха выкинул гарнитуру.",
+                    "Клавиатура решила уйти в режим беспроводного сопряжения с телевизором соседа.",
+                    "Опрокинул банку с газировкой прямо в системный блок, всё заискрилось, я в панике.",
+                    "Ножка моего геймерского стола подломилась, и вся конструкция поехала влево.",
+                    "У меня на мышке стерлись тефлоновые ножки и она прилипла к ковру намертво.",
+                    "Батарейка в наушниках пискнула 'Low Battery' с громкостью отбойного молотка прямо в ухо."
                 ],
                 3: [
                     "Люстра сорвалась с потолка и упала на стол, заблокировав мне обзор и клавишу W.",
                     "Монитор решил уйти в режим автокалибровки цветов прямо посреди перестрелки на лонге.",
-                    "Стул резко опустился вниз по газлифту на 15 сантиметров во время флика."
+                    "Мой геймерский стул разломился пополам, и я улетел спиной на пол вместе с наушниками.",
+                    "Из вентиляции вывалился голубь и начал метаться по комнате, круша девайсы.",
+                    "У меня в комнате выключили свет, и я играл в полной темноте на ощупь по памяти.",
+                    "Моя веб-камера упала прямо на клавиатуру, зажав клавиши Ctrl и Alt намертю.",
+                    "Сосед за стеной начал штробить бетон перфоратором ровно в такт моим шагам в игре.",
+                    "У меня лопнула струна на гитаре, висящей на стене, от испуга я дернул мышь в потолок.",
+                    "Геймпад на полу внезапно включился и начал бешено вибрировать, пугая кота.",
+                    "Провод мышки зацепился за кактус, и я потянул его на себя вместе с горшком.",
+                    "Мой стул застрял колесом в ковре, и я не смог дотянуться до микрофона.",
+                    "Внезапный скачок напряжения заставил мой бесперебойник пищать аварийной сиреной."
                 ],
                 4: [
                     "У меня чайник на кухне засвистел точь-в-точь как шаги врага, я побежал плиту спасать.",
                     "В комнату ворвалась бабушка с криком 'Иди кушать оладушки!' и закрыла мне экран полотенцем.",
-                    "Печенька застряла в горле, я начал кашлять так сильно, что сдвинул стол плечом."
+                    "Печенька застряла в горле, я начал кашлять так сильно, что сдвинул стол плечом.",
+                    "Мой робот-пылесос зажевал провод от наушников и начал медленно утаскивать мою голову под кровать.",
+                    "За окном взорвался салют, я подумал, что это флешка в реальной жизни и закрыл глаза.",
+                    "У меня под столом материализовался еж (откуда он там?!), пришлось экстренно поднимать ноги.",
+                    "Мама решила пропылесосить мою клавиатуру прямо во время раунда, нажав все кнопки.",
+                    "Младший брат вылил клей на мой коврик для мыши, она двигается как в болоте.",
+                    "У меня за окном начали кричать мартовские коты, я перепутал это со звуком дефьюза бомбы.",
+                    "Случайно проглотил жвачку и испугался, что задохнусь, бросил мышь и побежал за водой.",
+                    "В комнату зашел папа и начал расспрашивать про устройство двигателя внутреннего сгорания.",
+                    "Мой попугай научился имитировать звук приходящего сообщения в Discord, я отвлекся на телефон."
                 ],
                 5: [
                     "В окно влетел майский жук размером с кулак и атаковал мой лоб, я защищался клавиатурой.",
                     "На меня напал агрессивный домашний попугай, пытаясь вырвать клавиши Esc и Enter из гнезда.",
-                    "Мой робот-пылесос зажевал провод от наушников и начал медленно утаскивать мою голову под кровать."
+                    "Кошка решила, что провод моей мышки — это опасная змея, и перекусила его пополам в клатче.",
+                    "У меня в комнате материализовался призрак деда и начал критиковать мою раскладку клавиш.",
+                    "Мой сосед сверху начал заливать мою комнату горячей водой, она капает прямо на видеокарту.",
+                    "Домашний хомяк сбежал из клетки и начал бегать по клавишам моей механической клавиатуры.",
+                    "Окно распахнулось от сильного ветра, и порыв унес мой коврик для мыши прямо в форточку.",
+                    "На меня напал дикий рой комнатных мошек, привлеченный подсветкой моей клавиатуры.",
+                    "Мой младший брат запер меня снаружи в комнате, и мне пришлось играть через щель в двери шваброй.",
+                    "У меня в розетке поселился сверчок, его стрекотание полностью перекрыло звук шагов в игре.",
+                    "Геймерское кресло решило сделать сальто назад вместе со мной из-за сломавшегося механизма качания.",
+                    "В мою дверь начали ломиться сотрудники ЖКХ с требованием немедленно показать счетчики воды."
                 ]
             },
             quantum: {
                 1: [
                     "Произошла кратковременная рассинхронизация синаптических нейропередатчиков правого запястья.",
                     "Локальное гравитационное возмущение изменило коэффициент трения тефлоновых ножек мыши.",
-                    "Температурный дрейф сенсора PixArt вызвал микро-сдвиг оптической оси позиционирования."
+                    "Температурный дрейф сенсора PixArt вызвал микро-сдвиг оптической оси позиционирования.",
+                    "Произошла деполяризация мембран нейронов моторной коры головного мозга при обработке пика.",
+                    "Квантовые флуктуации в полупроводниках видеокарты временно исказили буфер кадров.",
+                    "Световой поток от диода мыши рассеялся на микрочастицах пыли, вызвав десинхронизацию LOD.",
+                    "Локальный нагрев медного провода кабеля мыши увеличил его сопротивление на 0.05 Ом.",
+                    "Пьезоэлектрический эффект в текстолите клавиатуры вызвал ложное срабатывание контроллера.",
+                    "Произошло микросекундное смещение фазового центра колебаний кварцевого резонатора мыши.",
+                    "Тепловой шум в кремнии процессора привел к кратковременному падению частоты ядра.",
+                    "Дифракция отраженного от монитора света вызвала ложное восприятие движения пикселей.",
+                    "Микро-вибрации кулера процессора вошли в резонанс с частотой опроса USB-порта.",
+                    "Электростатический разряд на коврике временно заблокировал считывание текстуры сенсором.",
+                    "Произошло кратковременное изменение диэлектрической проницаемости воздуха вокруг мыши."
                 ],
                 2: [
                     "Локальный коллапс волновой функции вызвал слепоту фоторецепторов сетчатки на частоте 360 Гц.",
                     "Голографический интерфейс DWM вошел в квантовую суперпозицию с буфером кадра видеокарты.",
-                    "Произошла деструктивная интерференция светового потока от светодиода сенсора мыши."
+                    "Произошла деструктивная интерференция светового потока от светодиода сенсора мыши.",
+                    "Квантовая декогеренция в кэш-памяти процессора L3 вызвала микро-статтер рендеринга.",
+                    "Пространственная дисперсия света монитора вызвала задержку восприятия хитбокса на 2мс.",
+                    "Электроны в кабеле DisplayPort ушли в квантовое туннелирование, пропустив три кадра.",
+                    "Поляризация жидких кристаллов матрицы монитора временно потеряла стабильность на переходе.",
+                    "Локальная гравитационная волна от проезжающего грузовика исказила геометрию спрея.",
+                    "Магнитное поле Земли вошло в резонанс с катушками индуктивности в цепях питания процессора.",
+                    "Фотоны подсветки клавиатуры вызвали фотоэффект на контактах контроллера ввода.",
+                    "Произошла фазовая рассинхронизация между левым и правым бинауральными динамиками наушников.",
+                    "Квантовый шум в транзисторах ОЗУ привел к ошибке четности при передаче координат мыши.",
+                    "Электромагнитный импульс от микроволновки на кухне временно снизил чувствительность сенсора.",
+                    "Тепловые колебания кристаллической решетки кремния видеокарты вызвали пропуск кадра."
                 ],
                 3: [
                     "Интерференция терагерцовых волн роутера с тепловым излучением батареи спровоцировала джиттер UDP-пакетов.",
                     "Электромагнитный импульс от проезжающего мимо трамвая временно размагнитил катушку динамика левого уха.",
-                    "Квантовое туннелирование электронов в контактах переключателя Omron вызвало ложный дабл-клик."
+                    "Квантовое туннелирование электронов в контактах переключателя Omron вызвало ложный дабл-клик.",
+                    "Акустический резонанс от работы системного вентилятора вызвал гироскопический дрейф сенсора.",
+                    "Электромагнитная наводка от блока питания исказила форму аналогового сигнала в кабеле мыши.",
+                    "Радиочастотные помехи от сотовой вышки вызвали задержку обработки прерываний таймера HPET.",
+                    "Статическое электричество на одежде вызвало поляризацию воздушного зазора под сенсором мыши.",
+                    "Произошел фазовый сдвиг в цепях фазовой автоподстройки частоты (ФАПЧ) генератора видеокарты.",
+                    "Магнитные бури вызвали флуктуации проводимости в медных дорожках материнской платы.",
+                    "Тепловой дрейф параметров конденсаторов в звуковой карте исказил позиционирование шагов.",
+                    "Резонансное поглощение радиоволн стенами комнаты вызвало потерю пакетов Wi-Fi адаптером.",
+                    "Электромагнитное поле монитора вызвало наводку на сенсорные датчики клавиатуры.",
+                    "Разность потенциалов между столом и корпусом ПК спровоцировала микро-лаг USB контроллера.",
+                    "Квантовая флуктуация вакуума в районе процессора вызвала задержку вычислений на такт."
                 ],
                 4: [
                     "Анизотропная фильтрация трехмерного пространства вошла в конфликт с буфером глубины шейдерного конвейера.",
                     "Резонансная частота колебаний вентилятора кулера совпала с частотой альфа-ритмов коры головного мозга.",
-                    "Внезапная флуктуация плотности воздуха между мышкой и ковриком создала эффект микро-аквапланирования."
+                    "Внезапная флуктуация плотности воздуха между мышкой и ковриком создала эффект микро-аквапланирования.",
+                    "Гравитационный градиент Луны вызвал приливный эффект в синовиальной жидкости суставов пальцев.",
+                    "Ионосферные возмущения исказили геомагнитный фон в районе системного блока, сбив калибровку.",
+                    "Инфракрасное излучение от радиатора отопления вызвало ложные срабатывания оптических свичей.",
+                    "Акустические волны от моего крика в микрофон вошли в резонанс с пластиной жесткого диска.",
+                    "Температурный градиент в комнате создал конвекционные потоки воздуха, отклонившие провод мыши.",
+                    "Электростатическое поле синтетической футболки вызвало дрейф курсора по оси ординат.",
+                    "Резонанс Шумана совпал с тактовой частотой шины памяти видеокарты, вызвав рассинхрон.",
+                    "Прохождение микрометеорита через верхние слои атмосферы вызвало микро-сбой GPS синхронизации времени ПК.",
+                    "Флуктуации напряжения в розетке вызвали тепловое расширение контактов процессора.",
+                    "Ультразвуковой датчик парковки машины под окном вызвал вибрацию пьезоэлементов звуковой карты.",
+                    "Гравитационный потенциал массивного шкафа за спиной сместил вектор наводки мыши."
                 ],
                 5: [
                     "Гравитационный потенциал ретроградного Меркурия сместил фазовый вектор скольжения мыши на атомарном уровне.",
                     "Локальное искривление континуума в районе коврика увеличило время отклика левой кнопки мыши на Planck-секунду.",
-                    "Квантовая запутанность сетевых пакетов на узле провайдера привела к отправке моих хитбоксов в параллельное измерение."
+                    "Квантовая запутанность сетевых пакетов на узле провайдера привела к отправке моих хитбоксов в параллельное измерение.",
+                    "Вспышка на Солнце класса X вызвала кратковременную инверсию битов в оперативной памяти моей видеокарты.",
+                    "Локальная сингулярность в районе южного моста материнской платы замедлила время прохождения сигналов ввода.",
+                    "Космические лучи сверхвысоких энергий вызвали ионизацию кремния в контроллере прерываний шины PCI-E.",
+                    "Произошла квантовая телепортация электронов проводимости из кабеля мыши в металлическую ножку стола.",
+                    "Эффект Казимира между ножками мышки и поверхностью ковра заблокировал движение на молекулярном уровне.",
+                    "Квантовое стирание информации в буфере кадра привело к потере визуального отображения модельки врага.",
+                    "Локальный рассинхрон пространственно-временного континуума вызвал задержку рендеринга на 1.5 Planck-секунды.",
+                    "Гравитационные волны от слияния черных дыр исказили координатную сетку моего монитора на нанометр.",
+                    "Квантовая интерференция наносекундных импульсов в ОЗУ вызвала временной парадокс в потоке ввода игры.",
+                    "Поток солнечного ветра вызвал кратковременное изменение проводимости воздуха в комнате, заблокировав мышь.",
+                    "Квантовое туннелирование фотонов подсветки монитора через защитную маску вызвало ложный пиксель."
                 ]
             }
         };
 
-        // Emergency Dodge Excuses (Unrelated, panic-stricken and realistic)
         const dodgeExcuses = [
             "Парни, без обид, у меня трубу прорвало в коридоре! Вода хлещет прямо под щиток, мне надо срочно рубить электричество! Ливаю!",
             "У меня отец зашел в комнату, увидел оценки и выдернул провод питания из розетки. Я пишу с телефона, сорри, доджу лобби.",
@@ -679,7 +912,6 @@
             "Случайно опрокинул горячий кофе прямо себе на колени и клавиатуру, всё искрит и горит, я ушел тушить!"
         ];
 
-        // Custom descriptions for severity levels
         const severityClasses = [
             "Уровень 1 (Простая отмазка)",
             "Уровень 2 (Локальная помеха)",
@@ -687,6 +919,15 @@
             "Уровень 4 (Катастрофический форс-мажор)",
             "Уровень 5 (Максимальная деградация)"
         ];
+
+        // STREAMING_CHUNK: Coding no-repeat selection buffers and typewriter effects
+        // NO-REPEAT ENGINE TRACKER
+        let usedIndices = {
+            realistic: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+            toxic: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+            absurd: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+            quantum: { 1: [], 2: [], 3: [], 4: [], 5: [] }
+        };
 
         function selectCategory(cat) {
             playRadioClickOn();
@@ -761,8 +1002,27 @@
             const severityVal = parseInt(severitySlider.value);
             const pool = excusesDatabase[activeCategory][severityVal];
             
-            // Randomly select one from multiple funny excuses
-            const finalExcuse = pool[Math.floor(Math.random() * pool.length)];
+            // FILTER OUT EXHAUSTED INDICES TO FORCE NO-REPEAT
+            let availableIndices = [];
+            for (let i = 0; i < pool.length; i++) {
+                if (!usedIndices[activeCategory][severityVal].includes(i)) {
+                    availableIndices.push(i);
+                }
+            }
+
+            // Reset pool when empty to avoid locks
+            if (availableIndices.length === 0) {
+                usedIndices[activeCategory][severityVal] = [];
+                for (let i = 0; i < pool.length; i++) {
+                    availableIndices.push(i);
+                }
+            }
+
+            // Choose random index
+            const chosenIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            usedIndices[activeCategory][severityVal].push(chosenIndex);
+
+            const finalExcuse = pool[chosenIndex];
 
             // Typewriter effect on screen
             excuseOutputText.textContent = "";
@@ -867,6 +1127,28 @@
             }
         }
 
+        // STREAMING_CHUNK: Triggering back to hub fading animations safely
+        // FADING OUT NAVIGATION TRANSITION
+        document.getElementById('backToHubBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            playSynthBeep(130, 0.6, 0.15);
+            
+            const viewport = document.getElementById('mainViewport');
+            if (viewport) {
+                viewport.classList.add('opacity-0', 'scale-95');
+            }
+
+            const overlay = document.getElementById('pageTransitionOverlay');
+            if (overlay) {
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                overlay.classList.add('opacity-100');
+            }
+
+            setTimeout(() => {
+                window.location.href = "../index.html";
+            }, 550);
+        });
+
         // 3D card interactive tilt handler
         const cards = document.querySelectorAll('.tilt-card');
         cards.forEach(card => {
@@ -891,8 +1173,15 @@
 
         // Initial launch
         window.onload = function() {
+            // --- GENTLE PAGE FADE-IN ---
+            const viewport = document.getElementById('mainViewport');
+            if (viewport) {
+                viewport.classList.remove('scale-95', 'opacity-0');
+                viewport.classList.add('scale-100', 'opacity-100');
+            }
             generateStrategicExcuse();
         }
     </script>
 </body>
 </html>
+```eof
