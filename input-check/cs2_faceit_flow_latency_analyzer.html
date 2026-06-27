@@ -116,6 +116,7 @@
     <!-- Background 3D Canvas -->
     <div class="fixed inset-0 pointer-events-none z-0" id="canvasContainer"></div>
 
+   
     <!-- CINEMATIC TRANSITION OVERLAY LAYER -->
     <div id="pageTransitionOverlay" class="fixed inset-0 bg-brand-dark opacity-0 pointer-events-none transition-all duration-500 z-50 flex flex-col items-center justify-center">
         <div class="w-10 h-10 rounded-full border-2 border-dashed border-brand-purple animate-spin mb-4" style="animation-duration: 3s"></div>
@@ -144,8 +145,7 @@
             </div>
             
             <div class="flex items-center gap-3">
-            <div class="flex items-center gap-3">
-                 <!-- Back to Hub Button -->
+                <!-- Back to Hub Button -->
                 <a href="../index.html" id="backToHubBtn" class="px-3 py-1.5 rounded bg-brand-border/60 border border-brand-border hover:border-brand-purple/40 hover:text-white transition-all text-xs flex items-center space-x-2">
                     <i class="fa-solid fa-arrow-left text-brand-purple"></i>
                     <span class="font-sans font-semibold text-gray-300">В ХАБ</span>
@@ -157,6 +157,11 @@
             </div>
         </div>
     </header>
+
+    <!-- Main Content Area -->
+    <main id="mainViewport" class="animate-viewport flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center items-center relative z-10">
+        
+        <div class="w-full max-w-xl">
 
     <!-- Main Diagnostic Grid -->
     <!-- STREAMING_CHUNK: Laying out system telemetry sliders and active logger blocks -->
